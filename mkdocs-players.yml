@@ -30,6 +30,7 @@ extra_javascript:
   - players/tracker-live.js        # the Initiative page's live tracker
   - javascripts/party-editor.js    # Party page: players suggest changes to their own card
   - players/items-live.js          # Items page: players claim what's up for grabs
+  - players/notes-live.js          # My Notes: each player's private notepad
   - javascripts/rules-filter.js    # Rules: the Spells and Magic Items filters
 
 # Links into hidden parts of pages (an undiscovered district, a DM map) are expected here;
@@ -54,6 +55,7 @@ exclude_docs: |
 nav:
   - Sessions: []          # filled in by hooks/sessions.py: each session, newest first (the home page is the latest)
   - Initiative: players/tracker.md
+  - My Notes: players/notes.md
   - Party:
       - party/index.md
       - About this site: players/about.md

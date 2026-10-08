@@ -161,6 +161,7 @@ def nav_players(town: str, town_id: str) -> str:
     return f"""nav:
   - Sessions: []          # filled in by hooks/sessions.py: each session, newest first (the home page is the latest)
   - Initiative: players/tracker.md
+  - My Notes: players/notes.md
   - Party:
       - party/index.md
       - About this site: players/about.md
@@ -331,6 +332,7 @@ The players' side of {name}: what's happened, who you've met, and where you've b
 
 - **Sessions** — a page for every session played, newest first. The site opens on the latest one.
 - **[Initiative](tracker.md)** — follow the fight from your phone while the DM runs it.
+- **[My Notes](notes.md)** — your own notepad. Only you can read it; it saves as you type.
 - **[Party](../party/index.md)** — the characters, with their cards and backgrounds.
 - **[People](../reference/npcs.md)** — everyone the party has met.
 - **[Items](../reference/items.md)** — the party's notable finds.

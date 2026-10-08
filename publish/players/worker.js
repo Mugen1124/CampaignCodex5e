@@ -1,4 +1,4 @@
-// The players' site: the built pages (./site), plus the live initiative tracker and card suggestions.
+// The players' site: the built pages (./site), plus the live initiative tracker, card suggestions, and notes.
 //
 //   GET  /api/tracker            -> the fight as the players see it (JSON)
 //   GET  /api/tracker/ws         -> the same, live: a WebSocket that gets every change
@@ -13,11 +13,16 @@
 //   POST /api/items/claim        -> {"item"} claim it for your character; {"item", "withdraw": true} take that back
 //   POST /api/items/resolve      -> the DM's helper: {"id", "status": "approved" | "rejected"}
 //
+//   GET  /api/notes              -> the signed-in player's own notes: {"text", "rev", "saved"}
+//   PUT  /api/notes              -> {"text", "rev"} save them; rev is the version they were loaded at, and a
+//                                   newer one already saved (from another device) answers 409 with that version
+//
 // Cloudflare Access sits in front of all of it, so every request here is already signed in; the
 // signed Access token says who (a player's email, or the helper's service token). Which email plays
 // which character comes from roster.json, written by the publish script from data/party.yml - it's part of
 // this script, never one of the site's files. The helper's calls (POST tracker, suggestions, resolve)
-// are refused for players.
+// are refused for players. Notes are private to the player who wrote them: each email has its own
+// store, nothing else reads it, and the helper's service token can't reach it - not even the DM sees them.
 import { DurableObject } from "cloudflare:workers";
 import ROSTER from "./roster.json";
 
@@ -31,6 +36,7 @@ const TEXT = ["race", "class", "ac_note", "hp_formula", "speed", "saves", "skill
 const NUMBERS = ["level", "ac", "hp", "initiative", "passive_perception"];
 const LISTS = ["features", "actions", "bonus_actions", "reactions"];
 const ABIL = ["str", "dex", "con", "int", "wis", "cha"];
+const NOTE_MAX = 100000;   // bytes of notes per player (a Durable Object value holds up to 128 KiB)
 
 export default {
   async fetch(request, env) {
@@ -45,6 +51,7 @@ export default {
     }
     if (path === "/api/me" || path.startsWith("/api/cards/")) return cards(request, env, path);
     if (path.startsWith("/api/items/")) return claims(request, env, path);
+    if (path === "/api/notes") return notes(request, env);
     return env.ASSETS.fetch(request);
   },
 };
@@ -98,6 +105,26 @@ async function claims(request, env, path) {
     });
   }
   return json({ error: "Not found." }, 404);
+}
+
+// A player's own notes. Any signed-in email may keep notes (linked to a character or not); the
+// helper's service token has no email, so it never gets in.
+async function notes(request, env) {
+  const who = await identity(request, env);
+  if (!who) return json({ error: "Not signed in." }, 401);
+  if (!who.email) return json({ error: "Notes belong to a signed-in player." }, 403);
+  const store = env.NOTES.get(env.NOTES.idFromName(who.email));
+  if (request.method === "GET") return store.fetch("https://notes/");
+  if (request.method === "PUT") {
+    let body;
+    try { body = await request.json(); } catch (e) { return json({ error: "Couldn't read your notes." }, 400); }
+    const text = String((body && body.text) == null ? "" : body.text);
+    if (new TextEncoder().encode(text).length > NOTE_MAX) {
+      return json({ error: "Your notes are too long to save - about 100,000 characters is the most." }, 413);
+    }
+    return store.fetch("https://notes/", { method: "PUT", body: JSON.stringify({ text, rev: Number(body.rev) || 0 }) });
+  }
+  return json({ error: "Not allowed." }, 405);
 }
 
 function playerFor(email) {
@@ -188,6 +215,21 @@ function cleanMember(raw) {
     if (rows.length) m[k] = rows;
   }
   return m;
+}
+
+// One player's notes: one of these per email (idFromName), holding a single notepad.
+export class Notes extends DurableObject {
+  async fetch(request) {
+    const cur = (await this.ctx.storage.get("note")) || { text: "", rev: 0, saved: null };
+    if (request.method === "PUT") {
+      const n = await request.json();
+      if (n.rev !== cur.rev) return json(Object.assign({ error: "Changed on another device." }, cur), 409);
+      const next = { text: n.text, rev: cur.rev + 1, saved: new Date().toISOString() };
+      await this.ctx.storage.put("note", next);
+      return json(next);
+    }
+    return json(cur);
+  }
 }
 
 export class Tracker extends DurableObject {

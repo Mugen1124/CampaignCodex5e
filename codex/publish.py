@@ -58,10 +58,12 @@ def write_configs(s: dict):
         "durable_objects": {"bindings": [
             {"name": "TRACKER", "class_name": "Tracker"},
             {"name": "CARDS", "class_name": "Cards"},
+            {"name": "NOTES", "class_name": "Notes"},   # each player's private notes
         ]},
         "migrations": [
             {"tag": "v1", "new_sqlite_classes": ["Tracker"]},
             {"tag": "v2", "new_sqlite_classes": ["Cards"]},
+            {"tag": "v3", "new_sqlite_classes": ["Notes"]},
         ],
     }
     note = "// Written by `publish` from campaign.yml each time - edit campaign.yml, not this file.\n"

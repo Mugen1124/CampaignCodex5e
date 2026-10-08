@@ -500,11 +500,11 @@
 .ei-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; font-size: 0.7rem; }
 .ei-btns .md-button { margin: 0; padding: 0.3em 1.1em; font-size: 0.72rem; }
 .ei-group { white-space: nowrap; cursor: pointer; }
-.ei-cols { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 1.2rem; margin-top: 0.6rem; }
+.ei-cols { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 1.2rem; margin-top: 0.6rem; }
 @media (max-width: 1100px) { .ei-cols { grid-template-columns: 1fr; } }
 .ei-row {
   display: grid; align-items: center; gap: 0.5rem;
-  grid-template-columns: 1rem 3rem minmax(0, 1.1fr) 2.8rem 6.4rem 4.4rem minmax(0, 1.7fr) 1.5rem;
+  grid-template-columns: 1rem 4.2rem minmax(0, 1.1fr) 2.8rem 6.4rem 4.4rem minmax(5rem, 1fr) 1.5rem;
   padding: 0.3rem 0.2rem; border-bottom: 1px solid var(--cx-line-soft); font-size: 0.72rem;
 }
 .ei-row.ei-head { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.75;
@@ -514,6 +514,13 @@
 .ei-row input[type="number"] { -moz-appearance: textfield; }
 .ei-row input::-webkit-inner-spin-button { -webkit-appearance: none; }
 .ei-init { font-weight: 700; text-align: center; }
+.ei-initcell { display: flex; align-items: center; gap: 0.15rem; }
+.ei-initcell .ei-init { flex: 1 1 auto; min-width: 0; }
+.ei-tie { display: flex; flex-direction: column; gap: 1px; }
+.ei-tie button { width: 1.1rem; height: 0.85rem; padding: 0; font-size: 0.65rem; line-height: 1; cursor: pointer;
+  border: 1px solid var(--cx-line-soft); border-radius: 2px; background: none; color: inherit; }
+.ei-tie button:hover:not([disabled]) { border-color: var(--md-accent-fg-color); color: var(--md-accent-fg-color); }
+.ei-tie button[disabled] { opacity: 0.3; cursor: default; }
 .ei-who { display: flex; flex-direction: column; overflow: hidden; }
 .ei-who > * { overflow-wrap: anywhere; line-height: 1.25; }   /* long names wrap rather than being cut off */
 .ei-show { cursor: pointer; color: var(--md-typeset-a-color); font-weight: 700; }
@@ -714,3 +721,16 @@ html.rec-popout .rec-level-note { min-width: 0; }
 .md-typeset .rules-entry { border-top: 1px solid var(--cx-line-soft); padding-top: 0.2rem; }
 .md-typeset .rules-entry[hidden], .md-typeset h2[hidden] { display: none; }
 .md-typeset .rules-entry h3 { margin-top: 0.8em; }
+
+/* ---------- My Notes (players' site) ---------- */
+.player-notes { margin: 0.6rem 0 1rem; }
+.pn-wait { opacity: 0.75; }
+.pn-text { box-sizing: border-box; width: 100%; min-height: 60vh; padding: 0.8rem; resize: vertical;
+  font: inherit; font-size: 0.8rem; line-height: 1.6; color: var(--md-typeset-color);
+  background: var(--md-code-bg-color); border: 1px solid var(--cx-line-soft); border-radius: 4px; }
+.pn-text:focus { outline: none; border-color: var(--md-accent-fg-color); }
+.pn-bar { display: flex; justify-content: space-between; gap: 1rem; margin-top: 0.3rem; font-size: 0.7rem; opacity: 0.8; }
+.pn-bad { color: #e57373; opacity: 1; }
+.pn-conflict { margin-top: 0.6rem; padding: 0.6rem 0.8rem; border: 1px solid var(--md-accent-fg-color); border-radius: 4px; font-size: 0.75rem; }
+.pn-conflict p { margin: 0 0 0.5rem; }
+.pn-conflict button { margin-right: 0.4rem; padding: 0.2rem 0.7rem; border: 1px solid var(--md-accent-fg-color); border-radius: 3px; cursor: pointer; }

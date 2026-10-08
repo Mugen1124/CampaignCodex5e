@@ -34,6 +34,12 @@ So the players' site **fills in by itself as you write up each session**. Their 
 
 The players' site has its own `nav:` in `mkdocs-players.yml`. When you add a town, add its pages there too (without Events & Hooks).
 
+## My Notes
+
+Once the players' site is [online](going-online.md), each player gets a **My Notes** tab: one notepad of their own that saves as they type, on any phone or computer they sign in from. It's **private** — only the player who wrote it can read it; not the other players, and not you. Notes are kept by Cloudflare under their sign-in, never in your campaign's files, so they never pass through the build or the leak check.
+
+If they change their notes on one device while the page is open on another, nothing is overwritten: the site asks which version to keep. On your own computer (the `codex players` preview) the tab just says the notes are on the online site.
+
 ## Looking at it
 
 `codex players` builds the players' site and opens it in your browser, so you can see exactly what they'll see. `codex check` builds both sites and runs the leak check without opening anything.

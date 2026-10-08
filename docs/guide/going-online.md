@@ -1,6 +1,6 @@
 # Going online
 
-**Optional.** Everything works on your own computer without this. Go online when you want to read your site from another device (a laptop at the table, your phone), or give your players their site — and the live initiative page and card suggestions that come with it.
+**Optional.** Everything works on your own computer without this. Go online when you want to read your site from another device (a laptop at the table, your phone), or give your players their site — and the live initiative page, card suggestions, and each player's private notes that come with it.
 
 The sites go on **Cloudflare**: each is a *Worker* on a free `workers.dev` address, behind **Cloudflare Access**, which asks visitors to sign in with their email (a one-time code is sent to it). Only the emails you allow get in. Cloudflare's free plans cover a typical table — check their current limits if your group is large.
 

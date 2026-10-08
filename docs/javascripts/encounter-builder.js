@@ -733,11 +733,30 @@
     function order() {
       return state.combat.list.slice().sort(function (a, b) {
         var ai = a.init == null ? -99 : a.init, bi = b.init == null ? -99 : b.init;
-        return bi - ai || b.bonus - a.bonus || (a.kind === "pc" ? -1 : 0) - (b.kind === "pc" ? -1 : 0) ||
+        return bi - ai || (b.tb || 0) - (a.tb || 0) || b.bonus - a.bonus || (a.kind === "pc" ? -1 : 0) - (b.kind === "pc" ? -1 : 0) ||
           (a.name < b.name ? -1 : 1);
       });
     }
     function isOut(x) { return x.kind !== "pc" && x.hp != null && x.hp <= 0; }
+
+    // Ties: everyone on the same initiative as x, in their current order. +/- moves x within it,
+    // and the order the DM picks sticks (tb) until someone's initiative changes.
+    function tieGroup(x) {
+      return x.init == null ? [] : order().filter(function (y) { return y.init === x.init; });
+    }
+    function moveInTie(x, dir) {
+      var g = tieGroup(x), i = g.indexOf(x), j = i + dir;
+      if (i < 0 || j < 0 || j >= g.length) return;
+      g.splice(i, 1);
+      g.splice(j, 0, x);
+      g.forEach(function (y, n) { y.tb = g.length - n; });
+    }
+    function setInit(x, v) {
+      if (v === x.init) return;
+      x.init = v;
+      if (x.kind === "foe" && x.init != null) x.die = x.init - x.bonus;
+      x.tb = 0;   // a new number: its old place in a tie no longer applies
+    }
     function find(k) { return state.combat.list.filter(function (x) { return x.k === k; })[0]; }
 
     // Whose turn it is. Until someone moves it, that's the top of the order (so it follows
@@ -823,15 +842,20 @@
         (missing && !c.started ? '<div class="eb-msg eb-info">Type in the players\' initiative rolls (' + missing + " to go), then Start combat. " +
           "Creatures are already rolled — click a number to change it.</div>" : "") +
         '<div class="ei-cols"><div class="ei-table">' +
-        '<div class="ei-row ei-head"><span></span><span>Init</span><span>Name</span><span>AC</span><span>HP</span><span>Damage / heal</span><span>Conditions &amp; notes</span><span></span></div>' +
-        order().map(function (x) {
+        '<div class="ei-row ei-head"><span></span><span>Init</span><span>Name</span><span>AC</span><span>HP</span><span>Damage / heal</span><span>Conditions</span><span></span></div>' +
+        order().map(function (x, ri, all) {
           var isCur = now && x.k === now.k;
+          var tie = tieGroup(x), ti = tie.indexOf(x);
           var cls = "ei-row ei-" + x.kind + (isCur ? " ei-cur" : "") + (isOut(x) ? " ei-out" : "") + (x.hide ? " ei-hidden" : "");
           var hpLow = x.max && x.hp != null && x.hp > 0 && x.hp <= x.max / 2;
           return '<div class="' + cls + '" data-k="' + x.k + '">' +
             '<span class="ei-mark">' + (isCur ? "▶" : "") + "</span>" +
-            '<span><input class="ei-init" type="number" data-f="init" value="' + (x.init == null ? "" : x.init) + '"' +
-              (x.kind === "foe" ? ' title="d20 (' + x.die + ") " + signedPlain(x.bonus) + '"' : ' placeholder="roll"') + "></span>" +
+            '<span class="ei-initcell"><input class="ei-init" type="number" data-f="init" value="' + (x.init == null ? "" : x.init) + '"' +
+              (x.kind === "foe" ? ' title="d20 (' + x.die + ") " + signedPlain(x.bonus) + '"' : ' placeholder="roll"') + ">" +
+              (tie.length > 1 ? '<span class="ei-tie" title="Tied on ' + x.init + ' - move up or down within the tie">' +
+                '<button data-ia="tieup"' + (ti === 0 ? " disabled" : "") + ' title="Goes before the others on ' + x.init + '">+</button>' +
+                '<button data-ia="tiedown"' + (ti === tie.length - 1 ? " disabled" : "") + ' title="Goes after the others on ' + x.init + '">−</button></span>' : "") +
+              "</span>" +
             '<span class="ei-who">' + (cardHtml(cardKey(x))
               ? '<a class="ei-show" data-ia="show">' + esc(x.name) + "</a>" : "<b>" + esc(x.name) + "</b>") +
               '<span class="ei-sub">' + esc(x.kind === "pc" ? x.sub || "" : x.kind === "foe" ? "init " + signedPlain(x.bonus) : "") + "</span>" +
@@ -849,13 +873,13 @@
               }).join("") +
               '<select class="ei-addcond" data-f="addcond" title="Add a condition, or concentration"><option value="">+</option>' +
               CONDITIONS.map(function (n) { return '<option value="' + n + '" title="' + esc(condText(n)) + '">' + n + "</option>"; }).join("") +
-              '<option value="__conc">Concentrating</option></select>' +
-              '<input class="ei-cond" data-f="cond" value="' + esc(x.cond) + '" placeholder="notes"></span>' +
+              '<option value="__conc">Concentrating</option></select></span>' +
             '<span><button data-ia="remove" title="Remove from the fight">×</button></span></div>';
         }).join("") +
         '<div class="ei-add"><input class="ei-a-name" placeholder="Add someone: name"><input class="ei-a-init" type="number" placeholder="init">' +
         '<input class="ei-a-ac" placeholder="AC"><input class="ei-a-hp" type="number" placeholder="HP"><button class="eb-act" data-ia="add">Add</button></div>' +
-        '<p class="eb-hint">↓ or → moves to the next turn, ↑ or ← back one (press Enter or Esc to leave a box first). ' +
+        '<p class="eb-hint">Enter in an initiative box moves on to the next player still to roll. Tied? + and − beside the number set who goes first. ' +
+        '↓ or → moves to the next turn, ↑ or ← back one (press Enter or Esc to leave a box first). ' +
         "Creatures at 0 HP are skipped. Half HP or less shows as bloodied. Next turn wraps into a new round. " +
         "A condition's rounds count down at the start of that creature's turn. While a session recording runs, turns, damage, " +
         "and conditions are logged next to it for the write-up.</p>" +
@@ -928,6 +952,7 @@
       }
       if (act === "unconc") { x.conc = false; logEvent(x.name + " stops concentrating"); return renderInit(); }
       if (act === "hide") { x.hide = !x.hide; return renderInit(); }
+      if (act === "tieup" || act === "tiedown") { moveInTie(x, act === "tieup" ? -1 : 1); return renderInit(); }
       if (act === "remove") {
         if (c.cur === x.k) step(1);
         c.list = c.list.filter(function (y) { return y !== x; });
@@ -988,7 +1013,7 @@
         logEvent(x.name + " is " + what.toLowerCase() + (r && r > 0 ? " (" + r + " round" + (r === 1 ? "" : "s") + ")" : ""));
         return renderInit();
       }
-      if (f === "init") { x.init = num(t.value); if (x.kind === "foe" && x.init != null) x.die = x.init - x.bonus; return renderInit(); }
+      if (f === "init") { setInit(x, num(t.value)); return renderInit(); }
       if (f === "hp" || f === "max") { x[f] = num(t.value); return renderInit(); }
       x[f] = t.value; persist();   // AC, conditions: no redraw, so typing isn't interrupted
     });
@@ -1007,6 +1032,19 @@
       var t = ev.target;
       if (ev.key === "Escape" && t.tagName === "INPUT") return t.blur();
       if (ev.key !== "Enter") return;
+      if (t.getAttribute("data-f") === "init") {
+        ev.preventDefault();
+        var me = find(t.closest("[data-k]").getAttribute("data-k"));
+        setInit(me, num(t.value));
+        renderInit();
+        var rows = order(), at = rows.indexOf(me);
+        var after = rows.slice(at + 1).concat(rows.slice(0, at));
+        var next = after.filter(function (y) { return y.kind === "pc" && y.init == null; })[0] || rows[at + 1];
+        var box = next && $('.eb-initview [data-k="' + next.k + '"] .ei-init');
+        if (box) { box.focus(); box.select(); }
+        else if ($('.eb-initview [data-ia="start"]')) $('.eb-initview [data-ia="start"]').focus();   // everyone's in: Enter again starts
+        return;
+      }
       if (t.classList.contains("ei-a-name") || t.classList.contains("ei-a-init") || t.classList.contains("ei-a-hp") || t.classList.contains("ei-a-ac"))
         return $('[data-ia="add"]').click();
       if (t.getAttribute("data-f") !== "dmg") return t.blur();

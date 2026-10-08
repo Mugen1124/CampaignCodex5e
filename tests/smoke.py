@@ -89,6 +89,18 @@ def main() -> int:
         check("the players' site opens on the latest session", bool(re.search(r"<h1[^>]*>Greywater — Session 1: The Missing Bell", pl_home)))
         check("This Session isn't on the players' site", ">This Session<" not in pl_home and "Ambush on the quay" not in pl_home)
 
+        print("My Notes:")
+        check("the players' site has a My Notes page, in its menu", (players / "players" / "notes.html").is_file()
+              and 'href="players/notes.html"' in pl_home)
+        check("the DM site doesn't", not (out / "dm" / "players" / "notes.html").exists())
+        worker = (proj / "publish" / "players" / "worker.js").read_text(encoding="utf-8")
+        check("the players' worker keeps each player's notes", '"/api/notes"' in worker and "class Notes" in worker)
+        r = run(proj, "-c", "import json; from codex import publish; publish.write_configs({'online': "
+                "{'dm_worker': 'dm', 'players_worker': 'pl'}, 'access_url': 'https://team.cloudflareaccess.com'}); "
+                "t = open('publish/players/wrangler.jsonc', encoding='utf-8').read().split('\\n', 1)[1]; c = json.loads(t); "
+                "print([b['class_name'] for b in c['durable_objects']['bindings']], [m['tag'] for m in c['migrations']])")
+        check("publish sets up the notes store for Cloudflare", "'Notes'" in r.stdout and "'v3'" in r.stdout, r.stdout + r.stderr)
+
         print("The rules encyclopedia:")
         spells = (out / "dm" / "rules" / "spells.html").read_text(encoding="utf-8")
         check("every spell is on the Spells page", spells.count('class="rules-entry spell') == 319)
