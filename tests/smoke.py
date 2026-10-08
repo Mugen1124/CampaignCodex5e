@@ -92,6 +92,9 @@ def main() -> int:
         print("The rules encyclopedia:")
         spells = (out / "dm" / "rules" / "spells.html").read_text(encoding="utf-8")
         check("every spell is on the Spells page", spells.count('class="rules-entry spell') == 319)
+        rules_home = (out / "dm" / "rules" / "index.html").read_text(encoding="utf-8")
+        check("the Rules page ends with the SRD credit, not an error box",
+              "System Reference Document 5.1" in rules_home and "Missing rules section" not in rules_home)
         check("the rules are on the players' site too", (players / "rules" / "dm-screen.html").is_file())
         bestiary = (out / "dm" / "reference" / "bestiary.html").read_text(encoding="utf-8")
         check("a condition in a stat block gets a hover card", 'data-ref="condition:' in bestiary)

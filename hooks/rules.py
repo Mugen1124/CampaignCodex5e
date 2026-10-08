@@ -13,7 +13,7 @@ from codex import rules  # noqa: E402
 
 log = logging.getLogger("mkdocs.hooks.rules")
 
-MARKER = re.compile(r"^[ \t]*\{\{\s*(rules|conditions|spells|srd-magic-items|rules-credit)\b\s*([^}]*?)\s*\}\}[ \t]*$",
+MARKER = re.compile(r"^[ \t]*\{\{\s*(rules-credit|rules|conditions|spells|srd-magic-items)(?![\w-])\s*([^}]*?)\s*\}\}[ \t]*$",
                     re.MULTILINE)
 
 
