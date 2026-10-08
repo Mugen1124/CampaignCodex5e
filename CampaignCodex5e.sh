@@ -3,6 +3,7 @@
 # opens it in your browser once it's ready. Leave this window open while you use the site; close
 # it (or press Ctrl+C) to stop.
 cd "$(dirname "$0")"
+export PYTHONDONTWRITEBYTECODE=1   # no __pycache__ folders in the campaign
 printf '\033]0;CampaignCodex5e\007'   # the window's title
 if [ ! -x .venv/bin/python ]; then
   echo "CampaignCodex5e isn't set up yet - run ./setup.sh first."

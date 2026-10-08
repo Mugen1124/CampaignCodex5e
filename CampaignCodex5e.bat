@@ -5,6 +5,7 @@ REM CampaignCodex5e: starts your campaign site at http://127.0.0.1:8000, plus th
 REM opens it in your browser once it's ready. Leave this window open while you use the site;
 REM close it to stop.
 cd /d "%~dp0"
+set "PYTHONDONTWRITEBYTECODE=1"
 if not exist ".venv\Scripts\python.exe" (
   echo CampaignCodex5e isn't set up yet - double-click setup.bat first.
   pause

@@ -66,10 +66,59 @@ def build_both(proj: Path, label: str) -> Path:
     return out
 
 
+def update_test(proj: Path, tmp: Path):
+    """A pretend release 9.9 - one engine file changed, one dropped - applied to a campaign whose
+    mkdocs.yml is still the old single-file kind. Only the engine may change."""
+    sys.path.insert(0, str(ROOT))
+    from codex.update import MANIFEST, fingerprint, read_manifest
+    manifest = read_manifest((ROOT / MANIFEST).read_text(encoding="utf-8"))
+    # the campaign: an engine file the new release drops, and an old-style mkdocs.yml
+    (proj / "tools" / "obsolete.py").write_text("# dropped in 9.9\n", encoding="utf-8")
+    old_manifest = (proj / MANIFEST).read_text(encoding="utf-8") + f"{fingerprint(b'# dropped in 9.9' + bytes([10]))}  tools/obsolete.py\n"
+    (proj / MANIFEST).write_text(old_manifest, encoding="utf-8")
+    dm = (proj / "mkdocs.yml").read_text(encoding="utf-8")
+    nav = dm[dm.index("\nnav:\n") + 1:]
+    name = re.search(r"(?m)^site_name:.*$", dm).group(0)
+    engine = (ROOT / "codex" / "site.yml").read_text(encoding="utf-8")
+    (proj / "mkdocs.yml").write_text(name + "\n" + engine + "\n" + nav, encoding="utf-8")   # all in one file, as before 1.4
+    mine = {p: (proj / p).read_bytes() for p in ("campaign.yml", "mkdocs-players.yml", "docs/index.md", "data/party.yml",
+                                                  "docs/stylesheets/campaign.css", "CLAUDE.md", "README.md")}
+    # the release
+    rel = tmp / "release" / "Mugen1124-CampaignCodex5e-abc123"
+    files = {p: (ROOT / p).read_bytes() for p in manifest}
+    files["hooks/maps.py"] += b"\n# changed in 9.9\n"
+    files["codex/version.txt"] = b"9.9\n"
+    lines = ["# fake release"] + [f"{fingerprint(d)}  {p}" for p, d in sorted(files.items())]
+    files[MANIFEST] = ("\n".join(lines) + "\n").encode()
+    for p, d in files.items():
+        (rel / p).parent.mkdir(parents=True, exist_ok=True)
+        (rel / p).write_bytes(d)
+    zpath = tmp / "release.zip"
+    shutil.make_archive(str(zpath.with_suffix("")), "zip", rel.parent)
+    r = run(proj, "-m", "codex", "update", "--zip", zpath, "--yes")
+    out = r.stdout + r.stderr
+    check("update runs, and the check after it passes", r.returncode == 0, out[-3000:])
+    check("update: the changed engine file is replaced", (proj / "hooks" / "maps.py").read_text(encoding="utf-8").endswith("# changed in 9.9\n"))
+    check("update: the engine file the release dropped is removed", not (proj / "tools" / "obsolete.py").exists())
+    check("update: the version is 9.9", (proj / "codex" / "version.txt").read_text(encoding="utf-8").strip() == "9.9")
+    untouched = [p for p, d in mine.items() if (proj / p).read_bytes() != d]
+    check("update: your campaign's files aren't touched", not untouched, ", ".join(untouched))
+    new_dm = (proj / "mkdocs.yml").read_text(encoding="utf-8")
+    check("update: an old mkdocs.yml becomes name + menus, inheriting the engine",
+          new_dm.startswith("#") and "INHERIT: codex/site.yml" in new_dm and nav.strip() in new_dm and name in new_dm
+          and "markdown_extensions" not in new_dm and (proj / "mkdocs.yml.before-update").is_file(), new_dm[:800])
+    check("update: a backup was made first", any((proj.parent / f"{proj.name}-backups").glob("*.zip")))
+    r = run(proj, "-m", "codex", "update", "--zip", zpath, "--yes")
+    check("update again: already up to date", "Already up to date" in r.stdout, r.stdout[-500:])
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory() as tmp:
         proj = Path(tmp) / "campaign"
         copy_project(proj)
+
+        r = run(ROOT, "tools/engine_manifest.py", "--check")
+        check("the engine manifest (codex/engine-files.txt) is up to date", r.returncode == 0, r.stdout)
 
         print("The demo:")
         out = build_both(proj, "demo")
@@ -140,6 +189,29 @@ def main() -> int:
         after = build_both(proj, "after the wizard")
         about = (after / "players" / "index.html").read_text(encoding="utf-8")
         check("after the wizard: with no sessions yet, the players' site opens on About", bool(re.search(r"<h1[^>]*>About this site", about)))
+
+        print("Builds outside the folder (output: local):")
+        local = Path(tmp) / "local-cache"
+        conf = proj / "campaign.yml"
+        conf_text = conf.read_text(encoding="utf-8")
+        conf.write_text(conf_text.replace("output: here", "output: local"), encoding="utf-8")
+        shutil.rmtree(proj / ".map-cache", ignore_errors=True)
+        for cache in list(proj.rglob("__pycache__")):   # left by this test's own direct mkdocs builds
+            shutil.rmtree(cache, ignore_errors=True)
+        env = {"LOCALAPPDATA": str(local), "XDG_CACHE_HOME": str(local), "HOME": str(Path(tmp) / "home")}
+        r = run(proj, "-m", "codex", "build", env=env)
+        built = list(local.rglob("site/index.html"))
+        check("codex build puts the site outside the folder", r.returncode == 0 and bool(built) and not (proj / "site").exists(),
+              r.stdout[-1500:] + r.stderr[-1500:])
+        r = run(proj, "-c", "from codex import settings; s = settings.load(); print(s['map_cache']); print(s['publish_dir'])", env=env)
+        check("...and the map cache and publish builds too", not (proj / ".map-cache").exists()
+              and all(Path(p).is_relative_to(local) for p in r.stdout.split()), r.stdout + r.stderr)
+        check("no __pycache__ in the folder", not any(p for p in proj.rglob("__pycache__")
+                                                     if ".venv" not in p.parts))
+        conf.write_text(conf_text, encoding="utf-8")
+
+        print("codex update:")
+        update_test(proj, Path(tmp))
 
     print()
     if FAILED:

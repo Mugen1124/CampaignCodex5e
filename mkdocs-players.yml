@@ -1,56 +1,11 @@
-# The players' site: what the players may see. Everything not set here - theme, colours, Markdown
-# settings - comes from mkdocs.yml.
-#
-# How the DM material stays out:
-#   - exclude_docs below: whole folders and pages that are never built (so they can't be found or searched)
-#   - dm_only: true at the top of any page: that page is never built either
-#   - hooks/players.py: removes DM boxes and <!-- players: hide --> stretches from the rest
-#   - the other hooks (extra: audience: players): no stat blocks, encounters, DM notes or secrets,
-#     only the NPCs, places, factions and items the party has come across, only player maps
-#   - tools/leak_check.py checks the finished site, and publish won't upload it if anything's found
-INHERIT: mkdocs.yml
+# Your players' site: its name and its menus - what the players may see. How DM material is kept out
+# (DM boxes, dm_only pages, secrets, the leak check) is the engine's job: codex/site-players.yml.
+# Pages that aren't in the menu below aren't in the players' menu - but they're still built unless
+# they're dm_only: true or in the engine's exclude list, so mark DM-only pages dm_only: true.
+INHERIT: codex/site-players.yml
 
 site_name: The Lantern Coast — Players
 site_description: The campaign, for its players
-site_dir: publish/players/site
-
-extra:
-  audience: players
-
-hooks:
-  - hooks/sessions.py
-  - hooks/players.py
-  - hooks/campaign.py
-  - hooks/maps.py
-  - hooks/rules.py
-  - hooks/entities.py
-
-extra_javascript:
-  - javascripts/refs.js
-  - players/tracker-live.js        # the Initiative page's live tracker
-  - javascripts/party-editor.js    # Party page: players suggest changes to their own card
-  - players/items-live.js          # Items page: players claim what's up for grabs
-  - players/notes-live.js          # My Notes: each player's private notepad
-  - javascripts/rules-filter.js    # Rules: the Spells and Magic Items filters
-
-# Links into hidden parts of pages (an undiscovered district, a DM map) are expected here;
-# hooks/players.py turns them into plain text after the build.
-validation:
-  links:
-    anchors: info
-
-# Pages the players' site never builds.
-exclude_docs: |
-  /index.md
-  /arcs/
-  /encounters/
-  /guide/
-  /recording.md
-  /reference/bestiary.md
-  /reference/style-guide.md
-  /javascripts/encounter-builder.js
-  /javascripts/recorder.js
-  /javascripts/items-editor.js
 
 nav:
   - Sessions: []          # filled in by hooks/sessions.py: each session, newest first (the home page is the latest)

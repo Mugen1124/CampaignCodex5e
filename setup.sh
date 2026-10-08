@@ -6,6 +6,7 @@
 #   ./setup.sh --with-transcribe    the site, plus session transcription (a large download)
 set -e
 cd "$(dirname "$0")"
+export PYTHONDONTWRITEBYTECODE=1   # no __pycache__ folders in the campaign
 
 echo
 echo "  =============================================="

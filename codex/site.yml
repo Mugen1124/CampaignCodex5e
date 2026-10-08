@@ -1,0 +1,85 @@
+# The engine's settings for the DM site: theme, Markdown, hooks, scripts. Your campaign's mkdocs.yml
+# inherits all of this (INHERIT: codex/site.yml) and adds its own name and menus.
+#
+# This file belongs to CampaignCodex5e: `codex update` replaces it with each new release, so don't
+# change it here. To change something for your campaign, set it in mkdocs.yml instead - a setting
+# there wins over the same one here (a list, like extra_javascript, replaces this one's whole list).
+docs_dir: docs
+site_dir: site
+
+# Links point at .html files directly, so the built site works when opened straight from disk.
+use_directory_urls: false
+
+theme:
+  name: material
+  # No web fonts - system fonts only, so nothing breaks offline.
+  font: false
+  # Dark only (colours in docs/stylesheets/extra.css).
+  palette:
+    scheme: slate
+    primary: custom
+    accent: custom
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - search.highlight
+    - toc.follow
+    - content.tabs.link
+
+plugins:
+  - search
+  - glightbox   # click-to-zoom on map images
+  - offline:    # makes the built site (including search) work from disk; publish turns it off
+      enabled: !ENV [OFFLINE, true]
+
+# Stat blocks, encounters, party cards, maps, NPCs, places, factions and items - all from data/.
+hooks:
+  - hooks/sessions.py     # the Sessions tab
+  - hooks/campaign.py
+  - hooks/maps.py
+  - hooks/rules.py        # the Rules tab (the SRD), before entities so its [[mentions]] work
+  - hooks/entities.py
+
+# The players' own pages are built by mkdocs-players.yml, not here.
+exclude_docs: |
+  /players/
+
+# Rebuild live when data or hooks change.
+watch:
+  - data
+  - hooks
+  - campaign.yml
+
+# Flag broken links and #anchors at build time.
+validation:
+  links:
+    anchors: warn
+
+extra_javascript:
+  - javascripts/refs.js                 # hover cards for [[mentions]]
+  - javascripts/encounter-builder.js    # encounter builder and initiative tracker
+  - javascripts/party-editor.js         # Party page: edit character cards
+  - javascripts/recorder.js             # Record & Transcribe
+  - javascripts/items-editor.js         # Items page: who carries what
+  - javascripts/rules-filter.js         # Rules: the Spells and Magic Items filters
+
+extra_css:
+  - stylesheets/extra.css
+  - stylesheets/campaign.css    # yours: colours and styles that override the engine's (codex update never touches it)
+
+markdown_extensions:
+  - admonition          # read-aloud and DM boxes
+  - pymdownx.details    # collapsible boxes (??? instead of !!!)
+  - pymdownx.superfences
+  - pymdownx.tabbed:    # side-by-side tabs
+      alternate_style: true
+  - pymdownx.tasklist
+  - tables
+  - attr_list
+  - md_in_html          # lets Markdown live inside stat block wrappers
+  - def_list
+  - toc:
+      permalink: false   # no ¶ link mark beside headings (they still have anchors to link to)

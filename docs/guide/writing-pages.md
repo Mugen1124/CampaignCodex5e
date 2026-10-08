@@ -98,3 +98,5 @@ The block between `---` lines at the very top of a page:
 ## Adding a page to the menu
 
 New pages appear in the menus once they're in `nav:` at the bottom of `mkdocs.yml` (and `mkdocs-players.yml`, if players should have them). Copy a line next to it and change the title and path. Mind the indentation: two spaces per level.
+
+Those two files hold only your sites' names and menus. Everything else about the sites — the theme, the Markdown features, the hooks — comes from the engine (`codex/site.yml`, `codex/site-players.yml`) and is kept current by `codex update`. Your own colours and styles go in `docs/stylesheets/campaign.css`.

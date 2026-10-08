@@ -6,7 +6,7 @@ Maps are listed in data/maps.yml, pointing at the original exports
 maps folder set in campaign.yml (maps: base:). Nothing is copied by hand.
 
 On each build, any map whose source is new or has changed is resized to a
-web-friendly JPG in .map-cache/ (kept outside docs/ so it doesn't trigger a
+web-friendly JPG in .map-cache/ (or under output: local, on this computer; kept outside docs/ so it doesn't trigger a
 live-reload loop). The cached copies are published as assets/maps/<id>.jpg.
 Re-export a map and the site picks up the new version on the next rebuild.
 
@@ -67,7 +67,7 @@ def _resize(src: Path, out: Path, max_width: int, quality: int) -> None:
 def on_config(config, **kwargs):
     global CACHE_ROOT
     root = Path(config.config_file_path).parent
-    CACHE_ROOT = root / ".map-cache"
+    CACHE_ROOT = codex_settings.load(root)["map_cache"]
     MAPS.clear()
 
     maps_file = root / "data" / "maps.yml"

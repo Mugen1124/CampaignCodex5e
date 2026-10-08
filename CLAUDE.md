@@ -39,7 +39,7 @@ When the DM asks to write up a session from `recordings/<name>.transcript.txt`:
 - **Monsters:** SRD creatures are already in (`srd-` ids). `codex import-monsters <source>` adds open books (`--list` shows them); a creature from a book the DM owns goes in `data/monsters/*.yml` (format in `templates/monster.yml`) — only for the DM's own table, never copied into public text.
 - **Encounters:** `data/encounters/<id>.yml`, shown with `{{ encounter <id> }}`; check the difficulty against the party in `data/party.yml`.
 - **Prep:** the next session's material goes on This Session (`docs/index.md`) under its note box. After play, move it back to the arc word for word and leave a pointer.
-- **Changing the site itself:** colors and boxes are in `docs/stylesheets/extra.css`; menus are `nav:` in both `mkdocs*.yml`; behavior is in `hooks/` (restart the site after editing those). Keep changes small, and run the check.
+- **Changing the site itself:** the DM's own colors and styles go in `docs/stylesheets/campaign.css` (never `extra.css`); menus are `nav:` in both `mkdocs*.yml` (which hold only names and menus - engine settings are in `codex/site.yml` / `site-players.yml`); behavior is in `hooks/`. Files listed in `codex/engine-files.txt` are replaced by `codex update`, so the DM's own changes belong elsewhere when possible; if an engine file must change, tell the DM it'll need redoing after an update (restart the site after editing those). Keep changes small, and run the check.
 
 ## Checking your work
 

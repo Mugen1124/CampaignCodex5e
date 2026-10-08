@@ -2,8 +2,8 @@
 The one command behind every script:  python -m codex <command>
 
     serve             the live site at http://127.0.0.1:8000, plus the save helper (stop with Ctrl+C)
-    build             a copy you can open straight from disk, in site/
-    players           the players' site, built into publish/players/site/ and opened, to see what they'll see
+    build             a copy you can open straight from disk, in site/ (or the output: folder)
+    players           the players' site, built and opened, to see what they'll see
     check             build both sites into a temporary folder and run the leak check - changes nothing
     publish           put both sites online (needs online: in campaign.yml - see Going online)
     new               set up your own campaign (the wizard)
@@ -12,6 +12,8 @@ The one command behind every script:  python -m codex <command>
     import-rules      refresh the Rules tab's SRD text from Open5e (it comes with the site)
     add-mentions      wrap known names in [[mentions]] on your story pages
     backup            a dated zip of everything that's yours
+    update            bring the engine up to the latest release - your campaign isn't touched
+    version           which release this campaign's engine is
     roster            (publish runs this) write the players' site's email -> character list
 
 The setup script installs everything first; the other scripts (CampaignCodex5e, publish, codex...) just
@@ -29,6 +31,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+# No compiled-file caches (__pycache__) in the campaign folder - it may be a synced cloud folder.
+sys.dont_write_bytecode = True
+os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
 
 from codex import settings  # noqa: E402
 
@@ -85,16 +90,18 @@ def cmd_serve(args):
 
 
 def cmd_build(args):
-    mkdocs("build", "--clean")
-    index = ROOT / "site" / "index.html"
+    site = settings.load()["site_dir"]
+    mkdocs("build", "--clean", "--site-dir", site)
+    index = site / "index.html"
     print(f"\nBuilt. Open {index} in a browser - it works without a server or the internet.")
     if "--open" in args:
         webbrowser.open(index.as_uri())
 
 
 def cmd_players(args):
-    mkdocs("build", "--clean", "-f", "mkdocs-players.yml")
-    index = ROOT / "publish" / "players" / "site" / "index.html"
+    site = settings.load()["publish_dir"] / "players" / "site"
+    mkdocs("build", "--clean", "-f", "mkdocs-players.yml", "--site-dir", site)
+    index = site / "index.html"
     print(f"\nBuilt the players' site. Opening {index}")
     if "--no-open" not in args:
         webbrowser.open(index.as_uri())
@@ -146,6 +153,16 @@ def cmd_roster(args):
     run(ROOT / "tools" / "players_roster.py", *args)
 
 
+def cmd_update(args):
+    from codex import update
+    raise SystemExit(update.main(args))
+
+
+def cmd_version(args):
+    from codex import update
+    print(f"CampaignCodex5e {update.version_here()}")
+
+
 def cmd_publish(args):
     from codex import publish
     raise SystemExit(publish.main(args))
@@ -154,7 +171,8 @@ def cmd_publish(args):
 COMMANDS = {
     "serve": cmd_serve, "build": cmd_build, "players": cmd_players, "check": cmd_check, "publish": cmd_publish, "new": cmd_new,
     "transcribe": cmd_transcribe, "import-monsters": cmd_import_monsters, "import-rules": cmd_import_rules, "add-mentions": cmd_add_mentions,
-    "backup": cmd_backup, "roster": cmd_roster,
+    "backup": cmd_backup, "roster": cmd_roster, "update": cmd_update, "version": cmd_version,
+    "--version": cmd_version,
 }
 
 

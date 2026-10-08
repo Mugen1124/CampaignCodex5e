@@ -40,7 +40,7 @@ From then on, **`CampaignCodex5e`** starts the site whenever you want to work on
 | `setup.bat` | `./setup.sh` | install or update (`--with-transcribe` adds session transcription) |
 | `CampaignCodex5e.bat` | `CampaignCodex5e.command` (Mac) · `./CampaignCodex5e.sh` (Linux) | start the site at http://127.0.0.1:8000 |
 | `publish.bat` | `./publish.sh` | put both sites online (optional — see the Guide's *Going online*) |
-| `codex.bat <command>` | `./codex.sh <command>` | `serve`, `new`, `build`, `players`, `check`, `publish`, `add-mentions`, `import-monsters`, `import-rules`, `transcribe`, `backup` |
+| `codex.bat <command>` | `./codex.sh <command>` | `serve`, `new`, `build`, `players`, `check`, `publish`, `add-mentions`, `import-monsters`, `import-rules`, `transcribe`, `backup`, `update`, `version` |
 
 ## The guide
 
@@ -142,10 +142,13 @@ A campaign here is plain text with clear conventions, so an AI assistant that ca
 | `data/` | people, places, factions, items, creatures, encounters, the party, maps (YAML) |
 | `maps/` | your map exports |
 | `templates/` | a blank, commented example of every kind of data |
-| `mkdocs.yml`, `mkdocs-players.yml` | the two sites' structure and menus |
+| `mkdocs.yml`, `mkdocs-players.yml` | the two sites' names and menus |
+| `docs/stylesheets/campaign.css` | your own colours and styles |
 | `hooks/` | the engine: turns data and markers into pages, and strips the players' site |
 | `tools/` | the save helper, leak check, monster importer, transcriber, and the rest |
-| `codex/` | the commands behind the scripts |
+| `codex/` | the commands behind the scripts, and the engine's site settings (`site.yml`, `site-players.yml`) |
+
+Everything that's the engine is listed in `codex/engine-files.txt`, and **`codex update`** keeps it current from new releases without touching anything of yours — see *Keep up to date* in the guide's [Your campaign](docs/guide/your-campaign.md#keep-up-to-date). If your campaign folder is in Google Drive, Dropbox, OneDrive or iCloud, set `output: local` in `campaign.yml` so built sites and caches stay on your computer.
 
 ## Keeping your campaign private
 

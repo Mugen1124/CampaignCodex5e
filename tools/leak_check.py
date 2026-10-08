@@ -122,7 +122,12 @@ def dm_secrets():
 
 
 def main() -> int:
-    site = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "publish" / "players" / "site"
+    if len(sys.argv) > 1:
+        site = Path(sys.argv[1])
+    else:
+        sys.path.insert(0, str(ROOT))
+        from codex import settings as codex_settings
+        site = codex_settings.load(ROOT)["publish_dir"] / "players" / "site"
     if not (site / "index.html").is_file():
         print(f"No built player site at {site}.")
         return 1

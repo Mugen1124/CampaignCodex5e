@@ -1,5 +1,5 @@
 r"""
-Writes publish\players\roster.json - which email plays which character, and each character's card as
+Writes roster.json next to the players' build (publish\players\, or under output: local) - which email plays which character, and each character's card as
 it stands - for the players' site's worker (publish\players\worker.js), which builds it in. That's how
 the players' site knows whose card a signed-in player may suggest changes to.
 
@@ -18,7 +18,10 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "publish" / "players" / "roster.json"
+sys.path.insert(0, str(ROOT))
+from codex import settings as codex_settings  # noqa: E402
+
+OUT = codex_settings.load(ROOT)["publish_dir"] / "players" / "roster.json"
 # The card as players may suggest changes to it (templates\character.yml, less player, email, and note).
 CARD = ("race", "class", "level", "ac", "ac_note", "hp", "hp_formula", "speed", "initiative", "passive_perception",
         "abilities", "saves", "skills", "resistances", "immunities", "condition_immunities", "senses", "languages",

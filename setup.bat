@@ -2,6 +2,7 @@
 setlocal EnableExtensions
 title CampaignCodex5e - setup
 cd /d "%~dp0"
+set "PYTHONDONTWRITEBYTECODE=1"
 
 echo.
 echo  ==============================================

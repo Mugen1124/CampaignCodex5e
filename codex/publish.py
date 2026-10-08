@@ -67,9 +67,12 @@ def write_configs(s: dict):
         ],
     }
     note = "// Written by `publish` from campaign.yml each time - edit campaign.yml, not this file.\n"
-    (ROOT / "publish" / "wrangler.jsonc").write_text(note + json.dumps(dm, indent=2) + "\n", encoding="utf-8")
-    (ROOT / "publish" / "players" / "wrangler.jsonc").write_text(note + json.dumps(players, indent=2) + "\n",
-                                                                  encoding="utf-8")
+    out = s.get("publish_dir", ROOT / "publish")
+    (out / "players").mkdir(parents=True, exist_ok=True)
+    (out / "wrangler.jsonc").write_text(note + json.dumps(dm, indent=2) + "\n", encoding="utf-8")
+    (out / "players" / "wrangler.jsonc").write_text(note + json.dumps(players, indent=2) + "\n", encoding="utf-8")
+    if out != ROOT / "publish":   # building outside this folder: the worker goes along with the players' site
+        shutil.copyfile(ROOT / "publish" / "players" / "worker.js", out / "players" / "worker.js")
 
 
 class _NoRedirect(HTTPRedirectHandler):
@@ -148,29 +151,30 @@ def main(args=None) -> int:
         return 1
 
     problems = False
+    out = s["publish_dir"]
     print("Building the DM site...")
-    if build(["--site-dir", str(ROOT / "publish" / "site")]) != 0:
+    if build(["--site-dir", str(out / "site")]) != 0:
         print("\nThe build failed - nothing was published.")
         return 1
     leak_ok = True
     if on.get("players_site", True):
         print("\nBuilding the players' site...")
-        if build(["-f", "mkdocs-players.yml", "--site-dir", str(ROOT / "publish" / "players" / "site")]) != 0:
+        if build(["-f", "mkdocs-players.yml", "--site-dir", str(out / "players" / "site")]) != 0:
             print("\nThe players' build failed - nothing was published.")
             return 1
         print()
         leak_ok = subprocess.call([PY, str(ROOT / "tools" / "leak_check.py"),
-                                   str(ROOT / "publish" / "players" / "site")], cwd=ROOT) == 0
+                                   str(out / "players" / "site")], cwd=ROOT) == 0
 
     write_configs(s)
     print("\nUploading the DM site...")
-    problems |= not deploy(ROOT / "publish", s["dm_url"], cmd)
+    problems |= not deploy(out, s["dm_url"], cmd)
 
     if on.get("players_site", True):
         if leak_ok:
             print("\nUploading the players' site...")
             subprocess.call([PY, str(ROOT / "tools" / "players_roster.py")], cwd=ROOT)
-            problems |= not deploy(ROOT / "publish" / "players", s["players_url"], cmd)
+            problems |= not deploy(out / "players", s["players_url"], cmd)
         else:
             problems = True
             print("\n" + "*" * 76)

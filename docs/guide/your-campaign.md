@@ -25,6 +25,7 @@ The one settings file. The parts you'll touch most:
 | `banned` | Words that shouldn't appear outside House Rules — the build warns. |
 | `skip_mentions` | Names `add-mentions` should never wrap. |
 | `maps: base` | Where your map exports live. |
+| `output` | Where built sites and caches go: `here` (in this folder) or `local` (on this computer, outside it). Use `local` if this folder is in Google Drive, Dropbox, OneDrive or iCloud, so the cloud only holds your own files. |
 | `online` | Only if you go online — see [Going online](going-online.md). |
 
 ## Add a town
@@ -57,3 +58,11 @@ Put your map exports (any PNG or JPG — Wonderdraft, Inkarnate, a photo of a sk
 ## Keep it safe
 
 Your campaign is plain files, so back it up like any folder: `codex backup` makes a dated zip next to this one, and if you use git, commit after each session.
+
+## Keep up to date
+
+When a new version of CampaignCodex5e comes out, run **`codex update`** (`codex.bat update` on Windows, `./codex.sh update` elsewhere). It shows what will change and asks first, makes a backup, replaces the engine — the code, the guide, the Rules tab, the scripts — and then checks that both sites still build. `codex version` says which version you're on.
+
+Your campaign is never touched: your pages, data, maps, menus (`mkdocs.yml`, `mkdocs-players.yml`), `campaign.yml`, `docs/stylesheets/campaign.css`, `README.md`, and `CLAUDE.md`. The engine's files are listed in `codex/engine-files.txt`; if you'd changed one of those yourself, update tells you, and your version is in the backup. To change how the site looks, use `campaign.css` rather than the engine's `extra.css`, so your changes survive updates.
+
+**Coming from 1.3 or earlier?** Download the new release's zip, copy its `codex` folder into your campaign (replacing yours), then run `codex update --zip <the zip you downloaded>`. It turns your old `mkdocs.yml` into the new kind — your name and menus, with everything else from the engine — and keeps the old one beside it.

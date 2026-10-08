@@ -2,6 +2,7 @@
 setlocal EnableExtensions
 REM Any command:  codex.bat build | check | new | backup | add-mentions | import-monsters | transcribe | publish | serve
 cd /d "%~dp0"
+set "PYTHONDONTWRITEBYTECODE=1"
 if not exist ".venv\Scripts\python.exe" (
   echo The site isn't set up yet - double-click setup.bat first.
   pause

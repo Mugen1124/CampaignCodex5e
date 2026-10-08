@@ -1,0 +1,5 @@
+/* Your campaign's own styles. Loaded after the engine's (extra.css), so anything here wins.
+   `codex update` never touches this file. For example, a different accent colour:
+
+   :root { --md-accent-fg-color: #d4a017; }
+*/

@@ -1,0 +1,54 @@
+# The engine's settings for the players' site. Your campaign's mkdocs-players.yml inherits this
+# (INHERIT: codex/site-players.yml), which inherits the DM site's engine settings (codex/site.yml).
+#
+# This file belongs to CampaignCodex5e: `codex update` replaces it with each new release, so don't
+# change it here; set anything of your own in mkdocs-players.yml.
+#
+# How the DM material stays out:
+#   - exclude_docs below: whole folders and pages that are never built (so they can't be found or searched)
+#   - dm_only: true at the top of any page: that page is never built either
+#   - hooks/players.py: removes DM boxes and <!-- players: hide --> stretches from the rest
+#   - the other hooks (extra: audience: players): no stat blocks, encounters, DM notes or secrets,
+#     only the NPCs, places, factions and items the party has come across, only player maps
+#   - tools/leak_check.py checks the finished site, and publish won't upload it if anything's found
+INHERIT: site.yml
+
+site_dir: publish/players/site
+
+extra:
+  audience: players
+
+hooks:
+  - hooks/sessions.py
+  - hooks/players.py
+  - hooks/campaign.py
+  - hooks/maps.py
+  - hooks/rules.py
+  - hooks/entities.py
+
+extra_javascript:
+  - javascripts/refs.js
+  - players/tracker-live.js        # the Initiative page's live tracker
+  - javascripts/party-editor.js    # Party page: players suggest changes to their own card
+  - players/items-live.js          # Items page: players claim what's up for grabs
+  - players/notes-live.js          # My Notes: each player's private notepad
+  - javascripts/rules-filter.js    # Rules: the Spells and Magic Items filters
+
+# Links into hidden parts of pages (an undiscovered district, a DM map) are expected here;
+# hooks/players.py turns them into plain text after the build.
+validation:
+  links:
+    anchors: info
+
+# Pages the players' site never builds.
+exclude_docs: |
+  /index.md
+  /arcs/
+  /encounters/
+  /guide/
+  /recording.md
+  /reference/bestiary.md
+  /reference/style-guide.md
+  /javascripts/encounter-builder.js
+  /javascripts/recorder.js
+  /javascripts/items-editor.js

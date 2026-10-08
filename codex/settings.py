@@ -6,7 +6,9 @@ load(), so nothing in hooks/ or tools/ needs editing to run a different campaign
 missing from campaign.yml falls back to the defaults below.
 """
 
+import os
 import re
+import sys
 from pathlib import Path
 
 import yaml
@@ -33,6 +35,10 @@ DEFAULTS = {
         "quality": 85,
     },
     "recordings": "recordings",   # relative to this folder, or an absolute path
+    # Where built sites and caches go: "here" (site/, publish/.../site, .map-cache/ in this folder), or
+    # "local" - on this computer, outside this folder. Use local if this folder is in Google Drive,
+    # Dropbox, OneDrive or iCloud, so the cloud only holds your own files.
+    "output": "here",
     "transcribe": {
         "model": "large-v3-turbo",
         # One sentence that tells the speech model what it's listening to.
@@ -74,7 +80,23 @@ def load(root: Path = None) -> dict:
     rec = Path(s["recordings"])
     s["recordings_dir"] = rec if rec.is_absolute() else root / rec
     s["maps_dir"] = (root / s["maps"]["base"]).resolve()
+    out = root if str(s.get("output", "here")).lower() != "local" else local_dir() / s["slug"]
+    s["out_dir"] = out
+    s["site_dir"] = out / "site"                      # codex build
+    s["publish_dir"] = out / "publish"                # publish: the DM site in site/, the players' in players/site/
+    s["map_cache"] = out / ".map-cache"               # web-sized copies of the map exports
     return s
+
+
+def local_dir() -> Path:
+    """This computer's own cache folder for CampaignCodex5e (never a synced folder)."""
+    if sys.platform == "win32":
+        base = Path(os.environ.get("LOCALAPPDATA") or Path.home() / "AppData" / "Local")
+    elif sys.platform == "darwin":
+        base = Path.home() / "Library" / "Caches"
+    else:
+        base = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache")
+    return base / "CampaignCodex5e"
 
 
 def slug(text: str) -> str:
