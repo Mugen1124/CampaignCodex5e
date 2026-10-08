@@ -205,7 +205,10 @@ def main() -> int:
         shutil.rmtree(proj / ".map-cache", ignore_errors=True)
         for cache in list(proj.rglob("__pycache__")):   # left by this test's own direct mkdocs builds
             shutil.rmtree(cache, ignore_errors=True)
-        env = {"LOCALAPPDATA": str(local), "XDG_CACHE_HOME": str(local), "HOME": str(Path(tmp) / "home")}
+        # PYTHONDONTWRITEBYTECODE as the launchers set it, before Python starts
+        env = {"LOCALAPPDATA": str(local), "XDG_CACHE_HOME": str(local), "HOME": str(Path(tmp) / "home"),
+               "PYTHONDONTWRITEBYTECODE": "1"}
+        local = Path(run(proj, "-c", "from codex.paths import local_dir; print(local_dir())", env=env).stdout.strip())
         r = run(proj, "-m", "codex", "build", env=env)
         built = list(local.rglob("site/index.html"))
         check("codex build puts the site outside the folder", r.returncode == 0 and bool(built) and not (proj / "site").exists(),
