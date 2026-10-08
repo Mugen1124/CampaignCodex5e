@@ -6,7 +6,7 @@
 
 **"Couldn't create .venv" (Linux).** Install the venv module: `sudo apt install python3-venv` (Debian/Ubuntu), then `./setup.sh` again.
 
-**macOS: "permission denied" running a script.** Make them runnable once, in Terminal in this folder: `chmod +x *.sh *.command`. If macOS says the `.command` file is from an unidentified developer, right-click it and choose **Open** the first time.
+**macOS: "permission denied" running a script.** Make them runnable once, in Terminal in this folder: `chmod +x *.sh *.command`. Or run them with `bash`, which always works: `bash setup.sh`. If macOS won't open the `.command` file ("unidentified developer"), open **System Settings → Privacy & Security**, scroll down, and choose **Open Anyway** next to its name.
 
 ## Starting the site
 
@@ -47,4 +47,4 @@ They're there to help, and the site still builds. The common ones:
 
 ## Getting your old version back
 
-`codex backup` zips sit in the `<folder>-backups` folder next to this one. Open one and copy back the files you need — nothing is overwritten automatically. With git, `git log` and `git restore` do the same.
+`codex backup` zips sit in the `<folder>-backups` folder next to this one; the newest 20 are kept. Open one and copy back the files you need — nothing is overwritten automatically. With git, `git log` and `git restore` do the same.

@@ -152,7 +152,7 @@ def nav_dm(town: str, town_id: str, arc: str, arc_id: str) -> str:
       - The players' site: guide/players-site.md
       - Going online: guide/going-online.md
       - Recording sessions: guide/recording.md
-      - Working with an AI assistant: guide/ai-assistant.md
+      - Working with Claude: guide/ai-assistant.md
       - Troubleshooting: guide/troubleshooting.md
 """
 

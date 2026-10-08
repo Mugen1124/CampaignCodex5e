@@ -2,7 +2,7 @@
 
 ## Start it
 
-Run **`codex new`** (`codex.bat new` on Windows, `./codex.sh new` elsewhere — `setup` also offers it). It asks for:
+Run setup again and answer **Y** to "Set up your own campaign now?" — or run **`codex new`** (`codex.bat new` on Windows, `./codex.sh new` elsewhere). It asks for:
 
 - your campaign's name,
 - the town or city where the story starts,
@@ -10,6 +10,8 @@ Run **`codex new`** (`codex.bat new` on Windows, `./codex.sh new` elsewhere — 
 - your party: each player, their character, race, and class, and the party's level.
 
 Then it backs everything up, removes the demo, and writes a clean start: a page set for your town, a first arc, an empty Sessions tab, your party, and your names in `campaign.yml`, `mkdocs.yml`, and `mkdocs-players.yml`. Your Style Guide, templates, the guide, and the SRD's monsters stay.
+
+**Run it once.** Running it again replaces your campaign's starting files (This Session, the party, factions, maps, menus) with fresh ones. The backup it makes first goes in the `<folder>-backups` folder next to this one.
 
 ## campaign.yml
 

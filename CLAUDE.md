@@ -4,7 +4,7 @@ This folder is a D&D campaign site built with CampaignCodex5e: Markdown pages in
 
 ## Golden rules
 
-- **Never leak DM material to the players' site.** Secrets go in `??? dm` boxes, `<!-- players: hide -->` stretches, `dm_only: true` pages, or DM-only data fields (`notes`, `secret`, `dm_notes`). Run `python -m codex check` after changes that touch public text; it must end with "OK - no DM material found".
+- **Never leak DM material to the players' site.** Secrets go in `??? dm` boxes, `<!-- players: hide -->` stretches, `dm_only: true` pages, or DM-only data fields (`notes`, `secret`, `dm_notes`). Run the check after changes that touch public text (`codex.bat check` on Windows, `./codex.sh check` elsewhere; or `.venv/Scripts/python -m codex check` / `.venv/bin/python -m codex check`); the leak check must say "OK - no DM material found" and the run ends with "All good."
 - **Never publish, delete files, or send anything anywhere without the DM asking.** `publish` puts sites online.
 - **Draft first.** For write-ups and anything that changes the story, show the DM a draft and wait for their OK before editing files.
 - **Keep the DM's wording** when moving content around. Don't paraphrase prep you're relocating.
@@ -32,8 +32,17 @@ When the DM asks to write up a session from `recordings/<name>.transcript.txt`:
 6. Also propose: data updates (status changes, new NPCs, items changing hands), moving played prep back into the arc, and a new **Now** section. Make changes only after the DM approves.
 7. Recordings and transcripts are private. Suggest deleting them once the DM is happy with the write-up; never delete without being asked.
 
+## Common jobs
+
+- **A new town:** `templates/location.yml` → `data/locations/<town>.yml`; pages in `docs/cities/<town>/` (copy an existing town's set); add them to `nav:` in both `mkdocs.yml` and `mkdocs-players.yml` under World. Set `focus:` in `campaign.yml` if the party is there now.
+- **NPCs, factions, items:** follow `templates/npc.yml`, `faction.yml`, `item.yml`; ids are lowercase-with-dashes. Check new names against existing ones and warn the DM about names that are easy to confuse at the table.
+- **Monsters:** SRD creatures are already in (`srd-` ids). `codex import-monsters <source>` adds open books (`--list` shows them); a creature from a book the DM owns goes in `data/monsters/*.yml` (format in `templates/monster.yml`) — only for the DM's own table, never copied into public text.
+- **Encounters:** `data/encounters/<id>.yml`, shown with `{{ encounter <id> }}`; check the difficulty against the party in `data/party.yml`.
+- **Prep:** the next session's material goes on This Session (`docs/index.md`) under its note box. After play, move it back to the arc word for word and leave a pointer.
+- **Changing the site itself:** colors and boxes are in `docs/stylesheets/extra.css`; menus are `nav:` in both `mkdocs*.yml`; behavior is in `hooks/` (restart the site after editing those). Keep changes small, and run the check.
+
 ## Checking your work
 
-- `python -m codex check` — builds both sites and runs the leak check.
+- `codex.bat check` / `./codex.sh check` — builds both sites and runs the leak check; changes nothing.
 - Build warnings worth fixing: unknown `[[mentions]]`, unknown ids in markers, missing required fields, broken links.
 - With `CampaignCodex5e` running, pages reload as files are saved; changes to `hooks/` need a restart.

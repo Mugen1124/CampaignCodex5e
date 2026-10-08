@@ -14,7 +14,7 @@ The one command behind every script:  python -m codex <command>
     backup            a dated zip of everything that's yours
     roster            (publish runs this) write the players' site's email -> character list
 
-The setup script installs everything first; the other scripts (serve, build, publish...) just
+The setup script installs everything first; the other scripts (CampaignCodex5e, publish, codex...) just
 run this with the project's own Python.
 """
 

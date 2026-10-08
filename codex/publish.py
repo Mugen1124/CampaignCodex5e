@@ -25,6 +25,7 @@ from codex import settings
 
 ROOT = settings.ROOT
 PY = sys.executable
+CONFIRMED = ROOT / "publish" / ".signin-confirmed"   # written once the DM confirms step 4 of Going online
 COMPAT = "2026-09-23"
 
 
@@ -107,6 +108,24 @@ def build(args: list, offline=False) -> int:
     return subprocess.call([PY, "-m", "mkdocs", "build", "--clean", *args], cwd=ROOT, env=env)
 
 
+def confirm_signin() -> bool:
+    """Before the very first upload: make sure the sign-in is on, so nothing is ever public."""
+    if CONFIRMED.is_file():
+        return True
+    print("First upload. Before anything goes online, both sites must be behind a sign-in:")
+    print("  Cloudflare dashboard -> Workers & Pages -> Cloudflare Access: on for workers.dev,")
+    print("  scope All traffic, policy Cloudflare account. (Going online in the guide, step 4.)")
+    try:
+        answer = input('Type "yes" if that\'s done: ')
+    except EOFError:
+        answer = ""
+    if answer.strip().lower() != "yes":
+        print("Nothing was published.")
+        return False
+    CONFIRMED.write_text("Sign-in confirmed before the first upload.\n", encoding="utf-8")
+    return True
+
+
 def main(args=None) -> int:
     s = settings.load()
     on = s["online"]
@@ -122,6 +141,8 @@ def main(args=None) -> int:
     if not cmd:
         print("Node.js isn't installed (publish uses Cloudflare's wrangler through npx).")
         print("Install Node.js from https://nodejs.org, then run:  npx wrangler login")
+        return 1
+    if not confirm_signin():
         return 1
 
     problems = False

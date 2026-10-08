@@ -18,13 +18,13 @@ With `CampaignCodex5e` running, open the **[Record & Transcribe](../recording.md
 
 ## Transcribe
 
-Press **Transcribe** next to a recording on the same page, or run `transcribe` (Windows: drag a recording onto `transcribe.bat`). It writes `<recording>.transcript.txt` next to the recording, one line per stretch of speech with its time.
+Press **Transcribe** next to a recording on the same page, or run `codex.bat transcribe` / `./codex.sh transcribe` for the newest recording (on Windows you can also drag a recording onto `transcribe.bat`). It writes `<recording>.transcript.txt` next to the recording, one line per stretch of speech with its time.
 
 It's given your campaign's names first — the party, the people and places of the town in `campaign.yml`'s `focus:`, factions, items — so it spells them right instead of guessing. If the initiative tracker ran a fight during the recording, its turn log is woven into the transcript.
 
 ## Write it up
 
-Read the transcript and write the session's page — or ask an AI assistant to draft it (see [Working with an AI assistant](ai-assistant.md)), then edit it yourself.
+Read the transcript and write the session's page — or ask Claude to draft it (see [Working with Claude](ai-assistant.md#write-up-a-session)), then edit it yourself.
 
 ## Afterward
 

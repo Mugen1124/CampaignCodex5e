@@ -12,9 +12,11 @@ The sites go on **Cloudflare**: each is a *Worker* on a free `workers.dev` addre
 - A free **Cloudflare account** (<https://dash.cloudflare.com/sign-up>).
 - **Node.js** (<https://nodejs.org>, the LTS version). `publish` uses Cloudflare's own upload tool, *wrangler*, through it.
 
+A *Worker* is Cloudflare's name for a small website or program it runs for you; each of your two sites will be one.
+
 ## 1. Sign in once from this computer
 
-In a terminal (on Windows, PowerShell), in this folder:
+Open a terminal in this folder — on Windows, click the folder's address bar in File Explorer, type `powershell`, and press Enter; on a Mac, see the [Quick start](https://github.com/Mugen1124/CampaignCodex5e#quick-start) — and run:
 
 ```
 npx wrangler login
@@ -24,35 +26,42 @@ A browser window asks you to allow wrangler into your Cloudflare account.
 
 ## 2. Choose your names
 
-In the Cloudflare dashboard, **Workers & Pages** shows your `workers.dev` subdomain (you can set it there the first time). Your sites will be at `https://<worker>.<subdomain>.workers.dev`. Pick two worker names — for example `lantern-coast` and `lantern-coast-players` — and fill in `campaign.yml`:
+In the Cloudflare dashboard, **Workers & Pages** shows your `workers.dev` subdomain (you can set it there the first time). Your sites will be at `https://<worker>.<subdomain>.workers.dev`. Pick two worker names — for example `lantern-coast` and `lantern-coast-players` — and fill them in under `online:` in `campaign.yml`. Leave `enabled: false` for now:
 
 ```yaml
 online:
-  enabled: true
+  enabled: false                  # true in step 5
   dm_worker: lantern-coast
   players_worker: lantern-coast-players
   subdomain: your-subdomain
-  access_team: your-team          # step 4
+  access_team: your-team          # step 3
   players_site: true              # false: only your DM site goes online
 ```
 
-## 3. Put the DM site behind a sign-in
+## 3. Turn on Zero Trust (the sign-in service)
 
-Before the first upload, so it's never public even for a moment:
+The sign-in comes from Cloudflare's **Zero Trust**. In the dashboard, open **Zero Trust**. The first time, it asks you to:
 
-1. In the dashboard: **Workers & Pages → (your account's settings for) Cloudflare Access** — turn on Access for workers.dev.
+1. **Choose a team name** — your sign-in page will be `https://<team>.cloudflareaccess.com`. Put that name in `campaign.yml` as `access_team`.
+2. **Choose a plan: Free** (up to 50 people). It may ask for a payment method even for the free plan; you aren't charged on it.
+
+Already set up? Your team name is in **Zero Trust → Settings** (the *team domain*).
+
+## 4. Put both sites behind a sign-in
+
+Before the first upload, so neither site is ever public, even for a moment:
+
+1. In the dashboard: **Workers & Pages → Cloudflare Access** (under your account's settings) — turn on Access for **workers.dev**.
 2. Scope: **All traffic** — never "Previews only".
 3. Policy: **Cloudflare account** (members of your Cloudflare account — you) — never an "Email domain" policy like `gmail.com`, which would let in anyone with Gmail.
 
+This covers **every** Worker on your `workers.dev` subdomain — the players' site too, which stays yours-only until step 6 gives your players their own list.
+
 Cloudflare's menus move around; if the names differ, look for *Access* settings for your workers.dev subdomain.
-
-## 4. Find your Access team name
-
-In **Zero Trust → Settings → Custom pages** (or the URL of your sign-in page), your team domain is `https://<team>.cloudflareaccess.com`. Put `<team>` in `campaign.yml` as `access_team`. The players' site uses it to check who's signed in.
 
 ## 5. Publish
 
-Run **`publish`**. It builds both sites, runs the [leak check](players-site.md#the-leak-check), uploads, and checks that a signed-out visitor is sent to the sign-in. You should see `OK - signed-out visitors to ... get the login page` for each.
+Set `enabled: true` in `campaign.yml`, then run **`publish`**. The first time, it asks you to confirm that step 4 is done; type `yes`. It builds both sites, runs the [leak check](players-site.md#the-leak-check), uploads, and checks that a signed-out visitor is sent to the sign-in. You should see `OK - signed-out visitors to ... get the login page` for each — if you see a WARNING instead, stop and fix step 4 before anything else.
 
 ## 6. Let your players in
 

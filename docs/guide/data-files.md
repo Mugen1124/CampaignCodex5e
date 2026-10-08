@@ -45,7 +45,7 @@ Every entry has an `id`: lowercase-with-dashes (`hester-vane`). It's how entries
 ## Creatures
 
 - **The SRD's 300-odd creatures** are already in (`data/monsters/srd.json`); their ids start with `srd-`.
-- **Kobold Press's open books** (Tome of Beasts 1–3, Creature Codex) can be imported from Open5e: `import-monsters tob` (see `import-monsters --list`).
+- **Kobold Press's open books** (Tome of Beasts 1–3, Creature Codex) can be imported from Open5e: `codex.bat import-monsters tob` (Windows) or `./codex.sh import-monsters tob` (see `import-monsters --list`).
 - **Your own creatures**: write them in `data/monsters/*.yml`, or use **New creature** in the encounter builder.
 - **A batch from a book you own**: fill in `templates/monsters.json` (a sheet with instructions inside) and import it — drag it onto `import-monsters.bat`, or `./codex.sh import-monsters sheet.json`.
 - **Duplicates** between sources (the same creature in two books) can be hidden from the builder with `import-monsters dedup`.

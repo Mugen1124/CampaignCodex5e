@@ -4,18 +4,23 @@ publish/site/
 publish/players/site/
 publish/wrangler.jsonc
 publish/players/wrangler.jsonc
+publish/.signin-confirmed
 .wrangler/
 
 # Private: never commit
 publish/players/roster.json
 tools/tracker-token.txt
 recordings/
+*.transcript.txt
+*.items.json
+.env
 
 # Machine-specific
 .venv/
 .map-cache/
 sources/
 __pycache__/
+node_modules/
 *.pyc
 .DS_Store
 Thumbs.db

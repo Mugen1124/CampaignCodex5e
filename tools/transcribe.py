@@ -5,8 +5,8 @@ Session recordings -> transcripts, on this computer (nothing is uploaded anywher
     python tools\transcribe.py "path\to\file.m4a"   a particular recording
     python tools\transcribe.py --vocab-only         just show the campaign names given to Whisper
 
-Recordings live outside the site, in ..\recordings\ (next to campaign-site), so they're never
-built or published. The transcript is written next to the recording as <name>.transcript.txt,
+Recordings live in the campaign's recordings/ folder (recording: in campaign.yml), which is never
+built, published, or committed. The transcript is written next to the recording as <name>.transcript.txt,
 one line per stretch of speech with its time: "[01:23:45] ...". Lines where someone seems to take
 one of the campaign's items ("Kestrel grabs the Tidewalker Boots") are listed in <name>.items.json;
 the Items page shows them for you to assign or dismiss - nothing is assigned by itself.

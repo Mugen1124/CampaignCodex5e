@@ -23,7 +23,7 @@ Prep for later sessions stays on its arc page.
 
 ## After the session
 
-1. **Write the session's page**: a new file in `docs/sessions/` — copy the last one, and give it the next `order:` number. It appears in the Sessions tab by itself, newest first. On it: a "Previously…" recap for next time, what happened in order, a few lines from the table, and a DM box for what the players don't know. Everyone and everything you `[[mention]]` in the public part appears on the players' site.
+1. **Write the session's page**: a new file in `docs/sessions/` — copy the last one (or, for your first, `templates/session.md`), and give it the next `order:` number. It appears in the Sessions tab by itself, newest first. On it: a "Previously…" recap for next time, what happened in order, a few lines from the table, and a DM box for what the players don't know. Everyone and everything you `[[mention]]` in the public part appears on the players' site.
 2. **Move the played prep** from This Session back into its arc page, keeping the wording — it's the record of what you planned.
 3. **Update Now**, and start the next session's prep.
 4. **Update the data:** someone died (`status: dead`), moved, joined a faction; an item changed hands.

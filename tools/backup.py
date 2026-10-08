@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 NAME = ROOT.name
 BACKUPS = ROOT.parent / f"{NAME}-backups"
 KEEP = 20
-FOLDERS = ["data", "docs", "hooks", "tools", "templates", "codex"]
+FOLDERS = ["data", "docs", "maps", "hooks", "tools", "templates", "codex"]
 SKIP_DIRS = {"__pycache__", ".wrangler", "node_modules", ".venv"}
 
 

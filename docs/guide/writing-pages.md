@@ -89,6 +89,8 @@ The block between `---` lines at the very top of a page:
 | Setting | Does |
 |---|---|
 | `dm_only: true` | never on the players' site |
+| `order: 3` | a session page's place in the Sessions tab (higher = newer) |
+| `nav_title: Session 3` | a shorter title for the sidebar |
 | `toc_depth: 2` | the right-hand contents lists only `##` headings |
 | `regions: [Greywater]` | `add-mentions` matches one-word names ("Hester") only from these places |
 | `hide: [toc]` | no right-hand contents at all |

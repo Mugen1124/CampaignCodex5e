@@ -18,7 +18,7 @@ You're looking at a small **demo campaign**, *The Lantern Coast* — a fishing t
 - **[This Session](../index.md)** — the page you open at the table: where things stand, then the next session's prep.
 - **[Sessions](../sessions/greywater-1.md)** — This Session at the top, then a page for every session played, newest first.
 - **[Party](../party/index.md)** — character cards. With `CampaignCodex5e` running, **Edit** fills them in.
-- **[Places → Greywater](../cities/greywater/index.md)** — a town's overview, locations (with who's found where), people, and factions.
+- **[World → Greywater](../cities/greywater/index.md)** — a town's overview, locations (with who's found where), people, and factions.
 - **[Arcs → The Drowned Bell](../arcs/the-drowned-bell.md)** — a storyline's prep, scene by scene.
 - **[Encounters](../encounters/index.md)** — the encounter builder and initiative tracker.
 - **[Rules](../rules/index.md)** — the whole SRD, searchable: conditions, combat, spells, magic items, equipment, and a one-page DM Screen.
@@ -44,12 +44,12 @@ Each is a script in this folder: double-click the `.bat` on Windows or the `.com
 | `import-monsters` | Adds monsters: the SRD's are already in; also Kobold Press's open books, or your own sheet. |
 | `codex import-rules` | Refreshes the Rules tab's SRD text from Open5e (it comes with the site — rarely needed). |
 | `transcribe` | Turns a session recording into a transcript — see [Recording sessions](recording.md). |
-| `codex backup` | A dated zip of everything that's yours. |
+| `codex backup` | A dated zip of everything that's yours (the newest 20 are kept). |
 
 ## How a campaign runs here
 
 1. **Prep** goes on [This Session](../index.md): the scenes, read-alouds, encounters, and stat blocks for next time, all on one page.
 2. **Play** from that page. Run fights from [Encounters](../encounters/index.md).
-3. **Afterward**, write what happened on a new session page, and move the played prep back into its arc. The players' site picks up everyone and everything the log mentions.
+3. **Afterward**, write what happened on a new session page, and move the played prep back into its arc. The players' site picks up everyone and everything the session pages mention.
 
 [At the table](at-the-table.md) walks through it.
