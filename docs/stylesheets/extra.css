@@ -695,3 +695,22 @@ html.rec-popout .rec-level-note { min-width: 0; }
 .eb-fams-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.6rem; color: var(--cx-section); margin-right: 0.2rem; }
 .eb .eb-fams select { font-size: 0.64rem; padding: 0.1rem 0.2rem; }
 .eb-fams-msg { opacity: 0.85; }
+
+/* ---------- Rules encyclopedia: the Spells / Magic Items filter, and their entries ---------- */
+.md-typeset .rules-filter {
+  position: sticky; top: 3.4rem; z-index: 3;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem;
+  margin: 0 0 1rem; padding: 0.5rem 0.6rem;
+  background: var(--cx-panel); border: 1px solid var(--cx-line); border-radius: 4px;
+  font-size: 0.68rem;
+}
+.md-typeset .rules-filter .rf-text { flex: 1 1 12rem; min-width: 10rem; }
+.md-typeset .rules-filter input[type=search], .md-typeset .rules-filter select {
+  padding: 0.25rem 0.4rem; color: var(--md-default-fg-color);
+  background: var(--md-default-bg-color); border: 1px solid var(--cx-line); border-radius: 3px; font-size: 0.68rem;
+}
+.md-typeset .rules-filter .rf-check { display: inline-flex; align-items: center; gap: 0.2rem; white-space: nowrap; }
+.md-typeset .rules-filter .rf-count { margin-left: auto; opacity: 0.75; white-space: nowrap; }
+.md-typeset .rules-entry { border-top: 1px solid var(--cx-line-soft); padding-top: 0.2rem; }
+.md-typeset .rules-entry[hidden], .md-typeset h2[hidden] { display: none; }
+.md-typeset .rules-entry h3 { margin-top: 0.8em; }

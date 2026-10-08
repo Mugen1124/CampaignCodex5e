@@ -18,6 +18,7 @@ Everything that's a *thing* in your world — a person, a place, a creature — 
 | `data/revealed.yml` | extra things the players know about | |
 | `data/families.yml` | which creatures belong together, for the encounter generator | |
 | `data/checks.yml` | similar names you're keeping on purpose | |
+| `data/rules/srd.json` | the Rules tab: the SRD's rules, conditions, spells, and magic items — made by `codex import-rules`, don't edit | |
 
 ## YAML in two minutes
 

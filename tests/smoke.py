@@ -77,6 +77,21 @@ def main() -> int:
         check("demo: DM-only map left out", not any(players.rglob("bellwether-light*")))
         check("demo: guide left out", not (players / "guide").exists())
 
+        print("The rules encyclopedia:")
+        spells = (out / "dm" / "rules" / "spells.html").read_text(encoding="utf-8")
+        check("every spell is on the Spells page", spells.count('class="rules-entry spell') == 319)
+        check("the rules are on the players' site too", (players / "rules" / "dm-screen.html").is_file())
+        bestiary = (out / "dm" / "reference" / "bestiary.html").read_text(encoding="utf-8")
+        check("a condition in a stat block gets a hover card", 'data-ref="condition:' in bestiary)
+
+        print("A banned word:")
+        conf = proj / "campaign.yml"
+        conf_text = conf.read_text(encoding="utf-8")
+        conf.write_text(conf_text.replace("banned: []", "banned: [eel pie]"), encoding="utf-8")
+        warnings = build(proj, "mkdocs.yml", out / "banned")
+        check("the build warns about it", any("eel pie" in w for w in warnings), "\n".join(warnings))
+        conf.write_text(conf_text, encoding="utf-8")
+
         print("A secret pasted into public text:")
         page = proj / "docs" / "world" / "index.md"
         original = page.read_text(encoding="utf-8")

@@ -51,10 +51,12 @@ A marker, alone on its own line, is replaced with something built from your data
 | `{{ bestiary }}` | every creature |
 | `{{ map greywater }}` / `{{ maps }}` | one map / all of them |
 | `{{ encounter-builder }}` | the encounter builder (the Encounters page) |
+| `{{ rules cover attacking }}` | SRD rules chapters, by name (see the Rules pages for the rest) |
+| `{{ conditions }}` / `{{ spells }}` / `{{ srd-magic-items }}` | the SRD's conditions, spells, magic items |
 
 ## Mentions
 
-`[[Hester Vane]]` links to Hester with a hover card. `[[Hester Vane|Hester]]` shows "Hester". Anything in your data works: people, places, factions, items, creatures. Only the first mention in each `##` section becomes a link, so busy paragraphs stay readable. A name the site doesn't know gets a red wavy underline and a warning in the `serve` window.
+`[[Hester Vane]]` links to Hester with a hover card. `[[Hester Vane|Hester]]` shows "Hester". Anything in your data works: people, places, factions, items, creatures — and the rules: conditions (`[[Prone]]`), spells (`[[Fireball]]`), and the SRD's magic items (`[[Bag of Holding]]`). Your own data wins when a name matches. Only the first mention in each `##` section becomes a link, so busy paragraphs stay readable. A name the site doesn't know gets a red wavy underline and a warning in the `serve` window.
 
 ## Hiding text from the players
 

@@ -47,10 +47,12 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from codex import settings as codex_settings  # noqa: E402
+from codex import rules as codex_rules  # noqa: E402
 
 log = logging.getLogger("mkdocs.hooks.entities")
 
 NPC_PAGE = "reference/npcs.md"
+RULE_KINDS = ("condition", "spell", "srditem")
 ITEM_PAGE = "reference/items.md"
 FACTION_PAGE = "world/factions.md"
 BESTIARY_PAGE = "reference/bestiary.md"
@@ -226,6 +228,14 @@ def on_config(config, **kwargs):
                 continue
             _register("creature", mid, [mon.get("name")], path.name)
 
+    # The rules encyclopedia (data/rules/srd.json): conditions, spells, and the SRD's magic items get
+    # hover cards too - but never take a name your own data already uses.
+    codex_rules.load(root.parent)
+    for kind, table in (("condition", "_conditions"), ("spell", "_spells"), ("srditem", "_items")):
+        for rid, entry in codex_rules.DATA.get(table, {}).items():
+            if key(entry["name"]) not in REGISTRY:
+                REGISTRY[key(entry["name"])] = (kind, rid)
+
     _check_references()
     _check_similar_names()
     log.info("Entities: %d NPCs, %d locations, %d factions, %d items",
@@ -319,7 +329,7 @@ def _player_text(entry: dict, field: str):
 
 def visible(kind: str, eid) -> bool:
     """Everything shows on the DM site; on the player site, only what's been revealed."""
-    if not PLAYERS[0]:
+    if not PLAYERS[0] or kind in RULE_KINDS:   # the rules are no secret
         return True
     return kind != "creature" and (kind, eid) in REVEALED
 
@@ -451,6 +461,29 @@ def _item_card(item: dict) -> str:
             f'<div class="rc-body rc-scroll">{mdhtml(item.get("text", ""))}</div>')
 
 
+def _condition_card(slug: str) -> str:
+    c = codex_rules.DATA["_conditions"][slug]
+    return (f'<div class="rc-title">{html.escape(c["name"])}</div><div class="rc-meta">Condition</div>'
+            f'<div class="rc-body">{mdhtml(c["text"])}</div>')
+
+
+def _spell_card(slug: str) -> str:
+    sp = codex_rules.DATA["_spells"][slug]
+    facts = " · ".join(x for x in (sp.get("casting_time"), sp.get("range"), sp.get("components"),
+                                    codex_rules.duration(sp)) if x)
+    body = mdhtml(sp["text"]) + (mdhtml("**At higher levels.** " + sp["higher_level"]) if sp.get("higher_level") else "")
+    return (f'<div class="rc-title">{html.escape(sp["name"])}</div>'
+            f'<div class="rc-meta">{html.escape(codex_rules.level_line(sp))} · {html.escape(", ".join(sp.get("classes", [])))}</div>'
+            f'<div class="rc-meta">{html.escape(facts)}</div><div class="rc-body rc-scroll">{body}</div>')
+
+
+def _srditem_card(slug: str) -> str:
+    it = codex_rules.DATA["_items"][slug]
+    return (f'<div class="rc-title">{html.escape(it["name"])}</div>'
+            f'<div class="rc-meta">{html.escape(codex_rules.item_line(it))}</div>'
+            f'<div class="rc-body rc-scroll">{mdhtml(it["text"])}</div>')
+
+
 def _creature_card(m: dict) -> str:
     stats = " · ".join(x for x in [
         f"AC {m['ac']}" if m.get("ac") is not None else "",
@@ -482,6 +515,8 @@ def _target(kind: str, eid: str):
         return FACTION_PAGE, f"faction-{eid}"
     if kind == "item":
         return ITEM_PAGE, f"item-{eid}"
+    if kind in RULE_KINDS:
+        return codex_rules.PAGES[kind], codex_rules.ANCHOR[kind] + eid
     return BESTIARY_PAGE, f"monster-{eid}"
 
 
@@ -490,7 +525,10 @@ def _card(kind: str, eid: str) -> str:
             "location": lambda: _location_card(LOCATIONS[eid]),
             "faction": lambda: _faction_card(FACTIONS[eid]),
             "item": lambda: _item_card(ITEMS[eid]),
-            "creature": lambda: _creature_card(CREATURES[eid])}[kind]()
+            "creature": lambda: _creature_card(CREATURES[eid]),
+            "condition": lambda: _condition_card(eid),
+            "spell": lambda: _spell_card(eid),
+            "srditem": lambda: _srditem_card(eid)}[kind]()
 
 
 # ---------------------------------------------------------------- mentions
@@ -802,7 +840,7 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
 
     if "house-rules" not in src:
         for word in SETTINGS[0].get("banned") or []:
-            if re.search(r"" + re.escape(str(word)) + r"", markdown, re.I):
+            if re.search(r"\b" + re.escape(str(word)) + r"\b", markdown, re.I):
                 log.warning("'%s' mentions %s, which campaign.yml lists as banned", src, word)
 
     def render(match):

@@ -21,6 +21,7 @@ You're looking at a small **demo campaign**, *The Lantern Coast* — a fishing t
 - **[Places → Greywater](../cities/greywater/index.md)** — a town's overview, locations (with who's found where), people, and factions.
 - **[Arcs → The Drowned Bell](../arcs/the-drowned-bell.md)** — a storyline's prep, scene by scene.
 - **[Encounters](../encounters/index.md)** — the encounter builder and initiative tracker.
+- **[Rules](../rules/index.md)** — the whole SRD, searchable: conditions, combat, spells, magic items, equipment, and a one-page DM Screen.
 - **[Reference → Style Guide](../reference/style-guide.md)** — every kind of box, marker, and card, live.
 
 Hover any name with a dotted underline for a quick card.
@@ -41,6 +42,7 @@ Each is a script in this folder: double-click the `.bat` on Windows, or run the 
 | `publish` | Puts both sites online, if you've set that up — see [Going online](going-online.md). |
 | `codex add-mentions` | Wraps every known name on your story pages in `[[mentions]]`. |
 | `import-monsters` | Adds monsters: the SRD's are already in; also Kobold Press's open books, or your own sheet. |
+| `codex import-rules` | Refreshes the Rules tab's SRD text from Open5e (it comes with the site — rarely needed). |
 | `transcribe` | Turns a session recording into a transcript — see [Recording sessions](recording.md). |
 | `codex backup` | A dated zip of everything that's yours. |
 

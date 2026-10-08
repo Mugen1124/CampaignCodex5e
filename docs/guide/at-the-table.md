@@ -14,7 +14,8 @@ Prep for later sessions stays on its arc page.
 ## During the session
 
 - **Run fights** from [Encounters](../encounters/index.md): pick an encounter, **Run** it, and the initiative tracker takes over — initiative, hit points, conditions, turns, and the character cards beside the list. With the players' site online, **Share with players** shows the order on their phones.
-- **Hover names** for quick cards; click for the full entry.
+- **Hover names** for quick cards; click for the full entry. Hover a condition in the initiative tracker for what it does.
+- **Look up a rule** on the [Rules](../rules/index.md) tab, or keep the [DM Screen](../rules/dm-screen.md) open in a second tab.
 - **Give out loot** on the [Items](../reference/items.md) page: the **Held by** picker records who carries what (with `serve` running).
 - **Record** the session, if your table agrees — see [Recording sessions](recording.md).
 

@@ -21,6 +21,7 @@ hooks:
   - hooks/players.py
   - hooks/campaign.py
   - hooks/maps.py
+  - hooks/rules.py
   - hooks/entities.py
 
 extra_javascript:
@@ -28,6 +29,7 @@ extra_javascript:
   - players/tracker-live.js        # the Initiative page's live tracker
   - javascripts/party-editor.js    # Party page: players suggest changes to their own card
   - players/items-live.js          # Items page: players claim what's up for grabs
+  - javascripts/rules-filter.js    # Rules: the Spells and Magic Items filters
 
 # Links into hidden parts of pages (an undiscovered district, a DM map) are expected here;
 # hooks/players.py turns them into plain text after the build.
@@ -68,3 +70,16 @@ nav:
           - Locations: cities/greywater/locations.md
           - People: cities/greywater/people.md
           - Factions: cities/greywater/factions.md
+  - Rules:
+      - rules/index.md
+      - DM Screen: rules/dm-screen.md
+      - Conditions: rules/conditions.md
+      - Combat: rules/combat.md
+      - Abilities & checks: rules/abilities.md
+      - Adventuring: rules/adventuring.md
+      - Spellcasting: rules/spellcasting.md
+      - Spells: rules/spells.md
+      - Magic Items: rules/magic-items.md
+      - Equipment: rules/equipment.md
+      - Characters: rules/characters.md
+      - Monsters, NPCs & planes: rules/more.md

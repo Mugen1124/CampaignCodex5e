@@ -37,6 +37,7 @@ plugins:
 hooks:
   - hooks/campaign.py
   - hooks/maps.py
+  - hooks/rules.py        # the Rules tab (the SRD), before entities so its [[mentions]] work
   - hooks/entities.py
 
 # The players' own pages are built by mkdocs-players.yml, not here.
@@ -60,6 +61,7 @@ extra_javascript:
   - javascripts/party-editor.js         # Party page: edit character cards
   - javascripts/recorder.js             # Session Log: record and transcribe
   - javascripts/items-editor.js         # Items page: who carries what
+  - javascripts/rules-filter.js         # Rules: the Spells and Magic Items filters
 
 extra_css:
   - stylesheets/extra.css
@@ -102,6 +104,19 @@ nav:
       - arcs/index.md
       - The Drowned Bell: arcs/the-drowned-bell.md
   - Encounters: encounters/index.md
+  - Rules:
+      - rules/index.md
+      - DM Screen: rules/dm-screen.md
+      - Conditions: rules/conditions.md
+      - Combat: rules/combat.md
+      - Abilities & checks: rules/abilities.md
+      - Adventuring: rules/adventuring.md
+      - Spellcasting: rules/spellcasting.md
+      - Spells: rules/spells.md
+      - Magic Items: rules/magic-items.md
+      - Equipment: rules/equipment.md
+      - Characters: rules/characters.md
+      - Monsters, NPCs & planes: rules/more.md
   - Reference:
       - Bestiary: reference/bestiary.md
       - Items: reference/items.md

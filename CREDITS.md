@@ -10,7 +10,7 @@ The demo campaign — *The Lantern Coast*: its pages in `docs/`, its data in `da
 
 ## The System Reference Document
 
-`data/monsters/srd.json` includes material taken from the **System Reference Document 5.1** ("SRD 5.1") by Wizards of the Coast LLC, available at <https://dnd.wizards.com/resources/systems-reference-document>. The SRD 5.1 is licensed under the Creative Commons Attribution 4.0 International License, available at <https://creativecommons.org/licenses/by/4.0/legalcode>.
+`data/monsters/srd.json` and `data/rules/srd.json` (the Rules tab: rules chapters, conditions, spells, and magic items) include material taken from the **System Reference Document 5.1** ("SRD 5.1") by Wizards of the Coast LLC, available at <https://dnd.wizards.com/resources/systems-reference-document>. The SRD 5.1 is licensed under the Creative Commons Attribution 4.0 International License, available at <https://creativecommons.org/licenses/by/4.0/legalcode>.
 
 The data was retrieved through [Open5e](https://open5e.com/).
 

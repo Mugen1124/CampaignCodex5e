@@ -127,6 +127,19 @@ def nav_dm(town: str, town_id: str, arc: str, arc_id: str) -> str:
       - arcs/index.md
       - {q(arc)}: arcs/{arc_id}.md
   - Encounters: encounters/index.md
+  - Rules:
+      - rules/index.md
+      - DM Screen: rules/dm-screen.md
+      - Conditions: rules/conditions.md
+      - Combat: rules/combat.md
+      - Abilities & checks: rules/abilities.md
+      - Adventuring: rules/adventuring.md
+      - Spellcasting: rules/spellcasting.md
+      - Spells: rules/spells.md
+      - Magic Items: rules/magic-items.md
+      - Equipment: rules/equipment.md
+      - Characters: rules/characters.md
+      - Monsters, NPCs & planes: rules/more.md
   - Reference:
       - Bestiary: reference/bestiary.md
       - Items: reference/items.md
@@ -167,6 +180,19 @@ def nav_players(town: str, town_id: str) -> str:
           - Locations: cities/{town_id}/locations.md
           - People: cities/{town_id}/people.md
           - Factions: cities/{town_id}/factions.md
+  - Rules:
+      - rules/index.md
+      - DM Screen: rules/dm-screen.md
+      - Conditions: rules/conditions.md
+      - Combat: rules/combat.md
+      - Abilities & checks: rules/abilities.md
+      - Adventuring: rules/adventuring.md
+      - Spellcasting: rules/spellcasting.md
+      - Spells: rules/spells.md
+      - Magic Items: rules/magic-items.md
+      - Equipment: rules/equipment.md
+      - Characters: rules/characters.md
+      - Monsters, NPCs & planes: rules/more.md
 """
 
 

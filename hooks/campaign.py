@@ -27,6 +27,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from codex import settings as codex_settings  # noqa: E402
+from codex import rules as codex_rules  # noqa: E402
 
 CAMPAIGN_SLUG = ["campaign"]   # campaign.yml's name, as a slug - set in on_config
 
@@ -122,6 +123,7 @@ def _load_yaml_dir(folder: Path, files: dict = None) -> dict:
 def on_config(config, **kwargs):
     root = Path(config.config_file_path).parent / "data"
     CAMPAIGN_SLUG[0] = codex_settings.load(root.parent)["slug"]
+    codex_rules.load(root.parent)
     MONSTERS.clear()
     MONSTER_FILES.clear()
     MONSTERS.update(_load_yaml_dir(root / "monsters", MONSTER_FILES))
@@ -299,7 +301,7 @@ def _bestiary_link(page_src: str, monster_id: str) -> str:
 
 # ---------------------------------------------------------------- stat block
 
-def render_statblock(monster: dict, anchor: bool = False) -> str:
+def render_statblock(monster: dict, anchor: bool = False, mentions: bool = True) -> str:
     m = monster
     lines = ['<div class="statblock" markdown>', ""]
 
@@ -369,7 +371,10 @@ def render_statblock(monster: dict, anchor: bool = False) -> str:
             # A styled label rather than a heading, so stat blocks don't flood the page's table of contents.
             out += [f'<p class="sb-section">{title}</p>', ""]
         for e in entries:
-            out += [f"***{e['name']}.*** {_clean(e.get('text', ''))}", ""]
+            text = _clean(e.get('text', ''))
+            if mentions:   # "knocked prone" -> a hover card (the builder's pre-rendered copies skip this)
+                text = codex_rules.link_conditions(text)
+            out += [f"***{e['name']}.*** {text}", ""]
         return out
 
     lines += ["---", ""]
@@ -618,7 +623,7 @@ def render_encounter_builder() -> str:
         if m["id"] in DEDUP_HIDDEN and m["id"] not in used:
             continue
         size, ctype = _size_and_type(m)
-        html = md_lib.markdown(render_statblock(m), extensions=["tables", "attr_list", "md_in_html"])
+        html = md_lib.markdown(render_statblock(m, mentions=False), extensions=["tables", "attr_list", "md_in_html"])
         # "custom" creatures (custom.yml) can be edited and deleted in the builder; others only copied.
         source = m.get("source") or ("custom" if MONSTER_FILES.get(m["id"]) == CUSTOM_FILE else "campaign")
         creatures.append({
@@ -642,10 +647,21 @@ def render_encounter_builder() -> str:
         "multipliers": MULTIPLIERS,
         "encounters": _encounter_list(),
         "families": FAMILIES,
+        # what each condition does (the SRD's text), shown when you hover one in the initiative tracker
+        "conditions": _condition_texts(),
     }
     payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
     return ('<div id="eb-root" class="eb"><p>Loading the encounter builder…</p></div>\n\n'
             f'<script type="application/json" id="eb-data">{payload}</script>\n')
+
+
+def _condition_texts() -> dict:
+    """{"Prone": "A prone creature's only movement option is to crawl..."} - plain text, for tooltips."""
+    out = {}
+    for c in codex_rules.DATA.get("conditions", []):
+        text = re.sub(r"(?m)^\s*[*-]\s+", "• ", c["text"])
+        out[c["name"]] = re.sub(r"\*\*|__|\*", "", text).strip()
+    return out
 
 
 def render_encounter(enc: dict, page_src: str) -> str:

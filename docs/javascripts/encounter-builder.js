@@ -700,6 +700,12 @@
     var CONDITIONS = ["Blinded", "Charmed", "Deafened", "Frightened", "Grappled", "Incapacitated", "Invisible", "Paralyzed",
                       "Petrified", "Poisoned", "Prone", "Restrained", "Stunned", "Unconscious", "Exhaustion"];
 
+    // The condition's rules (the SRD's text, from the page's data), as the start of a tooltip.
+    function condText(n) {
+      var t = (D.conditions || {})[n];
+      return t ? n.toUpperCase() + "\n" + t + "\n\n" : "";
+    }
+
     function runEncounter(name, creatures, encId) {
       if (state.combat && state.combat.started &&
           !window.confirm("End the fight in progress (" + state.combat.name + ") and start " + name + "?")) return;
@@ -838,11 +844,11 @@
             '<span class="ei-condcell">' +
               (x.conc ? '<span class="ei-chip ei-conc" title="Concentrating - damage calls for a Con save">◆ Conc.<button data-ia="unconc" title="Concentration ends">×</button></span>' : "") +
               (x.conds || []).map(function (cd, ci) {
-                return '<span class="ei-chip" title="' + (cd.r != null ? cd.r + " more round" + (cd.r === 1 ? "" : "s") + " (counts down at the start of its turn)" : "Until removed") + '">' +
+                return '<span class="ei-chip" title="' + esc(condText(cd.n)) + (cd.r != null ? cd.r + " more round" + (cd.r === 1 ? "" : "s") + " (counts down at the start of its turn)" : "Until removed") + '">' +
                   esc(cd.n) + (cd.r != null ? "<i>" + cd.r + "</i>" : "") + '<button data-ia="uncond" data-ci="' + ci + '" title="Remove">×</button></span>';
               }).join("") +
               '<select class="ei-addcond" data-f="addcond" title="Add a condition, or concentration"><option value="">+</option>' +
-              CONDITIONS.map(function (n) { return '<option value="' + n + '">' + n + "</option>"; }).join("") +
+              CONDITIONS.map(function (n) { return '<option value="' + n + '" title="' + esc(condText(n)) + '">' + n + "</option>"; }).join("") +
               '<option value="__conc">Concentrating</option></select>' +
               '<input class="ei-cond" data-f="cond" value="' + esc(x.cond) + '" placeholder="notes"></span>' +
             '<span><button data-ia="remove" title="Remove from the fight">×</button></span></div>';

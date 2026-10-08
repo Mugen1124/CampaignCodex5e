@@ -5,6 +5,7 @@ A website for running a D&D campaign — your prep, your world, and your table t
 - **This Session**: one page with everything for the next game, opened first at the table.
 - **Hover cards everywhere**: write `[[Hester Vane]]` and get a link with a quick card — people, places, factions, items, creatures.
 - **Stat blocks, an encounter builder, and an initiative tracker**, with the SRD's creatures built in and your own added as simple data.
+- **A rules encyclopedia**: the whole 5e SRD — conditions, combat, adventuring, spellcasting, every spell and magic item, equipment — searchable, with a one-page DM Screen. `[[Prone]]` or `[[Fireball]]` anywhere gets a hover card, and so do conditions in the initiative tracker.
 - **Character cards** for the party, editable from the browser.
 - **A players' site** built from the same files: no prep, no secrets, no stat blocks, and only the people and places they've met — it fills in as you write the Session Log. A leak check stands guard before anything goes online.
 - **Optional extras**: private hosting on Cloudflare (free) with a live initiative page for players' phones, and session recording with on-device transcription.
@@ -31,7 +32,7 @@ From then on, **`serve`** (`serve.bat` / `./serve.sh`) starts the site whenever 
 | `setup.bat` | `./setup.sh` | install or update (`--with-transcribe` adds session transcription) |
 | `serve.bat` | `./serve.sh` | the live site at http://127.0.0.1:8000 |
 | `publish.bat` | `./publish.sh` | put both sites online (optional — see the Guide's *Going online*) |
-| `codex.bat <command>` | `./codex.sh <command>` | `new`, `build`, `players`, `check`, `add-mentions`, `import-monsters`, `transcribe`, `backup` |
+| `codex.bat <command>` | `./codex.sh <command>` | `new`, `build`, `players`, `check`, `add-mentions`, `import-monsters`, `import-rules`, `transcribe`, `backup` |
 
 ## The guide
 
@@ -67,4 +68,4 @@ Your campaign is full of secrets. If you keep it in git and push it anywhere, ma
 
 ## License
 
-The code is [MIT-licensed](LICENSE). The demo campaign is CC BY 4.0. Monster data from the 5e System Reference Document 5.1 is CC BY 4.0 — see [CREDITS.md](CREDITS.md).
+The code is [MIT-licensed](LICENSE). The demo campaign is CC BY 4.0. Monster and rules data from the 5e System Reference Document 5.1 is CC BY 4.0 — see [CREDITS.md](CREDITS.md).

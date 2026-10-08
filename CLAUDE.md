@@ -17,6 +17,7 @@ This folder is a D&D campaign site built with campaign-codex: Markdown pages in 
 - `docs/session-log.md` — the record of play, newest first.
 - `docs/arcs/` — storyline prep. While a session is being played its prep lives on This Session; afterward it moves back to its arc (kept word for word), and the arc keeps a short "on This Session" pointer.
 - `docs/cities/<town>/` — overview, locations (`{{ locations <town> }}`), people (`{{ npc-list <town> }}`), factions, events (`dm_only: true`).
+- `docs/rules/` — the SRD rules encyclopedia (from `data/rules/srd.json`); conditions, spells and SRD magic items can be `[[mentioned]]` for hover cards.
 - `data/npcs/`, `data/locations/`, `data/factions.yml`, `data/items/`, `data/monsters/`, `data/encounters/`, `data/party.yml`, `data/maps.yml`, `data/revealed.yml` — every field is documented in `templates/`.
 
 ## Session write-ups (from a transcript)
