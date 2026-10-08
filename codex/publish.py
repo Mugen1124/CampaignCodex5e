@@ -82,17 +82,25 @@ class _NoRedirect(HTTPRedirectHandler):
 
 def login_check(url: str) -> bool:
     """A signed-out visitor should be sent (302) to the Cloudflare login, never shown the site."""
+    # Named plainly: Cloudflare's bot screening turns away Python's default name ("Python-urllib")
+    # with a 403 before the sign-in is ever reached, which says nothing about whether the site is private.
+    req = Request(url, method="GET", headers={"User-Agent": "CampaignCodex5e-publish-check/1.4"})
+    location = ""
     try:
-        build_opener(_NoRedirect).open(Request(url, method="GET"), timeout=20)
+        build_opener(_NoRedirect).open(req, timeout=20)
         code = 200
     except HTTPError as err:
-        code = err.code
+        code, location = err.code, err.headers.get("Location") or ""
     except URLError as err:
         print(f"  Couldn't check {url}: {err.reason}")
         return False
-    if code in (301, 302, 303, 307):
+    if code in (301, 302, 303, 307) and ".cloudflareaccess.com/" in location:
         print(f"  OK - signed-out visitors to {url} get the login page.")
         return True
+    if code in (401, 403):
+        print(f"  Couldn't confirm the sign-in for {url}: Cloudflare turned the check away ({code}).")
+        print("  Open it in a private browser window - it should ask you to sign in before showing anything.")
+        return False
     print("*" * 76)
     print(f"  WARNING: {url} answered {code} instead of sending visitors to the login.")
     print("  It may be PUBLIC. In the Cloudflare dashboard (Zero Trust -> Access -> Applications),")
