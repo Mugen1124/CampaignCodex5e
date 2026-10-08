@@ -23,6 +23,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 import webbrowser
 from pathlib import Path
 
@@ -48,10 +49,31 @@ def mkdocs(*args, offline=True, check=True) -> int:
 
 # ---------------------------------------------------------------- commands
 
+def open_when_ready(url: str, give_up: float = 300):
+    """Open url in the browser as soon as it answers (checked every half second, for up to 5 minutes)."""
+    from urllib.error import HTTPError, URLError
+    from urllib.request import urlopen
+    start = time.time()
+    while time.time() - start < give_up:
+        try:
+            with urlopen(url, timeout=2):
+                webbrowser.open(url)
+                return
+        except HTTPError as err:
+            if err.code < 500:
+                webbrowser.open(url)
+                return
+        except (URLError, OSError):
+            pass
+        time.sleep(0.5)
+
+
 def cmd_serve(args):
     helper = subprocess.Popen([PY, str(ROOT / "tools" / "site_helper.py")], cwd=ROOT)
     if "--no-browser" not in args:
-        threading.Timer(4, lambda: webbrowser.open("http://127.0.0.1:8000")).start()
+        # Open the browser once the site actually answers - the first build takes a few seconds,
+        # more for a big campaign, and a fixed wait opened it too early ("site can't be reached").
+        threading.Thread(target=open_when_ready, args=("http://127.0.0.1:8000/",), daemon=True).start()
     print("The site is starting at http://127.0.0.1:8000 - leave this window open while you use it.")
     print("Press Ctrl+C here (or close the window) to stop.\n")
     try:
