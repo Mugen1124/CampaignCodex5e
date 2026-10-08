@@ -106,9 +106,8 @@ def campaign_yml(name: str, town: str, town_id: str):
 def nav_dm(town: str, town_id: str, arc: str, arc_id: str) -> str:
     return f"""nav:
   - This Session: index.md
-  - Session Log:
-      - Log: session-log.md
-      - Record & Transcribe: recording.md
+  - Session Log: session-log.md
+  - Record & Transcribe: recording.md
   - Party: party/index.md
   - World:
       - world/index.md

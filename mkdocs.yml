@@ -83,9 +83,8 @@ markdown_extensions:
 # Tab and page order. Top-level entries become the tabs across the header.
 nav:
   - This Session: index.md
-  - Session Log:
-      - Log: session-log.md
-      - Record & Transcribe: recording.md
+  - Session Log: session-log.md
+  - Record & Transcribe: recording.md
   - Party: party/index.md
   - World:
       - world/index.md
