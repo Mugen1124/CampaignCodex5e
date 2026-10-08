@@ -8,7 +8,7 @@ Sets up your own campaign: replaces the demo (The Lantern Coast) with a clean st
 It asks for your campaign's name, the town or city the story starts in, and your party, then:
   - makes a backup zip of everything first (next to this folder),
   - removes the demo's pages, data and maps,
-  - writes starter pages for your town and a first arc, an empty Session Log, your party, and
+  - writes starter pages for your town and a first arc, an empty Sessions tab, your party, and
     campaign.yml / mkdocs.yml / mkdocs-players.yml with your names in them.
 The engine (hooks/, tools/, codex/), templates/, the guide, and the SRD monsters are left alone.
 """
@@ -29,6 +29,7 @@ from codex.settings import slug  # noqa: E402
 DOCS, DATA = ROOT / "docs", ROOT / "data"
 
 DEMO_FILES = [
+    "docs/sessions/greywater-1.md",
     "data/npcs/greywater.yml", "data/locations/greywater.yml", "data/items/greywater.yml",
     "data/monsters/lantern-coast.yml", "data/encounters/dock-ambush.yml", "data/encounters/bellwether-rite.yml",
     "maps/greywater.png", "maps/bellwether-light.png", "docs/arcs/the-drowned-bell.md",
@@ -105,17 +106,14 @@ def campaign_yml(name: str, town: str, town_id: str):
 
 def nav_dm(town: str, town_id: str, arc: str, arc_id: str) -> str:
     return f"""nav:
-  - This Session: index.md
-  - Session Log: session-log.md
+  - Sessions: []          # filled in by hooks/sessions.py: This Session, then each session, newest first
   - Record & Transcribe: recording.md
   - Party: party/index.md
   - World:
       - world/index.md
-      - House Rules: world/house-rules.md
       - Factions: world/factions.md
       - Maps: maps/index.md
-  - Places:
-      - cities/index.md
+      - Places: cities/index.md
       - {q(town)}:
           - cities/{town_id}/index.md
           - Locations: cities/{town_id}/locations.md
@@ -128,6 +126,7 @@ def nav_dm(town: str, town_id: str, arc: str, arc_id: str) -> str:
   - Encounters: encounters/index.md
   - Rules:
       - rules/index.md
+      - House Rules: world/house-rules.md
       - DM Screen: rules/dm-screen.md
       - Conditions: rules/conditions.md
       - Combat: rules/combat.md
@@ -160,20 +159,18 @@ def nav_dm(town: str, town_id: str, arc: str, arc_id: str) -> str:
 
 def nav_players(town: str, town_id: str) -> str:
     return f"""nav:
-  - Home: players/index.md
-  - Session Log: session-log.md
+  - Sessions: []          # filled in by hooks/sessions.py: each session, newest first (the home page is the latest)
   - Initiative: players/tracker.md
   - Party:
       - party/index.md
+      - About this site: players/about.md
       - People: reference/npcs.md
       - Items: reference/items.md
   - World:
       - world/index.md
-      - House Rules: world/house-rules.md
       - Factions: world/factions.md
       - Maps: maps/index.md
-  - Places:
-      - cities/index.md
+      - Places: cities/index.md
       - {q(town)}:
           - cities/{town_id}/index.md
           - Locations: cities/{town_id}/locations.md
@@ -181,6 +178,7 @@ def nav_players(town: str, town_id: str) -> str:
           - Factions: cities/{town_id}/factions.md
   - Rules:
       - rules/index.md
+      - House Rules: world/house-rules.md
       - DM Screen: rules/dm-screen.md
       - Conditions: rules/conditions.md
       - Combat: rules/combat.md
@@ -265,7 +263,7 @@ maps: []
 #    source: town.png
 """)
     write("data/revealed.yml", """
-# What the players have come across that the Session Log doesn't mention. See the guide
+# What the players have come across that no session page mentions. See the guide
 # (The players' site). Use the names you'd write in a [[mention]].
 reveal: []
 hide: []
@@ -298,7 +296,7 @@ names_ok: []
     write("docs/index.md", f"""
 # This Session
 
-The page to open first at the table: where things stand, then everything for the next session. Once it's played, what was prepped moves back into its arc, and what actually happened goes in the [Session Log](session-log.md).
+The page to open first at the table: where things stand, then everything for the next session. Once it's played, what was prepped moves back into its arc, and what actually happened gets its own page under **Sessions** (see the Style Guide: Session pages).
 
 ## Now
 
@@ -326,28 +324,18 @@ The party is about to arrive in **{town}**.
 
 What happens, who's there, and what they want.
 """)
-    write("docs/session-log.md", """
-# Session Log
+    write("docs/players/about.md", f"""
+# About this site
 
-What actually happened at the table, newest first.<!-- players: hide --> Prep material lives elsewhere; this page is only the record of play.<!-- players: end -->
+The players' side of {name}: what's happened, who you've met, and where you've been. It grows as the story does.
 
-<!-- players: hide -->
-Nothing played yet. After each session, add an entry at the top — see the Style Guide (Session Log entries).
-<!-- players: end -->
-""")
-    write("docs/players/index.md", f"""
-# {name}
-
-The players' side of the campaign: what's happened, who you've met, and where you've been. It grows as the story does.
-
-- **[Session Log](../session-log.md)** — what's happened so far, newest first.
+- **Sessions** — a page for every session played, newest first. The site opens on the latest one.
 - **[Initiative](tracker.md)** — follow the fight from your phone while the DM runs it.
 - **[Party](../party/index.md)** — the characters, with their cards and backgrounds.
 - **[People](../reference/npcs.md)** — everyone the party has met.
 - **[Items](../reference/items.md)** — the party's notable finds.
-- **[World](../world/index.md)** — the world, the house rules, and the factions you've come across.
-- **[Places](../cities/index.md)** — the places you've been.
-- **[Maps](../maps/index.md)**
+- **[World](../world/index.md)** — the world, its places, the factions you've come across, and the maps.
+- **[Rules](../rules/index.md)** — the house rules, then the game's rules, searchable.
 
 Names with a dotted underline show a short reminder when you hover over them, and link to more.
 """)

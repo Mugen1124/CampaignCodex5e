@@ -8,7 +8,7 @@ Everything lives as plain text files in this folder: Markdown pages in `docs/`, 
 
 **Your DM site** (this one) has everything: the prep, the secrets, stat blocks, the encounter builder and initiative tracker, and these guide pages.
 
-**The players' site** is built from the same files, minus everything that's yours alone: DM boxes, secrets, stat blocks, prep pages, and anyone or anything the party hasn't come across yet. It fills in by itself as you write the [Session Log](../session-log.md). See [The players' site](players-site.md).
+**The players' site** is built from the same files, minus everything that's yours alone: DM boxes, secrets, stat blocks, prep pages, and anyone or anything the party hasn't come across yet. It fills in by itself as you write up each session. See [The players' site](players-site.md).
 
 <!-- demo: the setup wizard (new) removes everything from here to the end marker -->
 ## What's here right now
@@ -16,7 +16,7 @@ Everything lives as plain text files in this folder: Markdown pages in `docs/`, 
 You're looking at a small **demo campaign**, *The Lantern Coast* — a fishing town, a stolen bell, and a drowned cult. It uses every feature, so poke around:
 
 - **[This Session](../index.md)** — the page you open at the table: where things stand, then the next session's prep.
-- **[Session Log](../session-log.md)** — what happened at the table, newest first.
+- **[Sessions](../sessions/greywater-1.md)** — This Session at the top, then a page for every session played, newest first.
 - **[Party](../party/index.md)** — character cards. With `CampaignCodex5e` running, **Edit** fills them in.
 - **[Places → Greywater](../cities/greywater/index.md)** — a town's overview, locations (with who's found where), people, and factions.
 - **[Arcs → The Drowned Bell](../arcs/the-drowned-bell.md)** — a storyline's prep, scene by scene.
@@ -50,6 +50,6 @@ Each is a script in this folder: double-click the `.bat` on Windows or the `.com
 
 1. **Prep** goes on [This Session](../index.md): the scenes, read-alouds, encounters, and stat blocks for next time, all on one page.
 2. **Play** from that page. Run fights from [Encounters](../encounters/index.md).
-3. **Afterward**, write what happened in the [Session Log](../session-log.md), and move the played prep back into its arc. The players' site picks up everyone and everything the log mentions.
+3. **Afterward**, write what happened on a new session page, and move the played prep back into its arc. The players' site picks up everyone and everything the log mentions.
 
 [At the table](at-the-table.md) walks through it.

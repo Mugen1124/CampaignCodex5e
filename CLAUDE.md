@@ -14,7 +14,7 @@ This folder is a D&D campaign site built with CampaignCodex5e: Markdown pages in
 
 - `campaign.yml` — the campaign's settings.
 - `docs/index.md` — **This Session**, the home page: `## Now` (where we are, open threads, a DM box), a note box for the next session (arc, starting point, running order, drop-ins), then that session's prep.
-- `docs/session-log.md` — the record of play, newest first.
+- `docs/sessions/` — the record of play: one page per session, each starting with `order: N` front matter and a `# <Place> — Session N: <Title>` heading. The Sessions tab lists them automatically, newest first.
 - `docs/arcs/` — storyline prep. While a session is being played its prep lives on This Session; afterward it moves back to its arc (kept word for word), and the arc keeps a short "on This Session" pointer.
 - `docs/cities/<town>/` — overview, locations (`{{ locations <town> }}`), people (`{{ npc-list <town> }}`), factions, events (`dm_only: true`).
 - `docs/rules/` — the SRD rules encyclopedia (from `data/rules/srd.json`); conditions, spells and SRD magic items can be `[[mentioned]]` for hover cards.
@@ -25,10 +25,10 @@ This folder is a D&D campaign site built with CampaignCodex5e: Markdown pages in
 When the DM asks to write up a session from `recordings/<name>.transcript.txt`:
 
 1. Read the whole transcript. Speakers aren't labeled; names are often misheard — match them to `data/`. **Ask** about anything unclear (who took an item, who did what) instead of guessing.
-2. Draft a Session Log entry: `## <Place> — Session N: <Title>`, then a `!!! read-aloud "Previously…"` recap, who was absent, bold scene labels with bullets in the order things happened, an optional **Heard at the table** list of a few fun one-liners (offer candidates; the DM picks; nothing crude, no attribution), and `??? dm` boxes for what the players don't know.
+2. Draft a new session page, `docs/sessions/<place>-<n>.md`: `order:` one higher than the last session's, `# <Place> — Session N: <Title>`, then a `!!! read-aloud "Previously…"` recap, who was absent, bold scene labels with bullets in the order things happened, an optional **Heard at the table** list of a few fun one-liners (offer candidates; the DM picks; nothing crude, no attribution), and `??? dm` boxes for what the players don't know.
 3. **The "Previously…" recap is read aloud and shown to players**: plain, clear prose — short sentences, past tense, second person ("you"), in order, a couple of quoted lines at most, no cryptic or clever phrasing, ending on a simple hook for the next session.
 4. Big personal moments get a public scene even if only one character experienced them. Out-of-character information (a patron's real name said only out of character, rules talk) stays in DM boxes.
-5. Remember that anything `[[mentioned]]` in the public part of the log appears on the players' site.
+5. Remember that anything `[[mentioned]]` in the public part of a session page appears on the players' site.
 6. Also propose: data updates (status changes, new NPCs, items changing hands), moving played prep back into the arc, and a new **Now** section. Make changes only after the DM approves.
 7. Recordings and transcripts are private. Suggest deleting them once the DM is happy with the write-up; never delete without being asked.
 

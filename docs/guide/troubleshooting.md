@@ -33,9 +33,9 @@ They're there to help, and the site still builds. The common ones:
 
 ## The players' site
 
-**The leak check blocks publishing.** It lists exactly what it found and where. Usually it's a secret repeated in public text, or a DM-only fact quoted in the Session Log; hide the text (a DM box, `<!-- players: hide -->`) or reword it, and run `codex check` again.
+**The leak check blocks publishing.** It lists exactly what it found and where. Usually it's a secret repeated in public text, or a DM-only fact quoted on a session page; hide the text (a DM box, `<!-- players: hide -->`) or reword it, and run `codex check` again.
 
-**Someone isn't showing on the players' site.** They appear once they're `[[mentioned]]` in the public part of the Session Log, or listed under `reveal:` in `data/revealed.yml`. A `revealed: false` in their data overrides both.
+**Someone isn't showing on the players' site.** They appear once they're `[[mentioned]]` in the public part of a session page, or listed under `reveal:` in `data/revealed.yml`. A `revealed: false` in their data overrides both.
 
 ## Going online
 

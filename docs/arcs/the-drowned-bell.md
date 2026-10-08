@@ -14,7 +14,7 @@ The bell of the [[Chapel of the Tides]] was taken on the night of the spring tid
 
 ## Scene 1 — The Missing Bell
 
-*Played in Session 1 — what happened is in the [Session Log](../session-log.md).*
+*Played in Session 1 — what happened is on its [session page](../sessions/greywater-1.md).*
 
 [[Sister Amara Wells]] shows the party the empty tower and asks for help. The clues on the stair (marsh mud, an oilskin thread) point to the marsh.
 

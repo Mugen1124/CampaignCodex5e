@@ -10,6 +10,7 @@ End-to-end checks, on a throwaway copy of this folder (your files are never touc
 """
 
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -77,6 +78,15 @@ def main() -> int:
         check("demo: DM-only map left out", not any(players.rglob("bellwether-light*")))
         check("demo: guide left out", not (players / "guide").exists())
 
+        print("The Sessions tab:")
+        dm_home = (out / "dm" / "index.html").read_text(encoding="utf-8")
+        check("the DM site opens on This Session", bool(re.search(r"<h1[^>]*>This Session", dm_home)))
+        check("This Session is first in the Sessions sidebar, then the sessions",
+              dm_home.find('href="index.html" class="md-nav__link') < dm_home.find("Greywater — Session 1"))
+        pl_home = (players / "index.html").read_text(encoding="utf-8")
+        check("the players' site opens on the latest session", bool(re.search(r"<h1[^>]*>Greywater — Session 1: The Missing Bell", pl_home)))
+        check("This Session isn't on the players' site", ">This Session<" not in pl_home and "Ambush on the quay" not in pl_home)
+
         print("The rules encyclopedia:")
         spells = (out / "dm" / "rules" / "spells.html").read_text(encoding="utf-8")
         check("every spell is on the Spells page", spells.count('class="rules-entry spell') == 319)
@@ -110,7 +120,9 @@ def main() -> int:
         check("wizard runs", r.returncode == 0, r.stdout + r.stderr)
         check("wizard: demo removed", not (proj / "docs" / "cities" / "greywater").exists())
         check("wizard: new town pages", (proj / "docs" / "cities" / "kells-crossing" / "index.md").is_file())
-        build_both(proj, "after the wizard")
+        after = build_both(proj, "after the wizard")
+        about = (after / "players" / "index.html").read_text(encoding="utf-8")
+        check("after the wizard: with no sessions yet, the players' site opens on About", bool(re.search(r"<h1[^>]*>About this site", about)))
 
     print()
     if FAILED:

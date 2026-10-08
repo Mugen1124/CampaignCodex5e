@@ -48,6 +48,7 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from codex import settings as codex_settings  # noqa: E402
 from codex import rules as codex_rules  # noqa: E402
+from codex import sessions as codex_sessions  # noqa: E402
 
 log = logging.getLogger("mkdocs.hooks.entities")
 
@@ -69,7 +70,7 @@ REGISTRY = {}          # normalized name/alias -> (kind, id)
 ALLOW_SIMILAR = set()  # frozensets of ids allowed to have similar names
 
 # The player site (mkdocs-players.yml, extra: audience: players) shows only what the party has
-# come across: anything mentioned in the Session Log, anything marked `revealed: true` in its
+# come across: anything mentioned in a session page, anything marked `revealed: true` in its
 # data (or listed under reveal: in data/revealed.yml), and never anything marked `revealed: false`
 # (or listed under hide:). DM-only fields (notes, secret, dm_notes...) are never shown there.
 PLAYERS = [False]
@@ -249,7 +250,7 @@ def on_config(config, **kwargs):
     return config
 
 
-# The Session Log as the players read it: without <!-- players: hide --> stretches or DM boxes
+# A session page as the players read it: without <!-- players: hide --> stretches or DM boxes
 # (their marker line and everything indented under it), with <!-- players: show --> text in.
 _HIDE = re.compile(r"<!--\s*players:\s*hide\s*-->.*?<!--\s*players:\s*end\s*-->", re.S)
 _SHOW = re.compile(r"<!--\s*players:\s*show[ \t]*\n(.*?)-->", re.S)
@@ -273,10 +274,12 @@ def _public_text(text: str) -> str:
 
 
 def _find_revealed(data_root: Path, docs: Path):
-    """What the players have come across: Session Log mentions, then revealed: flags and
-    data/revealed.yml, with revealed: false / hide: taking anything back out."""
-    log_page = docs / "session-log.md"
-    if log_page.is_file():
+    """What the players have come across: mentions in the session pages (docs/sessions/), then
+    revealed: flags and data/revealed.yml, with revealed: false / hide: taking anything back out."""
+    log_pages = codex_sessions.pages(docs)
+    if (docs / "session-log.md").is_file():   # an older single-page Session Log still counts
+        log_pages.append(docs / "session-log.md")
+    for log_page in log_pages:
         # only what the players can read counts - a name in a DM note isn't something they've met
         for m in MENTION.finditer(_public_text(log_page.read_text(encoding="utf-8"))):
             hit = _resolve(m.group(1).strip())
@@ -655,7 +658,7 @@ def render_npc_list(region: str, page_src: str) -> str:
     regions = _grouped(region)
     if not regions:
         if PLAYERS[0]:
-            return "*Nobody here yet - people the party meets are added as the Session Log records them.*\n"
+            return "*Nobody here yet - people the party meets are added as the session pages record them.*\n"
         log.warning("No NPCs with region '%s' for {{ npc-list }}", region)
         return ""
     out = []
@@ -765,7 +768,7 @@ def render_items(page_src: str) -> str:
         if visible("item", item["id"]):
             groups.setdefault(item.get("group", "Other"), []).append(item)
     if not groups and PLAYERS[0]:
-        return "*No items yet - they're added as the Session Log records them.*\n"
+        return "*No items yet - they're added as the session pages record them.*\n"
     # On the DM site at home, javascripts/items-editor.js turns these into the Held by pickers and
     # the list of pickups found in session transcripts.
     out = [] if PLAYERS[0] else ['<div class="item-suggest"></div>', ""]
@@ -802,8 +805,8 @@ def render_items(page_src: str) -> str:
                 # setting (revealed: true/false, or auto); data-shown: whether the player site shows it now.
                 setting = {True: "show", False: "hide"}.get(item.get("revealed"), "auto")
                 shown = "1" if ("item", item["id"]) in REVEALED else "0"
-                why = ("someone carries it" if item.get("holder") else "the Session Log or revealed.yml mentions it") \
-                    if shown == "1" else "the Session Log doesn't mention it yet"
+                why = ("someone carries it" if item.get("holder") else "a session page or revealed.yml mentions it") \
+                    if shown == "1" else "no session page mentions it yet"
                 out += [f'<div class="item-hold" data-item="{html.escape(item["id"])}" data-reveal="{setting}" '
                         f'data-shown="{shown}" data-why="{html.escape(why)}"></div>', ""]
     return "\n".join(out)

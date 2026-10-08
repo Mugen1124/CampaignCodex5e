@@ -35,6 +35,7 @@ plugins:
 
 # Stat blocks, encounters, party cards, maps, NPCs, places, factions and items - all from data/.
 hooks:
+  - hooks/sessions.py     # the Sessions tab
   - hooks/campaign.py
   - hooks/maps.py
   - hooks/rules.py        # the Rules tab (the SRD), before entities so its [[mentions]] work
@@ -82,17 +83,14 @@ markdown_extensions:
 
 # Tab and page order. Top-level entries become the tabs across the header.
 nav:
-  - This Session: index.md
-  - Session Log: session-log.md
+  - Sessions: []          # filled in by hooks/sessions.py: This Session, then each session, newest first
   - Record & Transcribe: recording.md
   - Party: party/index.md
   - World:
       - world/index.md
-      - House Rules: world/house-rules.md
       - Factions: world/factions.md
       - Maps: maps/index.md
-  - Places:
-      - cities/index.md
+      - Places: cities/index.md
       - Greywater:
           - cities/greywater/index.md
           - Locations: cities/greywater/locations.md
@@ -105,6 +103,7 @@ nav:
   - Encounters: encounters/index.md
   - Rules:
       - rules/index.md
+      - House Rules: world/house-rules.md
       - DM Screen: rules/dm-screen.md
       - Conditions: rules/conditions.md
       - Combat: rules/combat.md

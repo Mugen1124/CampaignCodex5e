@@ -1,6 +1,6 @@
 # This Session
 
-The page to open first at the table: where things stand, then everything for the next session. Once it's played, what was prepped moves back into its arc, and what actually happened goes in the [Session Log](session-log.md).
+The page to open first at the table: where things stand, then everything for the next session. Once it's played, what was prepped moves back into its arc, and what actually happened gets its own page under **Sessions**.
 
 ## Now
 

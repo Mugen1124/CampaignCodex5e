@@ -1,6 +1,6 @@
 /* Who carries what. On the site at home (CampaignCodex5e running):
      - Items page: a "Held by" picker under every item, and "Players' site": automatic (the usual
-       rules - Session Log mentions, revealed.yml, carried), always show, or always hide, and the pickups tools/transcribe.py noticed
+       rules - session page mentions, revealed.yml, carried), always show, or always hide, and the pickups tools/transcribe.py noticed
        in session transcripts, each with Assign / Dismiss.
      - Items page: claims players made on their site for items you marked "Found — up for grabs",
        with Approve (gives it to them) / Decline.

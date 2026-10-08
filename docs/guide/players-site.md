@@ -1,19 +1,19 @@
 # The players' site
 
-A second site, built from the same files by `mkdocs-players.yml`, for your players: the Session Log, the party, the people and places they've met, the items they've found, the maps you've shared, and a live initiative page. It never contains your prep, your secrets, or anything they haven't come across.
+A second site, built from the same files by `mkdocs-players.yml`, for your players: the session pages, the party, the people and places they've met, the items they've found, the maps you've shared, and a live initiative page. It never contains your prep, your secrets, or anything they haven't come across.
 
 ## What players see
 
 A person, place, faction, or item shows on the players' site when **any** of these is true:
 
-- it's `[[mentioned]]` in the **public part of the Session Log** (not inside a DM box or a hidden stretch),
+- it's `[[mentioned]]` in the **public part of a session page** (not inside a DM box or a hidden stretch),
 - a character carries it (items with a `holder:`),
 - it's listed under `reveal:` in `data/revealed.yml`,
 - its own data says `revealed: true`.
 
 And it's kept off, whatever the above says, if its data says `revealed: false` or it's under `hide:` in `data/revealed.yml`.
 
-So the players' site **fills in by itself as you write the Session Log**. Their NPC entries show only the hook, appearance, and personality — never notes or secrets.
+So the players' site **fills in by itself as you write up each session**. Their NPC entries show only the hook, appearance, and personality — never notes or secrets.
 
 ## What's always left out
 

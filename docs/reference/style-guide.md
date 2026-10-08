@@ -119,17 +119,23 @@ Encounters are data files in `data/encounters/`: creatures and counts, plus wher
 
 Every encounter is also listed on the [Encounters](../encounters/index.md) tab, where you can build new ones.
 
-## Session Log entries
+## Session pages
 
-The [Session Log](../session-log.md) is the record of play, newest first, one H2 per session:
+Every session played gets its own page in `docs/sessions/`, and the **Sessions** tab lists them by itself — This Session first, then the sessions, newest first. The players' site opens on the latest one. A session page:
 
-- **Heading:** where and which session, then a short title — `## Greywater — Session 1: The Missing Bell`.
+- **Starts with its order**, then the title — where and which session, and a short name:
+
+        ---
+        order: 2
+        ---
+        # Greywater — Session 2: Ambush on the Quay
+
 - **"Previously…"** (optional): a `!!! read-aloud "Previously…"` recap, ready to read at the start of the next session. Plain, clear prose: short sentences, in order, second person.
 - **What happened:** bullets in the order it happened, with bold lead-ins for scenes. Names as `[[mentions]]`; the players' characters by name.
 - **Heard at the table** (optional): a few favorite one-liners.
 - **What the players don't know yet** goes last, folded away: `??? dm "DM only — where this leaves things"`.
 
-Anything mentioned in the public part of the log shows up on the players' site — that's how the People, Places and Items pages there fill in as the campaign goes.
+Anything mentioned in the public part of a session page shows up on the players' site — that's how the People, Places and Items pages there fill in as the campaign goes. A shorter sidebar title can go in the front matter as `nav_title:`.
 
 ## Maps
 

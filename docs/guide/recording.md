@@ -1,6 +1,6 @@
 # Recording sessions
 
-**Optional, and only with your table's OK.** Record the session at the table, turn the recording into a transcript on your own computer, and use it to write the Session Log. Nothing is uploaded anywhere.
+**Optional, and only with your table's OK.** Record the session at the table, turn the recording into a transcript on your own computer, and use it to write up the session. Nothing is uploaded anywhere.
 
 ## Set up
 
@@ -24,8 +24,8 @@ It's given your campaign's names first — the party, the people and places of t
 
 ## Write it up
 
-Read the transcript and write the Session Log entry — or ask an AI assistant to draft it (see [Working with an AI assistant](ai-assistant.md)), then edit it yourself.
+Read the transcript and write the session's page — or ask an AI assistant to draft it (see [Working with an AI assistant](ai-assistant.md)), then edit it yourself.
 
 ## Afterward
 
-Transcripts are raw table talk. Keep them private, and **delete the recording and transcript once the Session Log entry is written**, unless everyone at the table is happy to keep them.
+Transcripts are raw table talk. Keep them private, and **delete the recording and transcript once the session's page is written**, unless everyone at the table is happy to keep them.

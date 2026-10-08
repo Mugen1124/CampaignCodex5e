@@ -9,7 +9,7 @@ Run **`codex new`** (`codex.bat new` on Windows, `./codex.sh new` elsewhere — 
 - your first story arc's name,
 - your party: each player, their character, race, and class, and the party's level.
 
-Then it backs everything up, removes the demo, and writes a clean start: a page set for your town, a first arc, an empty Session Log, your party, and your names in `campaign.yml`, `mkdocs.yml`, and `mkdocs-players.yml`. Your Style Guide, templates, the guide, and the SRD's monsters stay.
+Then it backs everything up, removes the demo, and writes a clean start: a page set for your town, a first arc, an empty Sessions tab, your party, and your names in `campaign.yml`, `mkdocs.yml`, and `mkdocs-players.yml`. Your Style Guide, templates, the guide, and the SRD's monsters stay.
 
 ## campaign.yml
 

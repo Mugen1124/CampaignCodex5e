@@ -1,8 +1,8 @@
-# Session Log
+---
+order: 1
+---
 
-What actually happened at the table, newest first.<!-- players: hide --> Prep material lives elsewhere; this page is only the record of play.<!-- players: end -->
-
-## Greywater — Session 1: The Missing Bell
+# Greywater — Session 1: The Missing Bell
 
 !!! read-aloud "Previously…"
     You came to Greywater for work and found a town holding its breath. The bell of the Chapel of the Tides is gone — stolen on the night of the spring tide — and Sister Amara has asked you to bring it back before the fleet's luck runs out. Last night, over eel pie at the Gull & Lantern, a halfling named Pip Larkin leaned across the table and told you what he saw: a boat with no lantern, rowing out toward the old drowned lighthouse in the marsh.
@@ -26,4 +26,4 @@ What actually happened at the table, newest first.<!-- players: hide --> Prep ma
 - *"I'm not saying the eel pie is cursed. I'm saying it moved."*
 
 ??? dm "DM only — where this leaves things"
-    [[Magistrate Corvin Sloane]] has heard that strangers are asking about the bell. The [[The Tidecallers|Tidecallers]] will try to scare them off at dusk tomorrow — see *Ambush on the quay* on [This Session](index.md#ambush-on-the-quay).
+    [[Magistrate Corvin Sloane]] has heard that strangers are asking about the bell. The [[The Tidecallers|Tidecallers]] will try to scare them off at dusk tomorrow — see *Ambush on the quay* on [This Session](../index.md#ambush-on-the-quay).

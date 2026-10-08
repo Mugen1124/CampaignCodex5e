@@ -5,7 +5,8 @@ Only used by the player build - mkdocs-players.yml lists it first among its hook
 `extra: audience: players`, which the other hooks read too (campaign.py, maps.py, entities.py
 each leave out their DM-only parts). This hook does the page-level work:
 
-- The home page is docs/players/index.md instead of the DM's This Session page.
+- The home page is the latest session page (docs/sessions/, newest first - see codex/sessions.py),
+  or docs/players/about.md while there are no sessions yet, instead of the DM's This Session page.
 - DM-only boxes are taken out of every page before it's built: ??? dm / !!! dm blocks, and
   "Needs decision" warnings. So are any stretches wrapped in
       <!-- players: hide -->  ...  <!-- players: end -->
@@ -32,9 +33,15 @@ from pathlib import Path
 
 from mkdocs.plugins import event_priority
 
+import sys  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from codex import sessions as codex_sessions  # noqa: E402
+
 log = logging.getLogger("mkdocs.hooks.players")
 
-HOME = "players/index.md"
+ABOUT = "players/about.md"
+HOME = [ABOUT]   # set in on_files: the latest session, or the About page
 DM_BOX = re.compile(r"^(\s*)(\?\?\?\+?|!!!)\s+(dm|warning)\b.*$")
 HIDE = re.compile(r"<!--\s*players:\s*hide\s*-->.*?<!--\s*players:\s*end\s*-->", re.S)
 SHOW = re.compile(r"<!--\s*players:\s*show[ \t]*\n(.*?)-->", re.S)
@@ -66,14 +73,15 @@ def on_files(files, config, **kwargs):
     for f in list(files.documentation_pages()):
         if dm_only(f.abs_src_path):
             files.remove(f)
-    home = files.get_file_from_path(HOME)
+    HOME[0] = codex_sessions.latest(Path(config["docs_dir"])) or ABOUT
+    home = files.get_file_from_path(HOME[0])
     dm_home = files.get_file_from_path("index.md")
     if dm_home:
         files.remove(dm_home)
     if home:
         home.dest_uri = "index.html"   # set before anything reads its url
     else:
-        log.warning("Player site: %s is missing - the site has no home page", HOME)
+        log.warning("Player site: %s is missing - the site has no home page", HOME[0])
     return files
 
 
@@ -106,7 +114,7 @@ def unlink_missing(markdown: str, page, files) -> str:
         if f and not f.inclusion.is_excluded():
             return m.group(0)
         if target == "index.md":   # the DM's Now page -> the players' home
-            return m.group(0).replace(m.group(2), posixpath.relpath(HOME, here or "."))
+            return m.group(0).replace(m.group(2), posixpath.relpath(HOME[0], here or "."))
         return m.group(1)
     return LINK.sub(fix, markdown)
 

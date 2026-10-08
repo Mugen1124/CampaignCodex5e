@@ -7,7 +7,7 @@ A website for running a D&D campaign — your prep, your world, and your table t
 - **Stat blocks, an encounter builder, and an initiative tracker**, with the SRD's creatures built in and your own added as simple data.
 - **A rules encyclopedia**: the whole 5e SRD — conditions, combat, adventuring, spellcasting, every spell and magic item, equipment — searchable, with a one-page DM Screen. `[[Prone]]` or `[[Fireball]]` anywhere gets a hover card, and so do conditions in the initiative tracker.
 - **Character cards** for the party, editable from the browser.
-- **A players' site** built from the same files: no prep, no secrets, no stat blocks, and only the people and places they've met — it fills in as you write the Session Log. A leak check stands guard before anything goes online.
+- **A players' site** built from the same files: no prep, no secrets, no stat blocks, and only the people and places they've met — it fills in as you write up each session. A leak check stands guard before anything goes online.
 - **Optional extras**: private hosting on Cloudflare (free) with a live initiative page for players' phones, and session recording with on-device transcription.
 
 Everything is plain text files on your computer: Markdown pages and YAML data, built with [MkDocs](https://www.mkdocs.org/) and [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/). Nothing goes online unless you put it there.

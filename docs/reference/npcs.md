@@ -13,7 +13,7 @@ toc_depth: 2
 Every named NPC, with full details. Names anywhere on the site link here, with a hover card for the basics.
 <!-- players: end -->
 <!-- players: show
-Everyone the party has met, as far as the party knows them. Names anywhere on the site link here, with a hover card for the basics. New people are added as the Session Log records them.
+Everyone the party has met, as far as the party knows them. Names anywhere on the site link here, with a hover card for the basics. New people are added as the session pages record them.
 -->
 
 {{ npc-index }}

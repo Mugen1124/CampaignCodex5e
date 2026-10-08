@@ -18,6 +18,7 @@ extra:
   audience: players
 
 hooks:
+  - hooks/sessions.py
   - hooks/players.py
   - hooks/campaign.py
   - hooks/maps.py
@@ -51,20 +52,18 @@ exclude_docs: |
   /javascripts/items-editor.js
 
 nav:
-  - Home: players/index.md
-  - Session Log: session-log.md
+  - Sessions: []          # filled in by hooks/sessions.py: each session, newest first (the home page is the latest)
   - Initiative: players/tracker.md
   - Party:
       - party/index.md
+      - About this site: players/about.md
       - People: reference/npcs.md
       - Items: reference/items.md
   - World:
       - world/index.md
-      - House Rules: world/house-rules.md
       - Factions: world/factions.md
       - Maps: maps/index.md
-  - Places:
-      - cities/index.md
+      - Places: cities/index.md
       - Greywater:
           - cities/greywater/index.md
           - Locations: cities/greywater/locations.md
@@ -72,6 +71,7 @@ nav:
           - Factions: cities/greywater/factions.md
   - Rules:
       - rules/index.md
+      - House Rules: world/house-rules.md
       - DM Screen: rules/dm-screen.md
       - Conditions: rules/conditions.md
       - Combat: rules/combat.md
