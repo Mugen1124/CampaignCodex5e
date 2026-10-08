@@ -133,6 +133,8 @@ def main(args=None) -> int:
         new_version = (rel / VERSION).read_text(encoding="utf-8").strip() if (rel / VERSION).is_file() else "?"
         new = read_manifest((rel / MANIFEST).read_text(encoding="utf-8"))
         old_text = (ROOT / MANIFEST).read_text(encoding="utf-8") if (ROOT / MANIFEST).is_file() else ""
+        if old_text.replace("\r\n", "\n") == (rel / MANIFEST).read_text(encoding="utf-8").replace("\r\n", "\n"):
+            old_text = ""   # the release's codex/ folder was copied in by hand (coming from before 1.4)
         old = read_manifest(old_text)
 
         changed, added, mine = [], [], []

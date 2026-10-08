@@ -451,6 +451,11 @@ How the party gets pulled in.
             families.write_text(s[:i].rstrip() + "\n", encoding="utf-8", newline="\n")
 
 
+def is_demo() -> bool:
+    """Still the demo campaign: its town's pages are here."""
+    return all((ROOT / d).is_dir() for d in DEMO_DIRS)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Set up your own campaign (replaces the demo).")
     ap.add_argument("--name")
@@ -460,7 +465,14 @@ def main() -> int:
     ap.add_argument("--level", type=int)
     ap.add_argument("--yes", action="store_true", help="don't ask for confirmation")
     ap.add_argument("--no-backup", action="store_true")
+    ap.add_argument("--force", action="store_true", help="run even though this isn't the demo campaign")
     args = ap.parse_args()
+
+    if not is_demo() and not args.force:
+        print("\n  This folder already holds your own campaign, not the demo - the wizard is only for replacing")
+        print("  the demo, and running it here would overwrite your This Session page, party, factions, maps")
+        print("  list and menus. Nothing was changed. (To start over anyway: codex new --force, after a backup.)")
+        return 1
 
     interactive = not (args.name and args.town)
     print("\n  Set up your own campaign\n  ------------------------")

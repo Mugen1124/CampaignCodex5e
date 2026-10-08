@@ -158,6 +158,9 @@ def on_post_build(config, **kwargs):
                 return m.group(0)
             target, _, anchor = href.partition("#")
             dest = path if not target else (path.parent / target).resolve()
+            if target.endswith(".md"):   # a link the build couldn't resolve: its page isn't on this site (dm_only)
+                fixed += 1
+                return m.group(4)
             if target and not target.endswith(".html"):
                 return m.group(0)   # downloads, images, the search index
             if dest not in ids or (anchor and anchor not in ids[dest]):

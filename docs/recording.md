@@ -5,7 +5,7 @@ hide:
 
 # Record & Transcribe
 
-Record the session from the table microphone, then turn the recording into a transcript for the session's page. Everything stays on this computer: recordings save into the folder below (the `recordings` folder in your campaign, unless you choose another), and transcripts are written next to them.
+Record the session from the table microphone, then turn the recording into a transcript for the session's page. Everything stays on this computer: recordings save into the folder below (the one set as `recordings:` in campaign.yml, unless you choose another), and transcripts are written next to them.
 
 <div id="rec-root" class="eb"><p>Loading the recorder…</p></div>
 

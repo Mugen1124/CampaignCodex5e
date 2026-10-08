@@ -713,8 +713,24 @@ def render_encounter(enc: dict, page_src: str) -> str:
 
 # ---------------------------------------------------------------- page hook
 
+DEMO_BLOCK = re.compile(r"<!--\s*demo\b.*?-->.*?<!--\s*/demo\s*-->\n?", re.S)
+
+
+def drop_dead_demo(markdown: str, src: str, files) -> str:
+    """The guide's <!-- demo --> ... <!-- /demo --> stretches point at the demo campaign's pages. The setup
+    wizard removes them; a campaign that didn't come from the demo (or a guide page an update brings back)
+    drops any stretch that links to a page this campaign doesn't have."""
+    def fix(m):
+        for link in re.findall(r"\]\(([^)#\s]+\.md)", m.group(0)):
+            if not files.get_file_from_path(posixpath.normpath(posixpath.join(posixpath.dirname(src), link))):
+                return ""
+        return m.group(0)
+    return DEMO_BLOCK.sub(fix, markdown) if "<!--" in markdown else markdown
+
+
 def on_page_markdown(markdown, page, config, files, **kwargs):
     src = page.file.src_uri
+    markdown = drop_dead_demo(markdown, src, files)
 
     def render(kind, key):
         if kind == "bestiary":

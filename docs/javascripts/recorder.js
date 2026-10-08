@@ -76,7 +76,7 @@
       '   <button class="eb-act rec-allow">Allow microphone</button></div>' +
       '  <label>Level</label><div class="rec-line"><div class="rec-meter"><div class="rec-meter-fill"></div></div><span class="rec-level-note"></span></div>' +
       '  <label>Save to</label><div class="rec-line"><input class="rec-folder" readonly><button class="eb-act rec-browse">Browse…</button>' +
-      '   <button class="eb-act rec-default" title="The recordings folder next to campaign-site">Default</button></div>' +
+      '   <button class="eb-act rec-default" title="The recordings folder set in campaign.yml (recordings:)">Default</button></div>' +
       " </div>" +
       ' <div class="rec-controls">' +
       '  <button class="md-button md-button--primary rec-start">● Record</button>' +

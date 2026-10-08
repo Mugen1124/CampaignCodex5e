@@ -51,7 +51,10 @@ chmod +x CampaignCodex5e.sh CampaignCodex5e.command publish.sh codex.sh 2>/dev/n
 echo
 echo "  Setup complete."
 echo
-read -r -p "  Set up your own campaign now? (y = yes, n = keep exploring the demo first) [y/n]: " ANSWER
+ANSWER=n
+if [ -d docs/cities/greywater ]; then   # only while the demo is still here - never on a campaign of your own
+  read -r -p "  Set up your own campaign now? (y = yes, n = keep exploring the demo first) [y/n]: " ANSWER
+fi
 case "$ANSWER" in
   [Yy]*) "$VENV/bin/python" -m codex new ;;
 esac

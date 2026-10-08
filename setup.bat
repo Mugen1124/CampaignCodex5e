@@ -83,8 +83,9 @@ REM ---- 3. Your campaign
 echo.
 echo  Setup complete.
 echo.
+REM Only while the demo is still here - never on a campaign of your own.
 set "ANSWER="
-set /p "ANSWER=  Set up your own campaign now? (Y = yes, N = keep exploring the demo first) [Y/N]: "
+if exist "docs\cities\greywater\" set /p "ANSWER=  Set up your own campaign now? (Y = yes, N = keep exploring the demo first) [Y/N]: "
 if /i "%ANSWER%"=="Y" "%VENV%\Scripts\python.exe" -m codex new
 
 echo.

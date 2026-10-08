@@ -126,6 +126,9 @@ def main() -> int:
         check("demo: dm_only page left out", not (players / "cities" / "greywater" / "events.html").exists())
         check("demo: DM-only map left out", not any(players.rglob("bellwether-light*")))
         check("demo: guide left out", not (players / "guide").exists())
+        dead = [p.relative_to(players).as_posix() for p in players.rglob("*.html")
+                if re.search(r'href="[^"#]*\.md(#[^"]*)?"', p.read_text(encoding="utf-8"))]
+        check("demo: no leftover links to pages the players' site doesn't have", not dead, ", ".join(dead[:5]))
 
         print("The Sessions tab:")
         dm_home = (out / "dm" / "index.html").read_text(encoding="utf-8")
@@ -186,6 +189,10 @@ def main() -> int:
         check("wizard runs", r.returncode == 0, r.stdout + r.stderr)
         check("wizard: demo removed", not (proj / "docs" / "cities" / "greywater").exists())
         check("wizard: new town pages", (proj / "docs" / "cities" / "kells-crossing" / "index.md").is_file())
+        party_before = (proj / "data" / "party.yml").read_bytes()
+        r = run(proj, "-m", "codex", "new", "--name", "Oops", "--town", "Nowhere", "--yes", "--no-backup")
+        check("wizard: refuses to run again on a campaign of your own", r.returncode != 0
+              and (proj / "data" / "party.yml").read_bytes() == party_before, r.stdout[-800:])
         after = build_both(proj, "after the wizard")
         about = (after / "players" / "index.html").read_text(encoding="utf-8")
         check("after the wizard: with no sessions yet, the players' site opens on About", bool(re.search(r"<h1[^>]*>About this site", about)))
