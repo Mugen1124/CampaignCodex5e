@@ -32,6 +32,7 @@ import re
 from pathlib import Path
 
 from mkdocs.plugins import event_priority
+from mkdocs.structure.files import InclusionLevel
 
 import sys  # noqa: E402
 
@@ -72,7 +73,9 @@ def on_files(files, config, **kwargs):
         return files
     for f in list(files.documentation_pages()):
         if dm_only(f.abs_src_path):
-            files.remove(f)
+            # Left out exactly as exclude_docs leaves a page out: never built or searchable, and links to
+            # it are known to point at a page that's not on this site (they become plain text).
+            f.inclusion = InclusionLevel.EXCLUDED
     HOME[0] = codex_sessions.latest(Path(config["docs_dir"])) or ABOUT
     home = files.get_file_from_path(HOME[0])
     dm_home = files.get_file_from_path("index.md")

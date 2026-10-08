@@ -163,6 +163,16 @@ def main() -> int:
         bestiary = (out / "dm" / "reference" / "bestiary.html").read_text(encoding="utf-8")
         check("a condition in a stat block gets a hover card", 'data-ref="condition:' in bestiary)
 
+        print("A link to a dm_only page:")
+        page = proj / "docs" / "world" / "index.md"
+        original = page.read_text(encoding="utf-8")
+        page.write_text(original + "\nSee [the town's events](../cities/greywater/events.md#top).\n", encoding="utf-8")
+        warnings = build(proj, "mkdocs-players.yml", out / "dmonly")
+        html_ = (out / "dmonly" / "world" / "index.html").read_text(encoding="utf-8")
+        check("the players' build doesn't warn about it", not warnings, "\n".join(warnings))
+        check("...and it's plain text there", "the town's events" in html_ and "events.md" not in html_ and "events.html" not in html_)
+        page.write_text(original, encoding="utf-8")
+
         print("A banned word:")
         conf = proj / "campaign.yml"
         conf_text = conf.read_text(encoding="utf-8")
