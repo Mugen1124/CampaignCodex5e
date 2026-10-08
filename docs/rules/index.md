@@ -9,7 +9,8 @@ The game's rules, ready to search mid-session: the **5e System Reference Documen
 - **[Adventuring](adventuring.md)** — time, movement and travel, the environment, resting, objects, traps, poisons, diseases, madness, and life between adventures.
 - **[Spellcasting](spellcasting.md)** — how magic works.
 - **[Spells](spells.md)** — every spell, filterable by level, class, and school.
-- **[Magic Items](magic-items.md)** — attunement and the rest of the rules, then every item.
+- **[Magic Item Rules](magic-item-rules.md)** — attunement, wearing and wielding, activating items, sentient items.
+- **[Magic Items](magic-items.md)** — every item, filterable by rarity, type, and attunement.
 - **[Equipment](equipment.md)** — coins, armor, weapons, gear, tools, mounts, and costs.
 - **[Characters](characters.md)** — races, backgrounds, alignment, languages, feats, leveling up, multiclassing.
 - **[Monsters, NPCs & the planes](more.md)** — reading stat blocks, NPCs, the planes, and pantheons.

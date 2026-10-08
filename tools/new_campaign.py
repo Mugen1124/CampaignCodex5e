@@ -134,6 +134,7 @@ def nav_dm(town: str, town_id: str, arc: str, arc_id: str) -> str:
       - Adventuring: rules/adventuring.md
       - Spellcasting: rules/spellcasting.md
       - Spells: rules/spells.md
+      - Magic Item Rules: rules/magic-item-rules.md
       - Magic Items: rules/magic-items.md
       - Equipment: rules/equipment.md
       - Characters: rules/characters.md
@@ -187,6 +188,7 @@ def nav_players(town: str, town_id: str) -> str:
       - Adventuring: rules/adventuring.md
       - Spellcasting: rules/spellcasting.md
       - Spells: rules/spells.md
+      - Magic Item Rules: rules/magic-item-rules.md
       - Magic Items: rules/magic-items.md
       - Equipment: rules/equipment.md
       - Characters: rules/characters.md
