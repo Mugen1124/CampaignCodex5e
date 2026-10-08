@@ -79,7 +79,7 @@ markdown_extensions:
   - md_in_html          # lets Markdown live inside stat block wrappers
   - def_list
   - toc:
-      permalink: true
+      permalink: false   # no ¶ link mark beside headings (they still have anchors to link to)
 
 # Tab and page order. Top-level entries become the tabs across the header.
 nav:

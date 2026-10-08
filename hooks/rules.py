@@ -24,7 +24,12 @@ def on_config(config, **kwargs):
     return config
 
 
+LETTERS_ONLY = set()   # pages with every magic item: their contents list is just the A-Z letters
+
+
 def on_page_markdown(markdown, page, config, files, **kwargs):
+    if any(m.group(1) == "srd-magic-items" for m in MARKER.finditer(markdown)):
+        LETTERS_ONLY.add(page.file.src_uri)
     def render(m):
         kind, arg = m.group(1), m.group(2).split()
         if kind == "rules":
@@ -37,3 +42,12 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
             return rules.render_items()
         return rules.credit()
     return MARKER.sub(render, markdown)
+
+
+def on_page_content(html, page, config, files, **kwargs):
+    # The rules above the list keep their headings on the page; only the letters go in the right-hand contents.
+    # (The page's # title is the top of the contents; its ## headings are the entries under it.)
+    if page.file.src_uri in LETTERS_ONLY:
+        for top in page.toc.items:
+            top.children = [a for a in top.children if a.id.startswith("items-")]
+    return html
