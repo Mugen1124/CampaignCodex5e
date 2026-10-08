@@ -1,4 +1,4 @@
-# Optional: session transcription (Session Log -> Record & Transcribe, or the transcribe script).
+# Optional: session transcription (the Record & Transcribe tab, or the transcribe script).
 # A large download (the speech model is fetched on first use, about 1.6 GB). Installed by
 #   setup --with-transcribe
 # Also needs ffmpeg on the computer for browser recordings (see Recording sessions in the guide).

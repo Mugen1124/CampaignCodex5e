@@ -8,7 +8,7 @@ A website for running a D&D campaign — your prep, your world, and your table t
 - **A rules encyclopedia**: the whole 5e SRD — conditions, combat, adventuring, spellcasting, every spell and magic item, equipment — searchable, with a one-page DM Screen. `[[Prone]]` or `[[Fireball]]` anywhere gets a hover card, and so do conditions in the initiative tracker.
 - **Character cards** for the party, editable from the browser.
 - **A players' site** built from the same files: no prep, no secrets, no stat blocks, and only the people and places they've met — it fills in as you write up each session. A leak check stands guard before anything goes online.
-- **Optional extras**: private hosting on Cloudflare (free) with a live initiative page for players' phones, and session recording with on-device transcription.
+- **Optional extras**: private hosting on Cloudflare (free) with a live initiative page for players' phones, and [session recording with on-device transcription](#recording-and-transcribing-sessions) that turns into a ready-to-read recap.
 
 Everything is plain text files on your computer: Markdown pages (text with simple formatting, like `**bold**`) and YAML data (simple `name: value` lists), built into a website with [MkDocs](https://www.mkdocs.org/) and [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/). Nothing goes online unless you put it there.
 
@@ -55,6 +55,79 @@ The full guide is part of the site itself — the **Guide** tab, or the Markdown
 [recording sessions](docs/guide/recording.md) ·
 [working with Claude](docs/guide/ai-assistant.md) ·
 [troubleshooting](docs/guide/troubleshooting.md)
+
+## Recording and transcribing sessions
+
+**Optional, and only with your table's OK.** Record the session at the table, turn the recording into a written transcript on your own computer, then turn the transcript into the session's page — with a "Previously…" recap ready to read aloud next time. Nothing is uploaded anywhere: the speech recognition runs on your computer.
+
+### Set it up (once)
+
+1. Run setup with transcription: `setup.bat --with-transcribe` (Windows, from a terminal in the folder) or `bash setup.sh --with-transcribe`. It installs [faster-whisper](https://github.com/SYSTRAN/faster-whisper), an open-source version of OpenAI's Whisper speech recognition. The speech model itself (about 1.6 GB) downloads the first time you transcribe.
+2. Install **ffmpeg**, which reads the browser's recordings: `winget install ffmpeg` (Windows) or `brew install ffmpeg` (Mac), or from <https://ffmpeg.org>.
+
+### Record
+
+With `CampaignCodex5e` running, open the **Record & Transcribe** tab in Chrome or Edge.
+
+- **Pick the microphone** and watch the level meter while people talk. One microphone in the middle of the table, set to pick up all around (a USB conference or podcast mic), works best.
+- **Record.** The audio is saved every few seconds, so a crash or a closed tab loses seconds, not the session.
+- **⧉ Pop out** moves the recorder into a small window of its own, so you can use the rest of the site while it records; a **● REC** light shows on every page.
+- Recordings go in the `recordings/` folder in your campaign (or wherever **Browse…** points, or `recordings:` in `campaign.yml`). That folder is never built, published, or committed to git.
+
+You can also transcribe a recording made any other way — a phone, a voice recorder, Discord: `.m4a`, `.mp3`, `.wav`, `.flac`, `.ogg`, `.webm`, `.aac`, or `.wma`. Put it in `recordings/`.
+
+### Transcribe
+
+Press **Transcribe** next to a recording on the same tab, and leave the site running — it shows its progress, and takes a while (longer on slower computers). Or from a terminal: `codex.bat transcribe` / `./codex.sh transcribe` for the newest recording, or name a file. On Windows you can drag a recording onto `transcribe.bat`.
+
+It writes `<recording>.transcript.txt` next to the recording, one line per stretch of speech with its time:
+
+```
+[01:23:45] I search the captain's desk.
+[01:23:51] You find a ledger, and a key on a red cord.
+```
+
+What makes it better than a plain transcription:
+
+- **Your names, spelled right.** Before it starts, it's given your campaign's names — the party, the people and places of the town in `focus:` (in `campaign.yml`), factions, items — so it writes *Hester Vane*, not *Hester Bane*. `transcribe --vocab-only` shows the list.
+- **Fights, in order.** If you ran the initiative tracker during the recording, its turn log (rounds, whose turn it was, conditions, who joined or left the fight) is woven into the transcript at the right times, marked ⚔.
+- **Loot, noticed.** Lines where someone seems to take one of your campaign's items ("Kestrel grabs the Tidewalker Boots") are collected; the **Items** page lists them for you to assign or dismiss. Nothing changes hands by itself.
+
+Speakers aren't labeled — it's one microphone — so the write-up works out who said what from context.
+
+### From transcript to recap
+
+Write the session's page yourself from the transcript — or let an AI assistant draft it. With [Claude Code](https://claude.com/claude-code) open in this folder (it reads `CLAUDE.md`, which explains the write-up format):
+
+> *"Write up the session from recordings/Session 2026-10-04 1900.transcript.txt."*
+
+You get a **draft**, nothing changed yet:
+
+- a new session page for the **Sessions** tab, with a **"Previously…" recap** written to be read aloud at the start of next session — short sentences, in order, "you", ending on a simple hook;
+- what happened, scene by scene, with names as `[[mentions]]`;
+- a few favorite lines from the table to choose from;
+- DM boxes for what the players don't know yet;
+- suggested updates: who died or moved, new people met, items that changed hands, and a new **Now** section for This Session.
+
+Claude asks where the transcript is unclear (who took the sword? who read the scroll?) instead of guessing. Read the draft, correct it, and approve:
+
+> *"Good — but Kestrel kept the boots, not Oskar. Go ahead."*
+
+Other prompts that help:
+
+- *"Make the Previously… recap simpler — short sentences, in order."*
+- *"Write the recap from Sabine's point of view."*
+- *"Offer me five one-liners from the transcript for the session page."*
+- *"Which names in the transcript aren't in our data yet?"*
+- *"What did the party promise people this session? List the loose threads."*
+
+Remember that everyone and everything mentioned in the public part of a session page appears on the **players' site** — that's how it fills in. Secrets go in DM boxes.
+
+### Afterward
+
+Transcripts are raw table talk. Keep them private, and **delete the recording and transcript once the session's page is written**, unless everyone at the table is happy to keep them. (*"Delete the recording and transcript"* works too.)
+
+More in the guide: [Recording sessions](docs/guide/recording.md) and [Working with Claude](docs/guide/ai-assistant.md).
 
 ## Working with Claude
 

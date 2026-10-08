@@ -13,7 +13,7 @@ the Items page shows them for you to assign or dismiss - nothing is assigned by 
 
 Speech-to-text is faster-whisper (an open-source Whisper) running on the CPU. It's given the
 campaign's own names - party, the current city's NPCs and places, factions, items - so it spells
-your characters' and places' names instead of guessing. Writing the session log from the transcript is a
+your characters' and places' names instead of guessing. Writing the session's page from the transcript is a
 separate step (ask Claude: "write up the session from <transcript>").
 """
 
