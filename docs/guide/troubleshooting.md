@@ -10,6 +10,8 @@
 
 ## serve
 
+**A box about "MkDocs 2.0" appears when the site starts.** It's a notice from Material for MkDocs about a future version. campaign-codex stays on MkDocs 1.x (see `requirements.txt`), so it doesn't affect you — ignore it.
+
 **The page doesn't open, or says the address is in use.** Another `serve` is already running — close its window, or use that one. The site is at <http://127.0.0.1:8000>.
 
 **Saving doesn't work (Edit, the encounter builder, the recorder).** Those need the save helper, which `serve` starts. Check the `serve` window is still open, then reload the page.
