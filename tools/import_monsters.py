@@ -38,7 +38,7 @@ OUT_DIR = ROOT / "data" / "monsters"
 # ---------------------------------------------------------------- helpers
 
 def fetch_json(url: str):
-    req = urllib.request.Request(url, headers={"User-Agent": "campaign-codex"})
+    req = urllib.request.Request(url, headers={"User-Agent": "CampaignCodex5e"})
     with urllib.request.urlopen(req, timeout=60) as r:
         return json.loads(r.read().decode("utf-8"))
 

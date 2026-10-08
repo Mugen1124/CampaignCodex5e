@@ -56,7 +56,7 @@ To show different text, add it after a bar: `[[Hester Vane|Hester]]` shows as "H
 
 - **Only the first mention in each H2 section becomes a link**; later mentions of the same thing in that section are plain text. That keeps busy paragraphs readable.
 - **Headings and read-aloud boxes are always plain text**, even if a name inside them is marked.
-- **A misspelled or unknown name** shows with a red wavy underline and a warning in the serve window.
+- **A misspelled or unknown name** shows with a red wavy underline and a warning in the CampaignCodex5e window.
 - `add-mentions` wraps every known name on your story pages for you.
 
 ## NPCs
@@ -151,7 +151,7 @@ Markers and mentions work inside tabs and folded boxes too — indent them like 
 
 ## Build checks
 
-Every time the site builds, it warns (in the serve window) about:
+Every time the site builds, it warns (in the CampaignCodex5e window) about:
 
 - a missing required field on any NPC, location, faction, or item
 - an NPC pointing at a location, faction, or stat block that doesn't exist

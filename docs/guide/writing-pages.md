@@ -1,6 +1,6 @@
 # Writing pages
 
-Pages are Markdown files in `docs/`. Open them in any text editor (VS Code, Notepad++, TextEdit in plain-text mode); with `serve` running, the site updates the moment you save. The [Style Guide](../reference/style-guide.md) shows every element live — this page explains how to write them.
+Pages are Markdown files in `docs/`. Open them in any text editor (VS Code, Notepad++, TextEdit in plain-text mode); with `CampaignCodex5e` running, the site updates the moment you save. The [Style Guide](../reference/style-guide.md) shows every element live — this page explains how to write them.
 
 ## The basics
 
@@ -56,7 +56,7 @@ A marker, alone on its own line, is replaced with something built from your data
 
 ## Mentions
 
-`[[Hester Vane]]` links to Hester with a hover card. `[[Hester Vane|Hester]]` shows "Hester". Anything in your data works: people, places, factions, items, creatures — and the rules: conditions (`[[Prone]]`), spells (`[[Fireball]]`), and the SRD's magic items (`[[Bag of Holding]]`). Your own data wins when a name matches. Only the first mention in each `##` section becomes a link, so busy paragraphs stay readable. A name the site doesn't know gets a red wavy underline and a warning in the `serve` window.
+`[[Hester Vane]]` links to Hester with a hover card. `[[Hester Vane|Hester]]` shows "Hester". Anything in your data works: people, places, factions, items, creatures — and the rules: conditions (`[[Prone]]`), spells (`[[Fireball]]`), and the SRD's magic items (`[[Bag of Holding]]`). Your own data wins when a name matches. Only the first mention in each `##` section becomes a link, so busy paragraphs stay readable. A name the site doesn't know gets a red wavy underline and a warning in the `CampaignCodex5e` window.
 
 ## Hiding text from the players
 

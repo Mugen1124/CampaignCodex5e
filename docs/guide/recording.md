@@ -9,7 +9,7 @@
 
 ## Record
 
-With `serve` running, open **Session Log → [Record & Transcribe](../recording.md)** in Chrome or Edge:
+With `CampaignCodex5e` running, open **Session Log → [Record & Transcribe](../recording.md)** in Chrome or Edge:
 
 - Pick the microphone and check the level meter. A USB conference or podcast mic in the middle of the table, set to pick up all around, works best.
 - **⧉ Pop out** moves the recorder into a small window of its own, so you can use the rest of the site; a **● REC** light shows on every page while it records.

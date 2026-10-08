@@ -1,11 +1,11 @@
 @echo off
 setlocal EnableExtensions
-title campaign-codex - setup
+title CampaignCodex5e - setup
 cd /d "%~dp0"
 
 echo.
 echo  ==============================================
-echo    campaign-codex - one-time setup
+echo    CampaignCodex5e - one-time setup
 echo  ==============================================
 echo.
 echo  Installs what the site needs into a private folder (.venv) here - nothing else on this
@@ -78,7 +78,7 @@ set /p "ANSWER=  Set up your own campaign now? (Y = yes, N = keep exploring the 
 if /i "%ANSWER%"=="Y" ".venv\Scripts\python.exe" -m codex new
 
 echo.
-echo  Starting the site - leave this window open while you use it. From now on, just run serve.bat.
+echo  Starting the site - leave this window open while you use it. From now on, just double-click CampaignCodex5e.bat.
 echo.
 ".venv\Scripts\python.exe" -m codex serve
 exit /b 0

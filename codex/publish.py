@@ -9,7 +9,7 @@ those folders. The players' site is only uploaded if the leak check finds no DM 
 After each upload it checks that a signed-out visitor is sent to the login, and warns loudly if not.
 
 Needs Node.js (for Cloudflare's wrangler, run through npx) and a one-time `npx wrangler login`.
-The online copies are read-only: make changes with serve, then publish again.
+The online copies are read-only: make changes with CampaignCodex5e, then publish again.
 """
 
 import json

@@ -6,19 +6,19 @@
 
 **"Couldn't create .venv" (Linux).** Install the venv module: `sudo apt install python3-venv` (Debian/Ubuntu), then `./setup.sh` again.
 
-**macOS: "permission denied" running a script.** Make it runnable once: `chmod +x setup.sh serve.sh publish.sh codex.sh`. Run scripts from Terminal (`./serve.sh`).
+**macOS: "permission denied" running a script.** Make them runnable once, in Terminal in this folder: `chmod +x *.sh *.command`. If macOS says the `.command` file is from an unidentified developer, right-click it and choose **Open** the first time.
 
-## serve
+## Starting the site
 
-**A box about "MkDocs 2.0" appears when the site starts.** It's a notice from Material for MkDocs about a future version. campaign-codex stays on MkDocs 1.x (see `requirements.txt`), so it doesn't affect you — ignore it.
+**A box about "MkDocs 2.0" appears when the site starts.** It's a notice from Material for MkDocs about a future version. CampaignCodex5e stays on MkDocs 1.x (see `requirements.txt`), so it doesn't affect you — ignore it.
 
-**The page doesn't open, or says the address is in use.** Another `serve` is already running — close its window, or use that one. The site is at <http://127.0.0.1:8000>.
+**The page doesn't open, or says the address is in use.** Another `CampaignCodex5e` is already running — close its window, or use that one. The site is at <http://127.0.0.1:8000>.
 
-**Saving doesn't work (Edit, the encounter builder, the recorder).** Those need the save helper, which `serve` starts. Check the `serve` window is still open, then reload the page.
+**Saving doesn't work (Edit, the encounter builder, the recorder).** Those need the save helper, which `CampaignCodex5e` starts. Check the `CampaignCodex5e` window is still open, then reload the page.
 
-**A change to a file in `hooks/` doesn't show.** Close the `serve` window and start it again; pages and data reload by themselves, the engine doesn't.
+**A change to a file in `hooks/` doesn't show.** Close the `CampaignCodex5e` window and start it again; pages and data reload by themselves, the engine doesn't.
 
-## Warnings in the serve window
+## Warnings in the CampaignCodex5e window
 
 They're there to help, and the site still builds. The common ones:
 

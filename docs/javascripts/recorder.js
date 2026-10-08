@@ -2,7 +2,7 @@
    transcriptions. The browser records; every few seconds the audio so far goes to the local save
    helper (tools/site_helper.py), which adds it to the file on disk - so a crash or a closed tab
    loses seconds, not the session. Transcribing runs tools/transcribe.py in the background.
-   Works on the site at home or on the laptop at the table (serve); the online copy only
+   Works on the site at home or on the laptop at the table (CampaignCodex5e); the online copy only
    explains that.
 
    Pop out: the recorder can run in its own small window (recording.html?popout), so the main
@@ -19,7 +19,7 @@
   var STORE = CAMPAIGN + "-recorder";
   var CHUNK_MS = 5000;
   var ONLINE = location.protocol !== "file:" && !/^(127\.0\.0\.1|localhost|\[::1\])$/.test(location.hostname);
-  var OFFLINE = "The save helper isn't running (it starts with <code>serve</code>).";
+  var OFFLINE = "The save helper isn't running (it starts with <code>CampaignCodex5e</code>).";
   var WINDOW_NAME = CAMPAIGN + "-recorder";
   var POPOUT = /[?&]popout\b/.test(location.search);
   var bc = window.BroadcastChannel ? new BroadcastChannel(CAMPAIGN + "-recorder") : null;
@@ -53,11 +53,11 @@
     if (!root) return;
     if (ONLINE) {
       root.innerHTML = '<div class="eb-msg eb-info">Recording works on the site at home or on the laptop at the table ' +
-        "(<code>serve</code>), not on the online copy.</div>";
+        "(<code>CampaignCodex5e</code>), not on the online copy.</div>";
       return;
     }
     if (!navigator.mediaDevices || !window.MediaRecorder) {
-      root.innerHTML = '<div class="eb-msg eb-warn">This browser can\'t record here. Open the site with <code>serve</code> ' +
+      root.innerHTML = '<div class="eb-msg eb-warn">This browser can\'t record here. Open the site with <code>CampaignCodex5e</code> ' +
         "(http://127.0.0.1:8000) in Chrome or Edge.</div>";
       return;
     }

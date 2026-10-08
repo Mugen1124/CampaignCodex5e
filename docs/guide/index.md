@@ -1,6 +1,6 @@
 # Welcome
 
-**campaign-codex** is a website for running a tabletop campaign — your prep, your world, and your table tools in one place — plus a second, stripped-down website for your players that only ever shows what they've come across.
+**CampaignCodex5e** is a website for running a tabletop campaign — your prep, your world, and your table tools in one place — plus a second, stripped-down website for your players that only ever shows what they've come across.
 
 Everything lives as plain text files in this folder: Markdown pages in `docs/`, and data (people, places, creatures, items, encounters) in `data/`. The site is built from those files on your own computer. Nothing goes online unless you choose to put it there.
 
@@ -17,7 +17,7 @@ You're looking at a small **demo campaign**, *The Lantern Coast* — a fishing t
 
 - **[This Session](../index.md)** — the page you open at the table: where things stand, then the next session's prep.
 - **[Session Log](../session-log.md)** — what happened at the table, newest first.
-- **[Party](../party/index.md)** — character cards. With `serve` running, **Edit** fills them in.
+- **[Party](../party/index.md)** — character cards. With `CampaignCodex5e` running, **Edit** fills them in.
 - **[Places → Greywater](../cities/greywater/index.md)** — a town's overview, locations (with who's found where), people, and factions.
 - **[Arcs → The Drowned Bell](../arcs/the-drowned-bell.md)** — a storyline's prep, scene by scene.
 - **[Encounters](../encounters/index.md)** — the encounter builder and initiative tracker.
@@ -29,12 +29,12 @@ Hover any name with a dotted underline for a quick card.
 
 ## The commands
 
-Each is a script in this folder: double-click the `.bat` on Windows, or run the `.sh` in a terminal on macOS and Linux (`./serve.sh`). Anything without its own script runs through `codex`: `codex.bat backup`, `./codex.sh backup`.
+Each is a script in this folder: double-click the `.bat` on Windows or the `.command` on a Mac, or run the `.sh` in a terminal on Linux (`./CampaignCodex5e.sh`). Anything without its own script runs through `codex`: `codex.bat backup`, `./codex.sh backup`.
 
 | Command | What it does |
 |---|---|
 | `setup` | One-time install (run it again to update). Offers to start your own campaign. |
-| `serve` | The live site at <http://127.0.0.1:8000>. Updates as you save files. Leave its window open. |
+| `CampaignCodex5e` | Starts the site at <http://127.0.0.1:8000>. Updates as you save files. Leave its window open. |
 | `codex new` | Replaces the demo with your own campaign — see [Your campaign](your-campaign.md). |
 | `codex build` | A copy in `site/` you can open straight from disk, no server needed. |
 | `codex players` | Builds the players' site and opens it — see what they'll see. |

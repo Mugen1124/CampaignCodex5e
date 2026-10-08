@@ -208,7 +208,7 @@ def mkdocs_yml(name: str, town: str, town_id: str, arc: str, arc_id: str):
 
 def party_yml(party: list, level: int):
     lines = ["# The party. Encounters use level and size for their difficulty math.",
-             "# Fill in each card with Edit on the Party page while serve is running (every field is listed",
+             "# Fill in each card with Edit on the Party page while CampaignCodex5e is running (every field is listed",
              "# in templates/character.yml). email: (optional) is the address a player signs in to the",
              "# players' site with - only needed if you put it online. Emails never appear on any page.",
              f"level: {level}", f"size: {len(party)}", "members:"]
@@ -507,7 +507,7 @@ def main() -> int:
   Done - {name} is ready.
 
   Next:
-    - Run serve (or keep it running) and open http://127.0.0.1:8000
+    - Start CampaignCodex5e (or keep it running) and open http://127.0.0.1:8000
     - Read the Guide tab: "Your campaign" walks through adding places, people, and sessions.
     - Fill in the character cards with Edit on the Party page.
 """)

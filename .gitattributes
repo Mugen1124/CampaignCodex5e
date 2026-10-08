@@ -2,6 +2,7 @@
 * text=auto
 *.bat text eol=crlf
 *.sh text eol=lf
+*.command text eol=lf
 *.png binary
 *.jpg binary
 *.mp3 binary

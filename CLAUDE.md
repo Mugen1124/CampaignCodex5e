@@ -1,6 +1,6 @@
 # Working on this campaign
 
-This folder is a D&D campaign site built with campaign-codex: Markdown pages in `docs/`, YAML data in `data/`, built by MkDocs with the hooks in `hooks/`. There are two sites from the same files: the DM's (`mkdocs.yml`) and the players' (`mkdocs-players.yml`). The guide pages in `docs/guide/` explain everything in detail; this file is the short version for an assistant.
+This folder is a D&D campaign site built with CampaignCodex5e: Markdown pages in `docs/`, YAML data in `data/`, built by MkDocs with the hooks in `hooks/`. There are two sites from the same files: the DM's (`mkdocs.yml`) and the players' (`mkdocs-players.yml`). The guide pages in `docs/guide/` explain everything in detail; this file is the short version for an assistant.
 
 ## Golden rules
 
@@ -36,4 +36,4 @@ When the DM asks to write up a session from `recordings/<name>.transcript.txt`:
 
 - `python -m codex check` — builds both sites and runs the leak check.
 - Build warnings worth fixing: unknown `[[mentions]]`, unknown ids in markers, missing required fields, broken links.
-- With `serve` running, pages reload as files are saved; changes to `hooks/` need a restart.
+- With `CampaignCodex5e` running, pages reload as files are saved; changes to `hooks/` need a restart.

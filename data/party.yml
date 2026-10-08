@@ -1,6 +1,6 @@
 # The party. Encounters use level and size for their difficulty math.
 # Each member can carry card fields (AC, HP, abilities, features...) for the Party page and the
-# initiative tracker - see templates/character.yml, or use Edit on the Party page while serve runs.
+# initiative tracker - see templates/character.yml, or use Edit on the Party page while CampaignCodex5e runs.
 # email: (optional) is the address a player signs in to the players' site with - only needed if
 # you put the players' site online. Emails never appear on any page.
 level: 3

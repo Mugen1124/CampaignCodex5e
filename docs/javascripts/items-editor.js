@@ -1,4 +1,4 @@
-/* Who carries what. On the site at home (serve running):
+/* Who carries what. On the site at home (CampaignCodex5e running):
      - Items page: a "Held by" picker under every item, and "Players' site": automatic (the usual
        rules - Session Log mentions, revealed.yml, carried), always show, or always hide, and the pickups tools/transcribe.py noticed
        in session transcripts, each with Assign / Dismiss.
@@ -8,7 +8,7 @@
        stays usable however many items there are. Empty, it lists the items nobody carries yet. It only
        offers items the players can see; hidden ones (Items page, "Players' site") are left out.
    Saves through the local save helper (tools/site_helper.py), which changes only that item's
-   holder: line in data/items/. After a save, serve rebuilds and the page refreshes by itself.
+   holder: line in data/items/. After a save, CampaignCodex5e rebuilds and the page refreshes by itself.
    An item with a holder shows under Carrying on that character's card, on both sites, and is
    revealed on the players' site. The online copies don't show any of this. */
 (function () {
@@ -18,7 +18,7 @@
   // stays separate when two campaigns are served on one computer.
   var CAMPAIGN = (document.querySelector('meta[name="codex-campaign"]') || {}).content || "codex";
   var ONLINE = location.protocol !== "file:" && !/^(127\.0\.0\.1|localhost|\[::1\])$/.test(location.hostname);
-  var OFFLINE = "The save helper isn't running (it starts with <code>serve</code>).";
+  var OFFLINE = "The save helper isn't running (it starts with <code>CampaignCodex5e</code>).";
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {

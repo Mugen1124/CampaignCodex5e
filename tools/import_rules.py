@@ -26,7 +26,7 @@ def fetch(endpoint: str) -> list:
     url = f"{API}/{endpoint}/?document__slug={DOC}&limit=500"
     out = []
     while url:
-        req = urllib.request.Request(url, headers={"User-Agent": "campaign-codex"})
+        req = urllib.request.Request(url, headers={"User-Agent": "CampaignCodex5e"})
         with urllib.request.urlopen(req, timeout=60) as r:
             data = json.loads(r.read().decode("utf-8"))
         out += data.get("results", [])

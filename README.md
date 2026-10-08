@@ -1,4 +1,4 @@
-# campaign-codex
+# CampaignCodex5e
 
 A website for running a D&D campaign — your prep, your world, and your table tools in one place — plus a second, safe website for your players that only ever shows what they've come across.
 
@@ -23,14 +23,14 @@ You need **Python 3.10 or newer** (setup installs it on Windows if it's missing)
 3. Setup installs everything into a private `.venv` folder here, then opens the site at <http://127.0.0.1:8000> with a **demo campaign**, *The Lantern Coast*. Have a look around, then read the **Guide** tab.
 4. When you're ready, start your own: `codex.bat new` (Windows) or `./codex.sh new` — a few questions, and the demo is replaced with your campaign.
 
-From then on, **`serve`** (`serve.bat` / `./serve.sh`) starts the site whenever you want to work on it.
+From then on, **`CampaignCodex5e`** starts the site whenever you want to work on it: double-click `CampaignCodex5e.bat` (Windows) or `CampaignCodex5e.command` (Mac), or run `./CampaignCodex5e.sh` (Linux).
 
 ## Commands
 
 | Windows | macOS / Linux | |
 |---|---|---|
 | `setup.bat` | `./setup.sh` | install or update (`--with-transcribe` adds session transcription) |
-| `serve.bat` | `./serve.sh` | the live site at http://127.0.0.1:8000 |
+| `CampaignCodex5e.bat` | `CampaignCodex5e.command` (Mac) · `./CampaignCodex5e.sh` (Linux) | start the site at http://127.0.0.1:8000 |
 | `publish.bat` | `./publish.sh` | put both sites online (optional — see the Guide's *Going online*) |
 | `codex.bat <command>` | `./codex.sh <command>` | `new`, `build`, `players`, `check`, `add-mentions`, `import-monsters`, `import-rules`, `transcribe`, `backup` |
 

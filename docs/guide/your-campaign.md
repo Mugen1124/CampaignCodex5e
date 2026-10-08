@@ -38,7 +38,7 @@ Each kind is a YAML file in `data/` with a template in `templates/` that lists e
 
 - **People** — `data/npcs/<town>.yml` (`templates/npc.yml`). `region:` is the town's name; `location:` and `faction:` connect them to places and groups automatically.
 - **Factions** — `data/factions.yml` (`templates/faction.yml`).
-- **Items** — `data/items/*.yml` (`templates/item.yml`). Who carries what is set on the Items page while `serve` is running.
+- **Items** — `data/items/*.yml` (`templates/item.yml`). Who carries what is set on the Items page while `CampaignCodex5e` is running.
 - **Creatures** — `data/monsters/*.yml` (`templates/monster.yml`), or build them in the encounter builder's **New creature** form.
 - **Encounters** — made in the encounter builder, saved to `data/encounters/`.
 

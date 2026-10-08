@@ -1,5 +1,5 @@
 # Items found around Greywater. Fields: see templates/item.yml.
-# holder: is who carries it now (set it with the picker on the Items page while serve is running).
+# holder: is who carries it now (set it with the picker on the Items page while CampaignCodex5e is running).
 
 - id: tidewalker-boots
   name: Tidewalker Boots

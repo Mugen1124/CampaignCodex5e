@@ -3,7 +3,7 @@ Local save helper for the site's tools (the encounter builder, custom creatures,
 page, and session recording).
 
 A web page can't write files by itself. This tiny server runs on your own machine
-alongside serve and does the writing for it. It only listens on 127.0.0.1 (never
+alongside CampaignCodex5e and does the writing for it. It only listens on 127.0.0.1 (never
 the network), and only writes into data\encounters\, data\monsters\custom.yml, data\party.yml,
 and data\families.yml (plus backups in sources\backups\encounters\, creatures\, party\, families\) -
 and new session recordings, in the folder chosen on the Record & Transcribe page
@@ -44,7 +44,7 @@ and new session recordings, in the folder chosen on the Record & Transcribe page
                                 site's live tracker (in the background; the reply says how the last send went).
                                 Needs tools\tracker-token.txt (the Cloudflare service token); writes no files.
 
-serve starts it automatically; closing the serve window stops it.
+CampaignCodex5e starts it automatically; closing the CampaignCodex5e window stops it.
 """
 
 import json
@@ -517,7 +517,7 @@ def new_recording(folder: Path) -> Path:
 
 
 def browse_folder(start: str):
-    """A folder picker, opened on this computer (the one running serve). macOS and Linux use the
+    """A folder picker, opened on this computer (the one running CampaignCodex5e). macOS and Linux use the
     system's own dialog - tkinter can't open windows from the helper's threads there."""
     title = "Where should session recordings be saved?"
     start = start or str(RECORDINGS)
@@ -727,7 +727,7 @@ def players_api(method: str, path: str, body=None):
         raise ValueError("tools/tracker-token.txt is missing - see Going online in the guide.")
     base = TRACKER_URL.rsplit("/api/", 1)[0]
     req = Request(base + path, data=json.dumps(body).encode("utf-8") if body is not None else None, method=method,
-                  headers={"Content-Type": "application/json", "User-Agent": "campaign-codex-helper",
+                  headers={"Content-Type": "application/json", "User-Agent": "CampaignCodex5e-helper",
                            "CF-Access-Client-Id": token[0], "CF-Access-Client-Secret": token[1]})
     try:
         with SHARE_OPENER.open(req, timeout=15) as r:
@@ -776,7 +776,7 @@ def share_sender():
             last["error"] = "tools/tracker-token.txt is missing - see Going online in the guide."
         else:
             req = Request(TRACKER_URL, data=json.dumps(view).encode("utf-8"), method="POST", headers={
-                "Content-Type": "application/json", "User-Agent": "campaign-codex-helper",
+                "Content-Type": "application/json", "User-Agent": "CampaignCodex5e-helper",
                 "CF-Access-Client-Id": token[0], "CF-Access-Client-Secret": token[1]})
             try:
                 with SHARE_OPENER.open(req, timeout=10) as r:
@@ -795,7 +795,7 @@ def share_sender():
 
 class Handler(BaseHTTPRequestHandler):
     def _cors(self):
-        # Pages served by serve, or opened from disk (origin "null").
+        # Pages served by CampaignCodex5e, or opened from disk (origin "null").
         origin = self.headers.get("Origin", "")
         if origin in ("null", "") or origin.startswith(("http://127.0.0.1", "http://localhost")):
             self.send_header("Access-Control-Allow-Origin", origin or "*")
@@ -1220,7 +1220,7 @@ class Handler(BaseHTTPRequestHandler):
         body = self.rfile.read(length) if length else b""
         path = OPEN_RECORDINGS.get(rid)
         if not path and file:
-            # serve was restarted mid-recording: carry on in the same file - but only one of
+            # CampaignCodex5e was restarted mid-recording: carry on in the same file - but only one of
             # this helper's own recordings (an existing "Session ....webm"), never anything else.
             candidate = Path(file)
             if candidate.is_file() and re.match(r"^Session .+\.webm$", candidate.name):
@@ -1268,7 +1268,7 @@ class Handler(BaseHTTPRequestHandler):
         with REC_LOCK:
             if JOB and JOB["process"].poll() is None:
                 return self._reply(409, {"error": f"Already transcribing {Path(JOB['file']).name} - one at a time."})
-            log = Path(tempfile.gettempdir()) / "campaign-codex-transcribe-log.txt"   # progress, read by job_status()
+            log = Path(tempfile.gettempdir()) / "CampaignCodex5e-transcribe-log.txt"   # progress, read by job_status()
             env = dict(os.environ, PYTHONUNBUFFERED="1", PYTHONIOENCODING="utf-8")
             with open(log, "w", encoding="utf-8") as out:
                 proc = subprocess.Popen([sys.executable, str(TRANSCRIBE), str(audio)], stdout=out,
@@ -1279,7 +1279,7 @@ class Handler(BaseHTTPRequestHandler):
         self._reply(200, {"job": job_status()})
 
     def log_message(self, fmt, *args):
-        pass  # keep the serve window quiet
+        pass  # keep the CampaignCodex5e window quiet
 
 
 def main() -> int:

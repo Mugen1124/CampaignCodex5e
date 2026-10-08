@@ -72,10 +72,10 @@ To show the initiative order on your players' phones, the tracker on your comput
 1. **Zero Trust → Access → Service Auth**: create a **service token**. Copy its **Client ID** and **Client Secret** (the secret is shown once).
 2. Save them in `tools/tracker-token.txt`, one per line (labels like `CF-Access-Client-Id:` are fine). This file is never published or committed.
 3. On the players' application, add a second policy: action **Service Auth**, including that service token.
-4. In the initiative tracker (with `serve` running), tick **Share with players**.
+4. In the initiative tracker (with `CampaignCodex5e` running), tick **Share with players**.
 
 Players see names, initiative, whose turn it is, the round, and conditions — never hit points, AC, or notes. **hide** on a row keeps someone off their list (an ambusher, someone invisible).
 
 ## Afterward
 
-The online copies are **read-only**: make changes on your computer with `serve`, then `publish` again. If `publish` ever prints the big WARNING, open Zero Trust → Access → Applications and check that site's policy before doing anything else.
+The online copies are **read-only**: make changes on your computer with `CampaignCodex5e`, then `publish` again. If `publish` ever prints the big WARNING, open Zero Trust → Access → Applications and check that site's policy before doing anything else.

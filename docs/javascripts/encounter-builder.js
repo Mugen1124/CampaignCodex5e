@@ -1,6 +1,6 @@
 /* Encounter builder. Creature data, stat blocks, the party, and the difficulty tables are
    embedded in the page at build time (a JSON block with id "eb-data"), so this works offline.
-   Saving goes through the local save helper (tools/site_helper.py), which serve starts;
+   Saving goes through the local save helper (tools/site_helper.py), which CampaignCodex5e starts;
    without it, the builder shows the encounter as text to copy instead. */
 (function () {
   "use strict";
@@ -414,7 +414,7 @@
       var env = $(".eb-g-env").value, famName = $(".eb-g-fam").value, mix = $(".eb-g-mix").value;
 
       if (!(D.families || []).length) {
-        $(".eb-g-note").textContent = "The family table isn't loaded. If serve was running when the site's " +
+        $(".eb-g-note").textContent = "The family table isn't loaded. If CampaignCodex5e was running when the site's " +
           "hooks changed, close it and start it again.";
         return;
       }
@@ -631,8 +631,8 @@
         .then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); });
     }
     var OFFLINE = ONLINE
-      ? "This is the online copy, which can't save. Make changes on the site at home (<code>serve</code>), then run <code>publish</code>."
-      : "The save helper isn't running (it starts with <code>serve</code>).";
+      ? "This is the online copy, which can't save. Make changes on the site at home (<code>CampaignCodex5e</code>), then run <code>publish</code>."
+      : "The save helper isn't running (it starts with <code>CampaignCodex5e</code>).";
 
     function setArchived(e, archived) {
       helperPost("/encounter/archive", { id: e.id, archived: archived }).then(function (res) {
@@ -817,7 +817,7 @@
         '  <button class="eb-act eb-danger" data-ia="end">End combat</button>' +
         " </div></div>" +
         (!(D.party.members || []).length ? '<div class="eb-msg eb-warn">The party list isn\'t loaded, so the players aren\'t here. ' +
-          "If <code>serve</code> was running when the site's hooks changed, close it and start it again, then Run the encounter again " +
+          "If <code>CampaignCodex5e</code> was running when the site's hooks changed, close it and start it again, then Run the encounter again " +
           "(or add the players with the Add row below).</div>" : "") +
         (c.alert ? '<div class="eb-msg eb-warn ei-alert">' + esc(c.alert) + ' <a data-ia="unalert" title="Dismiss">×</a></div>' : "") +
         (missing && !c.started ? '<div class="eb-msg eb-info">Type in the players\' initiative rolls (' + missing + " to go), then Start combat. " +
@@ -897,7 +897,7 @@
             helperFetch(HELPER + "/tracker/share").then(function (r) { return r.json(); })
               .then(function (j) { if (j.last && j.last.ok !== null) { shareLast = j.last; shareStatus(); } }).catch(function () {});
           }, 1500);
-        }).catch(function () { shareLast = { ok: false, error: "The save helper isn't running (it starts with serve)." }; shareStatus(); });
+        }).catch(function () { shareLast = { ok: false, error: "The save helper isn't running (it starts with CampaignCodex5e)." }; shareStatus(); });
       }, 200);
     }
     function shareStatus() {

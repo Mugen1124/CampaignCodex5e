@@ -1,7 +1,7 @@
 /* Party page editor: Edit and Remove on each character card, and Add character. Saves to
    data/party.yml through the local save helper (tools/site_helper.py), like the encounter builder.
    Only on the site at home - the online copy (publish) doesn't show the buttons. After a save,
-   serve rebuilds and the page refreshes by itself. The preview is built the same way
+   CampaignCodex5e rebuilds and the page refreshes by itself. The preview is built the same way
    hooks/campaign.py builds the cards (render_pc_card).
 
    Card suggestions: on the players' site (cards marked data-audience="players"), each player gets
@@ -16,7 +16,7 @@
   var CAMPAIGN = (document.querySelector('meta[name="codex-campaign"]') || {}).content || "codex";
   var STORE = CAMPAIGN + "-party-editor";   // the players' site keeps its draft under its own name
   var ONLINE = location.protocol !== "file:" && !/^(127\.0\.0\.1|localhost|\[::1\])$/.test(location.hostname);
-  var OFFLINE = "The save helper isn't running (it starts with <code>serve</code>).";
+  var OFFLINE = "The save helper isn't running (it starts with <code>CampaignCodex5e</code>).";
 
   var ABIL = ["str", "dex", "con", "int", "wis", "cha"];
   var IDENTITY = [["character", "Character", "", "pe-w2"], ["player", "Player", ""], ["race", "Race", ""],

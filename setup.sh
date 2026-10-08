@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# campaign-codex - one-time setup for macOS and Linux.
+# CampaignCodex5e - one-time setup for macOS and Linux.
 # Installs what the site needs into a private folder (.venv) here - nothing else on this
 # computer is changed. Run it again any time to update.
 #   ./setup.sh                      the site
@@ -9,7 +9,7 @@ cd "$(dirname "$0")"
 
 echo
 echo "  =============================================="
-echo "    campaign-codex - one-time setup"
+echo "    CampaignCodex5e - one-time setup"
 echo "  =============================================="
 echo
 
@@ -42,7 +42,7 @@ if [ "$1" = "--with-transcribe" ]; then
   echo "  Installing session transcription (a large download)..."
   .venv/bin/python -m pip install -r requirements-transcribe.txt
 fi
-chmod +x serve.sh publish.sh codex.sh 2>/dev/null || true
+chmod +x CampaignCodex5e.sh CampaignCodex5e.command publish.sh codex.sh 2>/dev/null || true
 
 echo
 echo "  Setup complete."
@@ -53,6 +53,6 @@ case "$ANSWER" in
 esac
 
 echo
-echo "  Starting the site - leave this window open while you use it. From now on, just run ./serve.sh"
+echo "  Starting the site - leave this window open while you use it. From now on, open CampaignCodex5e.command (Mac) or run ./CampaignCodex5e.sh"
 echo
 exec .venv/bin/python -m codex serve

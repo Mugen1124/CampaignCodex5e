@@ -26,7 +26,7 @@ Page setting (front matter at the very top of a page):
     ---
 limits the right-hand table of contents to ## headings.
 
-Build checks (warnings in the serve/build window): missing required fields,
+Build checks (warnings in the CampaignCodex5e window): missing required fields,
 unknown [[mentions]], references to locations/factions that don't exist,
 near-identical names (allow known pairs in data/checks.yml), and any mention of
 a word listed under banned: in campaign.yml (a feat your table has removed, say).

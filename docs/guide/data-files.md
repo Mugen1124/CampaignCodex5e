@@ -36,7 +36,7 @@ Everything that's a *thing* in your world — a person, a place, a creature — 
 
 - **Indentation is two spaces**, never tabs, and it matters.
 - **Quote text that contains a colon followed by a space**, or starts with `*`, `[`, `{`, or `"`: `text: "*Melee Weapon Attack:* +5 to hit"`.
-- If a file has a mistake, the `serve` window says which file and roughly where.
+- If a file has a mistake, the `CampaignCodex5e` window says which file and roughly where.
 
 ## Ids
 
@@ -54,4 +54,4 @@ The encounter builder shows every creature's id; use it in `{{ statblock <id> }}
 
 ## The party
 
-`data/party.yml` has the party's level and each member. Fill in character cards with **Edit** on the [Party](../party/index.md) page while `serve` runs — it writes the file for you, and keeps a backup. A player's `email:` is only needed if you put the players' site online (it's how a player's sign-in is matched to their character); emails never appear on any page.
+`data/party.yml` has the party's level and each member. Fill in character cards with **Edit** on the [Party](../party/index.md) page while `CampaignCodex5e` runs — it writes the file for you, and keeps a backup. A player's `email:` is only needed if you put the players' site online (it's how a player's sign-in is matched to their character); emails never appear on any page.
