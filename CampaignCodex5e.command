@@ -6,9 +6,11 @@
 cd "$(dirname "$0")"
 export PYTHONDONTWRITEBYTECODE=1   # no __pycache__ folders in the campaign
 printf '\033]0;CampaignCodex5e\007'   # the window's title
-if [ ! -x .venv/bin/python ]; then
+VPY=.venv/bin/python
+[ -f .venv-path ] && VPY="$(head -n 1 .venv-path)/bin/python"   # setup put it outside the folder (output: local)
+if [ ! -x "$VPY" ]; then
   echo "CampaignCodex5e isn't set up yet - run ./setup.sh first."
   read -r -p "Press Enter to close." _
   exit 1
 fi
-exec .venv/bin/python -m codex serve
+exec "$VPY" -m codex serve

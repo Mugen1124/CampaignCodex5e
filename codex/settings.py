@@ -6,12 +6,12 @@ load(), so nothing in hooks/ or tools/ needs editing to run a different campaign
 missing from campaign.yml falls back to the defaults below.
 """
 
-import os
 import re
-import sys
 from pathlib import Path
 
 import yaml
+
+from codex.paths import local_dir, slug  # noqa: F401  (slug: used by the hooks too)
 
 ROOT = Path(__file__).resolve().parent.parent
 FILE = ROOT / "campaign.yml"
@@ -88,17 +88,5 @@ def load(root: Path = None) -> dict:
     return s
 
 
-def local_dir() -> Path:
-    """This computer's own cache folder for CampaignCodex5e (never a synced folder)."""
-    if sys.platform == "win32":
-        base = Path(os.environ.get("LOCALAPPDATA") or Path.home() / "AppData" / "Local")
-    elif sys.platform == "darwin":
-        base = Path.home() / "Library" / "Caches"
-    else:
-        base = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache")
-    return base / "CampaignCodex5e"
 
 
-def slug(text: str) -> str:
-    s = re.sub(r"[^\w\s-]", "", str(text).lower().replace("’", "").replace("'", ""))
-    return re.sub(r"[\s_]+", "-", s).strip("-")

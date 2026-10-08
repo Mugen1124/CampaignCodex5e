@@ -9,8 +9,8 @@ echo  ==============================================
 echo    CampaignCodex5e - one-time setup
 echo  ==============================================
 echo.
-echo  Installs what the site needs into a private folder (.venv) here - nothing else on this
-echo  computer is changed. Run it again any time to update.
+echo  Installs what the site needs into a private folder (.venv here, or on this computer with
+echo  output: local) - nothing else on this computer is changed. Run it again any time to update.
 echo.
 
 REM ---- 1. Find Python 3.10 or newer (the Microsoft Store "python" stub doesn't count)
@@ -46,9 +46,18 @@ echo  Using:
 echo.
 
 REM ---- 2. The project's own Python environment, and the site's packages
-if not exist ".venv\Scripts\python.exe" (
-  echo  Creating .venv ...
-  "%PY%" -m venv .venv
+REM Normally .venv here; with output: local in campaign.yml, on this computer (its place goes in .venv-path).
+set "VENV="
+for /f "delims=" %%V in ('""%PY%" codex\paths.py venv"') do set "VENV=%%V"
+if not defined VENV set "VENV=.venv"
+if /i "%VENV%"==".venv" (
+  if exist ".venv-path" del ".venv-path"
+) else (
+  >".venv-path" echo %VENV%
+)
+if not exist "%VENV%\Scripts\python.exe" (
+  echo  Creating %VENV% ...
+  "%PY%" -m venv "%VENV%"
   if errorlevel 1 (
     echo  Couldn't create .venv - see the message above.
     pause
@@ -56,8 +65,8 @@ if not exist ".venv\Scripts\python.exe" (
   )
 )
 echo  Installing the site's packages...
-".venv\Scripts\python.exe" -m pip install --upgrade pip --quiet
-".venv\Scripts\python.exe" -m pip install -r requirements.txt
+"%VENV%\Scripts\python.exe" -m pip install --upgrade pip --quiet
+"%VENV%\Scripts\python.exe" -m pip install -r requirements.txt
 if errorlevel 1 (
   echo.
   echo  Package install failed - see the messages above.
@@ -67,7 +76,7 @@ if errorlevel 1 (
 if /i "%~1"=="--with-transcribe" (
   echo.
   echo  Installing session transcription ^(a large download^)...
-  ".venv\Scripts\python.exe" -m pip install -r requirements-transcribe.txt
+  "%VENV%\Scripts\python.exe" -m pip install -r requirements-transcribe.txt
 )
 
 REM ---- 3. Your campaign
@@ -76,12 +85,12 @@ echo  Setup complete.
 echo.
 set "ANSWER="
 set /p "ANSWER=  Set up your own campaign now? (Y = yes, N = keep exploring the demo first) [Y/N]: "
-if /i "%ANSWER%"=="Y" ".venv\Scripts\python.exe" -m codex new
+if /i "%ANSWER%"=="Y" "%VENV%\Scripts\python.exe" -m codex new
 
 echo.
 echo  Starting the site - leave this window open while you use it. From now on, just double-click CampaignCodex5e.bat.
 echo.
-".venv\Scripts\python.exe" -m codex serve
+"%VENV%\Scripts\python.exe" -m codex serve
 exit /b 0
 
 

@@ -17,6 +17,7 @@ recordings/
 
 # Machine-specific
 .venv/
+.venv-path
 .map-cache/
 sources/
 __pycache__/

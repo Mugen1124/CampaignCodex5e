@@ -208,6 +208,9 @@ def main() -> int:
               and all(Path(p).is_relative_to(local) for p in r.stdout.split()), r.stdout + r.stderr)
         check("no __pycache__ in the folder", not any(p for p in proj.rglob("__pycache__")
                                                      if ".venv" not in p.parts))
+        r = run(proj, "codex/paths.py", "venv", env=env)
+        check("setup would put the Python packages outside the folder too", Path(r.stdout.strip()).is_relative_to(local),
+              r.stdout + r.stderr)
         conf.write_text(conf_text, encoding="utf-8")
 
         print("codex update:")

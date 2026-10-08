@@ -6,11 +6,14 @@ REM opens it in your browser once it's ready. Leave this window open while you u
 REM close it to stop.
 cd /d "%~dp0"
 set "PYTHONDONTWRITEBYTECODE=1"
-if not exist ".venv\Scripts\python.exe" (
+set "VPY=.venv\Scripts\python.exe"
+if exist ".venv-path" set /p VENV=<".venv-path"
+if defined VENV set "VPY=%VENV%\Scripts\python.exe"
+if not exist "%VPY%" (
   echo CampaignCodex5e isn't set up yet - double-click setup.bat first.
   pause
   exit /b 1
 )
-".venv\Scripts\python.exe" -m codex serve
+"%VPY%" -m codex serve
 set "CODE=%errorlevel%"
 exit /b %CODE%

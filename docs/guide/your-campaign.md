@@ -25,7 +25,7 @@ The one settings file. The parts you'll touch most:
 | `banned` | Words that shouldn't appear outside House Rules — the build warns. |
 | `skip_mentions` | Names `add-mentions` should never wrap. |
 | `maps: base` | Where your map exports live. |
-| `output` | Where built sites and caches go: `here` (in this folder) or `local` (on this computer, outside it). Use `local` if this folder is in Google Drive, Dropbox, OneDrive or iCloud, so the cloud only holds your own files. |
+| `output` | Where built sites and caches go: `here` (in this folder) or `local` (on this computer, outside it). Use `local` if this folder is in Google Drive, Dropbox, OneDrive or iCloud, so the cloud only holds your own files - then run setup again, and it moves the site's Python packages out of the folder too. |
 | `online` | Only if you go online — see [Going online](going-online.md). |
 
 ## Add a town

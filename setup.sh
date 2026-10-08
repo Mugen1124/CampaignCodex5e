@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # CampaignCodex5e - one-time setup for macOS and Linux.
-# Installs what the site needs into a private folder (.venv) here - nothing else on this
-# computer is changed. Run it again any time to update.
+# Installs what the site needs into a private folder (.venv here, or on this computer with
+# output: local) - nothing else on this computer is changed. Run it again any time to update.
 #   ./setup.sh                      the site
 #   ./setup.sh --with-transcribe    the site, plus session transcription (a large download)
 set -e
@@ -31,17 +31,20 @@ if [ -z "$PY" ]; then
 fi
 echo "  Using: $("$PY" --version)"
 
-if [ ! -x .venv/bin/python ]; then
-  echo "  Creating .venv ..."
-  "$PY" -m venv .venv || { echo "  Couldn't create .venv (on Debian/Ubuntu: sudo apt install python3-venv)."; exit 1; }
+# Normally .venv here; with output: local in campaign.yml, on this computer (its place goes in .venv-path).
+VENV="$("$PY" codex/paths.py venv)"
+if [ "$VENV" = ".venv" ]; then rm -f .venv-path; else printf '%s\n' "$VENV" > .venv-path; fi
+if [ ! -x "$VENV/bin/python" ]; then
+  echo "  Creating $VENV ..."
+  "$PY" -m venv "$VENV" || { echo "  Couldn't create it (on Debian/Ubuntu: sudo apt install python3-venv)."; exit 1; }
 fi
 echo "  Installing the site's packages..."
-.venv/bin/python -m pip install --upgrade pip --quiet
-.venv/bin/python -m pip install -r requirements.txt
+"$VENV/bin/python" -m pip install --upgrade pip --quiet
+"$VENV/bin/python" -m pip install -r requirements.txt
 if [ "$1" = "--with-transcribe" ]; then
   echo
   echo "  Installing session transcription (a large download)..."
-  .venv/bin/python -m pip install -r requirements-transcribe.txt
+  "$VENV/bin/python" -m pip install -r requirements-transcribe.txt
 fi
 chmod +x CampaignCodex5e.sh CampaignCodex5e.command publish.sh codex.sh 2>/dev/null || true
 
@@ -50,10 +53,10 @@ echo "  Setup complete."
 echo
 read -r -p "  Set up your own campaign now? (y = yes, n = keep exploring the demo first) [y/n]: " ANSWER
 case "$ANSWER" in
-  [Yy]*) .venv/bin/python -m codex new ;;
+  [Yy]*) "$VENV/bin/python" -m codex new ;;
 esac
 
 echo
 echo "  Starting the site - leave this window open while you use it. From now on, open CampaignCodex5e.command (Mac) or run ./CampaignCodex5e.sh"
 echo
-exec .venv/bin/python -m codex serve
+exec "$VENV/bin/python" -m codex serve
