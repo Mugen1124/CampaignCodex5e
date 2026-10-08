@@ -81,8 +81,10 @@ def main() -> int:
         print("The Sessions tab:")
         dm_home = (out / "dm" / "index.html").read_text(encoding="utf-8")
         check("the DM site opens on This Session", bool(re.search(r"<h1[^>]*>This Session", dm_home)))
+        world = (out / "dm" / "world" / "index.html").read_text(encoding="utf-8")
+        sidebar = re.sub(r"\s+", " ", world[world.find("md-nav--primary"):world.find("md-nav--secondary")])
         check("This Session is first in the Sessions sidebar, then the sessions",
-              dm_home.find('href="index.html" class="md-nav__link') < dm_home.find("Greywater — Session 1"))
+              0 < sidebar.find("This Session </span>") < sidebar.find("Greywater — Session 1"), sidebar[:1500])
         pl_home = (players / "index.html").read_text(encoding="utf-8")
         check("the players' site opens on the latest session", bool(re.search(r"<h1[^>]*>Greywater — Session 1: The Missing Bell", pl_home)))
         check("This Session isn't on the players' site", ">This Session<" not in pl_home and "Ambush on the quay" not in pl_home)

@@ -15,6 +15,8 @@ and this hook fills it in. It's listed first in mkdocs.yml and mkdocs-players.ym
 import sys
 from pathlib import Path
 
+from mkdocs.structure.pages import Page
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from codex import sessions as codex_sessions  # noqa: E402
 
@@ -32,3 +34,18 @@ def on_config(config, **kwargs):
             nav[i] = {"Sessions": children}
             break
     return config
+
+
+class _ListedPage(Page):
+    is_index = False
+
+
+def on_nav(nav, config, files, **kwargs):
+    # This Session is index.md, which the theme would fold into the "Sessions" heading (its section
+    # index) - so it's kept as a page of its own, the first line of the sidebar.
+    for item in nav.items:
+        if getattr(item, "title", None) == "Sessions" and item.children:
+            for child in item.children:
+                if isinstance(child, Page) and child.file.src_uri == "index.md":
+                    child.__class__ = _ListedPage
+    return nav
