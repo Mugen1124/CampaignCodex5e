@@ -1,0 +1,36 @@
+# The party. Encounters use level and size for their difficulty math.
+# Each member can carry card fields (AC, HP, abilities, features...) for the Party page and the
+# initiative tracker - see templates/character.yml, or use Edit on the Party page while serve runs.
+# email: (optional) is the address a player signs in to the players' site with - only needed if
+# you put the players' site online. Emails never appear on any page.
+level: 3
+size: 4
+members:
+  - player: Player One
+    character: Kestrel
+    race: Halfling
+    class: Rogue
+    ac: 14
+    ac_note: leather armor
+    hp: 24
+    speed: 25 ft.
+    passive_perception: 14
+    abilities: {str: 8, dex: 17, con: 12, int: 12, wis: 14, cha: 13}
+    saves: Dex +5, Int +3
+    skills: Acrobatics +5, Perception +4, Sleight of Hand +7, Stealth +7
+    senses: passive Perception 14
+    languages: Common, Halfling, Thieves' Cant
+    features:
+      - name: Sneak Attack (2d6)
+        text: Once per turn, extra damage with a finesse or ranged weapon when you have advantage, or an ally is next to the target.
+      - name: Cunning Action
+        text: Dash, Disengage, or Hide as a bonus action.
+    actions:
+      - name: Shortsword
+        text: "*Melee Weapon Attack:* +5 to hit, reach 5 ft. *Hit:* 6 (1d6 + 3) piercing damage."
+      - name: Shortbow
+        text: "*Ranged Weapon Attack:* +5 to hit, range 80/320 ft. *Hit:* 6 (1d6 + 3) piercing damage."
+    note: Owes Pip Larkin twenty gold, and Pip hasn't forgotten.
+  - {player: Player Two,   character: Oskar Fenn,     race: Dwarf,    class: Cleric}
+  - {player: Player Three, character: Sabine Ashgrove, race: Human,   class: Wizard}
+  - {player: Player Four,  character: Thane Hollin,   race: Half-orc, class: Fighter}

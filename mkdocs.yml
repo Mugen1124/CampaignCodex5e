@@ -1,0 +1,120 @@
+# The DM site. Your campaign's name and settings are in campaign.yml; this file is the site's
+# structure - mostly the nav at the bottom, which you'll extend as you add pages.
+site_name: The Lantern Coast — DM
+site_description: Campaign prep and table reference
+docs_dir: docs
+site_dir: site
+
+# Links point at .html files directly, so the built site works when opened straight from disk.
+use_directory_urls: false
+
+theme:
+  name: material
+  # No web fonts - system fonts only, so nothing breaks offline.
+  font: false
+  # Dark only (colours in docs/stylesheets/extra.css).
+  palette:
+    scheme: slate
+    primary: custom
+    accent: custom
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - search.highlight
+    - toc.follow
+    - content.tabs.link
+
+plugins:
+  - search
+  - glightbox   # click-to-zoom on map images
+  - offline:    # makes the built site (including search) work from disk; publish turns it off
+      enabled: !ENV [OFFLINE, true]
+
+# Stat blocks, encounters, party cards, maps, NPCs, places, factions and items - all from data/.
+hooks:
+  - hooks/campaign.py
+  - hooks/maps.py
+  - hooks/entities.py
+
+# The players' own pages are built by mkdocs-players.yml, not here.
+exclude_docs: |
+  /players/
+
+# Rebuild live when data or hooks change.
+watch:
+  - data
+  - hooks
+  - campaign.yml
+
+# Flag broken links and #anchors at build time.
+validation:
+  links:
+    anchors: warn
+
+extra_javascript:
+  - javascripts/refs.js                 # hover cards for [[mentions]]
+  - javascripts/encounter-builder.js    # encounter builder and initiative tracker
+  - javascripts/party-editor.js         # Party page: edit character cards
+  - javascripts/recorder.js             # Session Log: record and transcribe
+  - javascripts/items-editor.js         # Items page: who carries what
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - admonition          # read-aloud and DM boxes
+  - pymdownx.details    # collapsible boxes (??? instead of !!!)
+  - pymdownx.superfences
+  - pymdownx.tabbed:    # side-by-side tabs
+      alternate_style: true
+  - pymdownx.tasklist
+  - tables
+  - attr_list
+  - md_in_html          # lets Markdown live inside stat block wrappers
+  - def_list
+  - toc:
+      permalink: true
+
+# Tab and page order. Top-level entries become the tabs across the header.
+nav:
+  - This Session: index.md
+  - Session Log:
+      - Log: session-log.md
+      - Record & Transcribe: recording.md
+  - Party: party/index.md
+  - World:
+      - world/index.md
+      - House Rules: world/house-rules.md
+      - Factions: world/factions.md
+      - Maps: maps/index.md
+  - Places:
+      - cities/index.md
+      - Greywater:
+          - cities/greywater/index.md
+          - Locations: cities/greywater/locations.md
+          - People: cities/greywater/people.md
+          - Factions: cities/greywater/factions.md
+          - Events & Hooks: cities/greywater/events.md
+  - Arcs:
+      - arcs/index.md
+      - The Drowned Bell: arcs/the-drowned-bell.md
+  - Encounters: encounters/index.md
+  - Reference:
+      - Bestiary: reference/bestiary.md
+      - Items: reference/items.md
+      - NPC Index: reference/npcs.md
+      - Style Guide: reference/style-guide.md
+  - Guide:
+      - guide/index.md
+      - Your campaign: guide/your-campaign.md
+      - Writing pages: guide/writing-pages.md
+      - Data files: guide/data-files.md
+      - At the table: guide/at-the-table.md
+      - The players' site: guide/players-site.md
+      - Going online: guide/going-online.md
+      - Recording sessions: guide/recording.md
+      - Working with an AI assistant: guide/ai-assistant.md
+      - Troubleshooting: guide/troubleshooting.md

@@ -1,0 +1,89 @@
+# Greywater's people. Fields: see templates/npc.yml. Each NPC's location: puts them under
+# "Found here" on the Locations page; faction: lists them as a member of that faction.
+
+- id: hester-vane
+  name: Hester Vane
+  aliases: [Hester]
+  region: Greywater
+  group: The Quay
+  race: Human
+  role: Innkeeper of the Gull & Lantern
+  location: gull-and-lantern
+  hook: >
+    Broad, freckled, and unshockable. Has run the Gull & Lantern for thirty years and remembers
+    every debt, every grudge, and every face.
+  personality: Warm to strangers, merciless to cheats.
+  notes: Wants the bell back before the fleet's luck turns. She'll trade free rooms for answers.
+  secret: >
+    Her grandmother kept the lantern lit "against the drowned," and left a journal about the
+    Bellwether Light in the inn's cellar.
+
+- id: oren-hask
+  name: Captain Oren Hask
+  aliases: [Hask]
+  region: Greywater
+  group: The Watch
+  race: Half-orc
+  role: Captain of the Greywater Watch
+  location: watch-house
+  faction: greywater-watch
+  hook: >
+    A tired, honest man running a watch of six people in a town of two thousand. Knows he's
+    outmatched and is too proud to say it.
+  personality: Gruff, fair, chronically short of sleep.
+  statblock: srd-veteran
+
+- id: pip-larkin
+  name: Pip Larkin
+  aliases: [Pip]
+  region: Greywater
+  group: The Quay
+  race: Halfling
+  role: Smuggler and informant
+  location: fishmarket
+  hook: Sells fish by day, and everything else by night. Knows every boat that's come in after dark.
+  personality: Cheerful, slippery, loyal to whoever paid last.
+  notes: Saw a boat row out to the Bellwether Light the night the bell vanished.
+
+- id: corvin-sloane
+  name: Magistrate Corvin Sloane
+  aliases: [Sloane, the Magistrate]
+  region: Greywater
+  group: Upper Town
+  race: Human
+  role: Magistrate of Greywater
+  location: magistrates-hall
+  hook: >
+    Thin, precise, and endlessly polite. Owns half the boats in the harbor and the debts on the
+    other half.
+  personality: Never raises his voice, never forgets a slight.
+  secret: >
+    The Tidecallers' patron. He drowned once as a boy and came back changed, and he wants the
+    whole town to "come back changed" too.
+  player_hook: Greywater's magistrate - owns half the boats in the harbor, and the debts on the rest.
+
+- id: amara-wells
+  name: Sister Amara Wells
+  aliases: [Amara, Sister Amara]
+  region: Greywater
+  group: Upper Town
+  race: Elf
+  role: Priestess of the Chapel of the Tides
+  location: chapel-of-the-tides
+  hook: Keeps the names of the drowned, and blames herself for the missing bell.
+  personality: Quiet, stubborn, braver than she looks.
+  statblock: srd-priest
+
+- id: marrow
+  name: The Drowned Man
+  aliases: [Drowned Man]
+  region: Greywater
+  group: The Tidecallers
+  race: Undead
+  role: Leader of the Tidecallers
+  location: bellwether-light
+  faction: tidecallers
+  status: unknown
+  hook: A voice from the water under the lighthouse. Nobody has seen his face.
+  statblock: drowned-priest
+  revealed: false

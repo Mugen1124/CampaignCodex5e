@@ -1,0 +1,20 @@
+# Item template. Copy an entry into a file in data/items/ (each file is a list).
+# Required: name, type, rarity, text. Full rules text always goes in "text".
+
+- id: tidewalker-boots           # optional; defaults from the name
+  name: Tidewalker Boots
+  group: Greywater               # groups the Items page
+  type: Wondrous item            # e.g. Wondrous item, Ring, Weapon (longsword), Armor (plate)
+  rarity: uncommon
+  attunement: false              # true, or a restriction like "by a druid"
+  cursed: false                  # optional
+  sentient: false                # optional
+  found: In Pip Larkin's boat, under the nets
+  holder: Kestrel                # who carries it now, once known (a character, or "Party")
+  flavor: >                      # optional description before the rules
+    Sealskin boots, salt-stained and patched, that never seem to get wet inside.
+  text: |                        # the complete rules text (Markdown allowed)
+    While wearing these boots, you can walk across mud, marsh, and shallow water as if it were
+    solid ground.
+  aliases: [the boots]
+  # revealed: true / false       # force it onto (or off) the players' site; carried items show automatically

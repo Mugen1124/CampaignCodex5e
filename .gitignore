@@ -1,0 +1,24 @@
+# Built sites - made fresh by build, players, check, and publish
+site/
+publish/site/
+publish/players/site/
+publish/wrangler.jsonc
+publish/players/wrangler.jsonc
+.wrangler/
+
+# Private: never commit
+publish/players/roster.json
+tools/tracker-token.txt
+recordings/
+
+# Machine-specific
+.venv/
+.map-cache/
+sources/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+
+# Scratch area used while building this repository
+legacy/

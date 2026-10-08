@@ -1,0 +1,10 @@
+# An example encounter for the Style Guide (it uses only SRD creatures, so it stays when the demo
+# is cleared). Delete it whenever you like - then remove its marker from the Style Guide too.
+id: example-goblins
+name: Goblins on the Road (example)
+location: Anywhere
+page: ../reference/style-guide.md#encounters
+archived: true
+creatures:
+  - {id: srd-goblin, count: 4}
+  - {id: srd-wolf, count: 2}

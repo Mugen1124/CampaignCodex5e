@@ -1,0 +1,16 @@
+# What the players have come across. Most of this happens by itself: anything [[mentioned]] in the
+# public part of the Session Log shows on the players' site, and so does anything a character
+# carries. List things here only when the party knows about them but the log doesn't say so.
+# Use the names you'd write in a [[mention]].
+
+reveal:
+  - The Magistrate's Hall       # they've walked past it - it's on every map of the town
+  - Magistrate Corvin Sloane    # everyone in town knows who runs it
+  - Captain Oren Hask
+
+# hide: keeps something off the players' site even if the Session Log mentions it.
+hide: []
+
+# Names the players haven't met that your page text mentions anyway - the leak check stops asking
+# about these (they still show only as plain text, not links).
+names_ok: []

@@ -1,0 +1,28 @@
+# NPC template. Copy an entry into a file in data/npcs/ (each file is a list).
+# Required: name, region, role, hook. Everything else is optional.
+
+- id: hester-vane                # optional; defaults to the name in lowercase-with-dashes
+  name: Hester Vane
+  region: Greywater              # groups the NPC Index, and a town's People page ({{ npc-list greywater }})
+  group: The Quay                # optional sub-heading within the region
+  race: Human
+  role: Innkeeper                # short: what they do
+  location: gull-and-lantern     # a location id from data/locations/
+  faction: greywater-watch       # a faction id from data/factions.yml (or a list of them)
+  hook: >                        # one or two sentences: who they are at a glance (shown on hover)
+    Broad, freckled, and unshockable.
+  description: >                 # optional longer write-up; shown on the NPC Index in place of the hook
+    Has run the Gull & Lantern for thirty years and remembers every debt, grudge, and face.
+  personality: Warm to strangers, merciless to cheats.     # shown on hover
+  appearance: Flour on her apron, a pencil behind one ear.
+  notes: >                       # anything else for the NPC Index entry (DM only)
+    Wants the bell back before the fleet's luck turns.
+  statblock: srd-commoner        # a creature id from data/monsters/, if they have one
+  status: alive                  # alive | dead | missing | captive | unknown
+  aliases: [Hester]              # other names [[mentions]] can use
+  secret: >                      # DM-only; folded away on the Index, never shown on hover
+    Her grandmother's journal about the lighthouse is in the cellar.
+  # For the players' site:
+  # player_hook: what players see instead of the hook, when the hook gives away too much
+  # player_location: ""          # where players think they are; "" = unknown (a captive, someone in hiding)
+  # revealed: true / false       # force them onto (or off) the players' site

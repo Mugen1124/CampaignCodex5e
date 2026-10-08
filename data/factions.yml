@@ -1,0 +1,24 @@
+# Factions. Fields: see templates/faction.yml. Members are added automatically from each NPC's
+# faction: field. region: groups them on the Factions page (none = campaign.yml's default_region).
+
+- id: greywater-watch
+  name: The Greywater Watch
+  aliases: [the Watch]
+  region: Greywater
+  summary: Six tired people, a bell, and a signal fire - Greywater's entire force of law.
+  structure: A captain, a sergeant, and four watchmen who mostly break up fights at the Gull.
+  goals: Keep the peace, keep the fleet safe, and get through the winter.
+  leader: oren-hask
+
+- id: tidecallers
+  name: The Tidecallers
+  region: Greywater
+  summary: >
+    A whispered name around the harbor - people who go down to the water at night and come back
+    quieter.
+  structure: A handful of desperate townsfolk, and the Drowned Man who speaks to them from the water.
+  goals: Ring the drowned bell at the spring tide, and "bring the town under."
+  leader: marrow
+  revealed: false
+  secret: >
+    Magistrate Sloane funds them, and protects them from the Watch.

@@ -1,0 +1,36 @@
+# Character card template. The fields below go on a character's entry in data/party.yml
+# (under members:). Only player and character are needed; everything else is optional and
+# fills in the character's card on the Party page and in the initiative tracker. Anything
+# left out shows as a dash. AC, HP, and initiative are also what the tracker starts from.
+#
+# A member written on one line, like
+#   - {player: Sam, character: Kestrel, race: Halfling, class: Rogue}
+# can take more fields in the same braces, or be written out in full like this
+# (an example character - the numbers are made up):
+
+- player: Player Name
+  character: Example Hero
+  race: Human
+  class: Barbarian
+  level: 5                          # optional; defaults to the party level
+  ac: 15
+  ac_note: unarmored defense
+  hp: 55
+  speed: 40 ft.
+  initiative: 2                     # optional; defaults to the Dex modifier
+  passive_perception: 11
+  abilities: {str: 18, dex: 14, con: 16, int: 10, wis: 12, cha: 8}
+  saves: Str +7, Con +6
+  skills: Athletics +7, Survival +4
+  resistances: bludgeoning, piercing, and slashing while raging
+  senses: passive Perception 11
+  languages: Common
+  features:                         # shown first, like a creature's traits
+    - name: Rage (3/long rest)
+      text: Bonus action. Advantage on Str checks and saves, +2 melee damage, resistance to physical damage.
+  actions:
+    - name: Greataxe
+      text: "*Melee Weapon Attack:* +7 to hit, reach 5 ft. *Hit:* 10 (1d12 + 4) slashing damage."
+  bonus_actions: []
+  reactions: []
+  note: DM reminders shown at the bottom of the card.

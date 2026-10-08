@@ -1,0 +1,86 @@
+# The demo campaign's own creatures. Fields: see templates/monster.yml.
+# The SRD's creatures (srd.json) are already in the encounter builder; these show how to add yours.
+
+- id: tidecaller
+  name: Tidecaller
+  group: The Lantern Coast
+  type: Medium humanoid (human), chaotic evil
+  size: Medium
+  creature_type: humanoid
+  environments: [Coastal, Swamp, Urban]
+  cr: 1/4
+  ac: 12
+  ac_note: oilskin coat
+  hp: 13
+  hp_formula: 3d8
+  speed: 30 ft., swim 20 ft.
+  abilities: {str: 12, dex: 14, con: 11, int: 9, wis: 12, cha: 10}
+  skills: Stealth +4
+  senses: passive Perception 11
+  languages: Common
+  traits:
+    - name: Hold Breath
+      text: The tidecaller can hold its breath for 10 minutes.
+  actions:
+    - name: Gaff Hook
+      text: "*Melee Weapon Attack:* +3 to hit, reach 10 ft., one target. *Hit:* 4 (1d6 + 1) piercing damage, and a Medium or smaller target is pulled up to 5 feet toward the tidecaller."
+    - name: Sling
+      text: "*Ranged Weapon Attack:* +4 to hit, range 30/120 ft., one target. *Hit:* 4 (1d4 + 2) bludgeoning damage."
+
+- id: bog-lurker
+  name: Bog Lurker
+  group: The Lantern Coast
+  type: Large monstrosity, unaligned
+  size: Large
+  creature_type: monstrosity
+  environments: [Swamp]
+  cr: 2
+  ac: 13
+  ac_note: natural armor
+  hp: 52
+  hp_formula: 7d10 + 14
+  speed: 20 ft., swim 40 ft.
+  abilities: {str: 16, dex: 12, con: 15, int: 2, wis: 12, cha: 4}
+  skills: Stealth +5
+  senses: darkvision 60 ft., passive Perception 11
+  languages: "-"
+  traits:
+    - name: Mud Camouflage
+      text: The lurker has advantage on Dexterity (Stealth) checks made in mud or murky water.
+  actions:
+    - name: Bite
+      text: "*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target. *Hit:* 12 (2d8 + 3) piercing damage, and the target is grappled (escape DC 13). Until the grapple ends, the lurker can't bite another target."
+    - name: Drag Under
+      text: The lurker moves up to its swim speed with the creature it's grappling. If it ends in water, the creature can't breathe until the grapple ends.
+  note: Fed by the Tidecallers, who leave it fish at the causeway's edge. It treats anyone in an oilskin coat as food-bringer, not food.
+
+- id: drowned-priest
+  name: The Drowned Man
+  group: The Lantern Coast
+  type: Medium undead, neutral evil
+  size: Medium
+  creature_type: undead
+  environments: [Coastal, Swamp]
+  cr: 3
+  ac: 13
+  hp: 58
+  hp_formula: 9d8 + 18
+  speed: 30 ft., swim 30 ft.
+  abilities: {str: 14, dex: 12, con: 14, int: 12, wis: 15, cha: 16}
+  saves: Wis +4
+  resistances: necrotic
+  immunities: poison
+  condition_immunities: exhaustion, poisoned
+  senses: darkvision 60 ft., passive Perception 12
+  languages: Common
+  traits:
+    - name: Waterlogged
+      text: The Drowned Man doesn't need to breathe. While at least waist-deep in water, he regains 5 hit points at the start of each of his turns.
+  actions:
+    - name: Multiattack
+      text: The Drowned Man uses Call of the Deep, then makes one Grasp attack.
+    - name: Grasp
+      text: "*Melee Weapon Attack:* +4 to hit, reach 5 ft., one target. *Hit:* 9 (2d6 + 2) cold damage, and the target is grappled (escape DC 12)."
+    - name: Call of the Deep
+      text: One creature the Drowned Man can see within 30 feet must succeed on a DC 13 Wisdom saving throw or use its movement on its next turn to move toward the nearest water.
+  note: Once a fisherman named Marrow, drowned the night the bell was first cast. He doesn't remember his name - unless someone tells him.

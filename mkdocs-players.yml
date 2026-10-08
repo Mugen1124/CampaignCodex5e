@@ -1,0 +1,70 @@
+# The players' site: what the players may see. Everything not set here - theme, colours, Markdown
+# settings - comes from mkdocs.yml.
+#
+# How the DM material stays out:
+#   - exclude_docs below: whole folders and pages that are never built (so they can't be found or searched)
+#   - dm_only: true at the top of any page: that page is never built either
+#   - hooks/players.py: removes DM boxes and <!-- players: hide --> stretches from the rest
+#   - the other hooks (extra: audience: players): no stat blocks, encounters, DM notes or secrets,
+#     only the NPCs, places, factions and items the party has come across, only player maps
+#   - tools/leak_check.py checks the finished site, and publish won't upload it if anything's found
+INHERIT: mkdocs.yml
+
+site_name: The Lantern Coast — Players
+site_description: The campaign, for its players
+site_dir: publish/players/site
+
+extra:
+  audience: players
+
+hooks:
+  - hooks/players.py
+  - hooks/campaign.py
+  - hooks/maps.py
+  - hooks/entities.py
+
+extra_javascript:
+  - javascripts/refs.js
+  - players/tracker-live.js        # the Initiative page's live tracker
+  - javascripts/party-editor.js    # Party page: players suggest changes to their own card
+  - players/items-live.js          # Items page: players claim what's up for grabs
+
+# Links into hidden parts of pages (an undiscovered district, a DM map) are expected here;
+# hooks/players.py turns them into plain text after the build.
+validation:
+  links:
+    anchors: info
+
+# Pages the players' site never builds.
+exclude_docs: |
+  /index.md
+  /arcs/
+  /encounters/
+  /guide/
+  /recording.md
+  /reference/bestiary.md
+  /reference/style-guide.md
+  /javascripts/encounter-builder.js
+  /javascripts/recorder.js
+  /javascripts/items-editor.js
+
+nav:
+  - Home: players/index.md
+  - Session Log: session-log.md
+  - Initiative: players/tracker.md
+  - Party:
+      - party/index.md
+      - People: reference/npcs.md
+      - Items: reference/items.md
+  - World:
+      - world/index.md
+      - House Rules: world/house-rules.md
+      - Factions: world/factions.md
+      - Maps: maps/index.md
+  - Places:
+      - cities/index.md
+      - Greywater:
+          - cities/greywater/index.md
+          - Locations: cities/greywater/locations.md
+          - People: cities/greywater/people.md
+          - Factions: cities/greywater/factions.md

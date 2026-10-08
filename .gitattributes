@@ -1,0 +1,7 @@
+# Line endings: Windows scripts need CRLF, shell scripts need LF - whatever the platform checks them out on.
+* text=auto
+*.bat text eol=crlf
+*.sh text eol=lf
+*.png binary
+*.jpg binary
+*.mp3 binary

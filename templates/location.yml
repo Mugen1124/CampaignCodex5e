@@ -1,0 +1,24 @@
+# Location template. Each city is one file in data/locations/, split into districts.
+# Required per location: name, description.
+
+id: greywater
+name: Greywater
+page: cities/greywater/locations.md       # the page that shows {{ locations greywater }}
+districts:
+  - name: The Quay
+    blurb: The working waterfront.          # optional, shown under the district heading
+    locations:
+      - id: gull-and-lantern               # optional; defaults from the name
+        number: 1                          # map pin number, if any
+        name: The Gull & Lantern
+        subtitle: Inn and tavern           # optional, shown in italics
+        description: >                     # the first two sentences also appear on hover
+          A low, crooked inn leaning against the harbor wall, with a green
+          lantern that has burned over its door every night for a hundred years.
+        features:                          # optional bullet points
+          - Rooms upstairs, 5 sp a night
+        aliases: [the Gull]                # other names [[mentions]] can use
+        secret: >                          # DM-only, folded away
+          The lantern was lit to keep the drowned away.
+# NPCs aren't listed here - each NPC's "location" field puts them under
+# "Found here" automatically.

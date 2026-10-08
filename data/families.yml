@@ -1,0 +1,253 @@
+# Creature families for the encounter generator: who belongs together.
+#
+#   members  - creatures that make up the group (by name or id)
+#   leaders  - who can lead it: a chieftain, captain, boss, or big monster the others serve
+#   allies   - other families that plausibly show up alongside this one (sometimes mixed in)
+#
+# Edit freely: if the generator builds something that doesn't fit your world, change the
+# table here. Names must match a creature exactly; the build warns about any it can't find.
+
+# ---------------------------------------------------------------- humanoid tribes and bands
+- family: Kobolds
+  members: [Kobold, Giant Weasel]
+  leaders: [Red Dragon Wyrmling, Blue Dragon Wyrmling, White Dragon Wyrmling]
+  allies: [Red Dragons, Blue Dragons, White Dragons]
+
+- family: Goblinoids
+  members: [Goblin, Hobgoblin, Bugbear, Wolf, Worg]
+  leaders: [Bugbear, Hobgoblin]
+  allies: [Wolves, Ogres]
+
+- family: Gnolls
+  members: [Gnoll, Hyena, Giant Hyena]
+  leaders: [Giant Hyena]
+  allies: [Demons]
+
+- family: Orcs
+  members: [Orc, Worg]
+  leaders: [Ogre, Orc]
+  allies: [Ogres, Wolves]
+
+- family: Lizardfolk
+  members: [Lizardfolk, Giant Lizard, Crocodile]
+  leaders: [Giant Crocodile]
+  allies: [Black Dragons]
+
+- family: Sahuagin
+  members: [Sahuagin, Reef Shark, Hunter Shark]
+  leaders: [Giant Shark]
+  allies: [Sea Hags]
+
+- family: Merfolk
+  members: [Merfolk, Giant Sea Horse]
+  leaders: [Merrow]
+
+- family: Drow
+  members: [Drow, Giant Spider, Swarm of Spiders]
+  leaders: [Drider, Phase Spider]
+  allies: [Spiders]
+
+- family: Duergar
+  members: [Duergar, Deep Gnome (Svirfneblin), Grimlock]
+  leaders: [Duergar]
+  allies: [Underdark Horrors]
+
+- family: Grimlocks
+  members: [Grimlock]
+  leaders: [Grick]
+  allies: [Underdark Horrors]
+
+- family: Tribal Warriors
+  members: [Tribal Warrior, Berserker, Scout]
+  leaders: [Berserker, Druid]
+  allies: [Beasts of the Wild]
+
+# ---------------------------------------------------------------- people and outlaws
+- family: Bandits
+  members: [Bandit, Thug, Scout, Mastiff]
+  leaders: [Bandit Captain, Spy]
+  allies: [Mercenaries]
+
+- family: Assassins & Thugs
+  members: [Thug, Spy, Bandit]
+  leaders: [Assassin, Bandit Captain]
+  allies: [Bandits]
+
+- family: Cultists
+  members: [Cultist, Acolyte, Cult Fanatic]
+  leaders: [Cult Fanatic, Priest]
+  allies: [Devils, Demons]
+
+- family: City Watch
+  members: [Guard, Veteran, Scout, Mastiff]
+  leaders: [Knight, Veteran]
+
+- family: Knights & Soldiers
+  members: [Guard, Veteran, Knight, Warhorse]
+  leaders: [Knight, Half-Red Dragon Veteran]
+
+- family: Arcanists
+  members: [Mage, Homunculus, Animated Armor, Flying Sword]
+  leaders: [Mage, Archmage]
+  allies: [Constructs]
+
+- family: Mercenaries
+  members: [Thug, Veteran, Bandit, Scout]
+  leaders: [Gladiator, Bandit Captain]
+  allies: [Bandits, Assassins & Thugs]
+
+# ---------------------------------------------------------------- dragons and their servants
+- family: Red Dragons
+  members: [Red Dragon Wyrmling, Young Red Dragon, Kobold]
+  leaders: [Young Red Dragon, Adult Red Dragon, Ancient Red Dragon]
+  allies: [Kobolds, Fire Elementals]
+
+- family: Blue Dragons
+  members: [Blue Dragon Wyrmling, Young Blue Dragon, Kobold]
+  leaders: [Young Blue Dragon, Adult Blue Dragon, Ancient Blue Dragon]
+  allies: [Kobolds, Gnolls]
+
+- family: Black Dragons
+  members: [Black Dragon Wyrmling, Young Black Dragon, Lizardfolk]
+  leaders: [Young Black Dragon, Adult Black Dragon, Ancient Black Dragon]
+  allies: [Lizardfolk]
+
+- family: Green Dragons
+  members: [Green Dragon Wyrmling, Young Green Dragon]
+  leaders: [Young Green Dragon, Adult Green Dragon, Ancient Green Dragon]
+  allies: [Spiders, Fey Tricksters]
+
+- family: White Dragons
+  members: [White Dragon Wyrmling, Young White Dragon, Kobold]
+  leaders: [Young White Dragon, Adult White Dragon, Ancient White Dragon]
+  allies: [Kobolds, Frost Giants]
+
+# ---------------------------------------------------------------- giants and brutes
+- family: Ogres
+  members: [Ogre, Ettin]
+  leaders: [Hill Giant, Ettin]
+  allies: [Goblinoids, Orcs]
+
+- family: Hill Giants
+  members: [Hill Giant, Ogre]
+  leaders: [Hill Giant]
+  allies: [Ogres]
+
+- family: Frost Giants
+  members: [Frost Giant, Winter Wolf, Polar Bear]
+  leaders: [Frost Giant]
+  allies: [White Dragons]
+
+- family: Fire Giants
+  members: [Fire Giant, Hell Hound, Salamander]
+  leaders: [Fire Giant]
+  allies: [Fire Elementals]
+
+- family: Stone Giants
+  members: [Stone Giant, Earth Elemental]
+  leaders: [Stone Giant]
+
+- family: Trolls
+  members: [Troll]
+  leaders: [Troll]
+  allies: [Ogres]
+
+# ---------------------------------------------------------------- undead
+- family: Skeletons & Zombies
+  members: [Skeleton, Zombie, Ogre Zombie, Minotaur Skeleton, Warhorse Skeleton]
+  leaders: [Wight, Mummy, Cult Fanatic]
+  allies: [Ghouls]
+
+- family: Ghouls
+  members: [Ghoul, Ghast]
+  leaders: [Ghast]
+  allies: [Skeletons & Zombies]
+
+- family: Restless Spirits
+  members: [Shadow, Specter, Will-o'-Wisp]
+  leaders: [Wraith, Ghost]
+
+- family: Vampires
+  members: [Vampire Spawn, Swarm of Bats, Swarm of Rats, Wolf]
+  leaders: [Vampire Spawn, "Vampire, Vampire Form"]
+
+- family: Mummies
+  members: [Mummy, Swarm of Insects, Scorpion, Giant Scorpion]
+  leaders: [Mummy, Mummy Lord]
+
+# ---------------------------------------------------------------- fiends and the planes
+- family: Devils
+  members: [Imp, Lemure, Bearded Devil, Barbed Devil, Hell Hound]
+  leaders: [Chain Devil, Bone Devil, Erinyes, Horned Devil, Pit Fiend]
+  allies: [Cultists]
+
+- family: Demons
+  members: [Dretch, Quasit, Vrock, Hezrou]
+  leaders: [Glabrezu, Nalfeshnee, Marilith, Balor]
+  allies: [Cultists, Gnolls]
+
+- family: Hags
+  members: [Green Hag, Sea Hag, Night Hag, Ogre]
+  leaders: [Night Hag, Green Hag]
+  allies: [Ogres]
+
+- family: Sea Hags
+  members: [Sea Hag, Merrow]
+  leaders: [Sea Hag]
+  allies: [Sahuagin]
+
+- family: Fire Elementals
+  members: [Fire Elemental, Magmin, Magma Mephit, Azer, Salamander]
+  leaders: [Salamander, Efreeti]
+
+- family: Elementals
+  members: [Air Elemental, Earth Elemental, Water Elemental, Dust Mephit, Ice Mephit, Steam Mephit, Gargoyle]
+  leaders: [Djinni, Invisible Stalker]
+
+# ---------------------------------------------------------------- beasts and monsters
+- family: Wolves
+  members: [Wolf, Dire Wolf, Worg]
+  leaders: [Dire Wolf, "Werewolf, Hybrid Form", Winter Wolf]
+
+- family: Beasts of the Wild
+  members: [Black Bear, Brown Bear, Boar, Giant Boar, Panther, Tiger, Lion, Giant Eagle, Elk, Giant Elk]
+  leaders: [Owlbear, Saber-Toothed Tiger]
+
+- family: Spiders
+  members: [Giant Spider, Giant Wolf Spider, Swarm of Spiders, Ettercap]
+  leaders: [Ettercap, Phase Spider]
+  allies: [Drow, Green Dragons]
+
+- family: Swamp Terrors
+  members: [Crocodile, Giant Frog, Giant Toad, Swarm of Poisonous Snakes, Giant Constrictor Snake, Stirge]
+  leaders: [Shambling Mound, Giant Crocodile]
+  allies: [Lizardfolk]
+
+- family: Underdark Horrors
+  members: [Grick, Darkmantle, Gray Ooze, Ochre Jelly, Violet Fungus, Shrieker, Rust Monster]
+  leaders: [Otyugh, Roper, Cloaker]
+  allies: [Grimlocks]
+
+- family: Fey Tricksters
+  members: [Sprite, Satyr, Blink Dog, Dryad]
+  leaders: [Dryad, Green Hag]
+
+- family: Constructs
+  members: [Animated Armor, Flying Sword, Rug of Smothering, Homunculus]
+  leaders: [Shield Guardian, Flesh Golem, Clay Golem, Stone Golem]
+  allies: [Arcanists]
+
+- family: Wererats
+  members: ["Wererat, Hybrid Form", "Wererat, Rat Form", Swarm of Rats, Giant Rat]
+  leaders: ["Wererat, Human Form"]
+  allies: [Assassins & Thugs]
+
+- family: Wereboars
+  members: ["Wereboar, Hybrid Form", "Wereboar, Boar Form", Boar, Giant Boar]
+  leaders: ["Wereboar, Human Form"]
+
+# ---------------------------------------------------------------- the demo campaign
+- family: Tidecallers
+  members: [tidecaller, bog-lurker, Cultist]
+  leaders: [drowned-priest, Cult Fanatic]
+  allies: [Merfolk]

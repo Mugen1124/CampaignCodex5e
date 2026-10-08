@@ -1,0 +1,17 @@
+# Maps shown on the site. "source" paths are relative to the maps folder (campaign.yml: maps: base:).
+# Point at your original exports - the site makes web-sized copies automatically, and picks up a
+# re-exported map on the next build.
+# players: true also puts a map on the players' site. Without it, a map is DM-only - it never
+# reaches the players' site, not even as a file.
+
+maps:
+  - id: greywater
+    players: true
+    group: Greywater
+    title: Greywater
+    source: greywater.png
+
+  - id: bellwether-light
+    group: The Drowned Bell
+    title: The Bellwether Light - lower floor (DM)
+    source: bellwether-light.png

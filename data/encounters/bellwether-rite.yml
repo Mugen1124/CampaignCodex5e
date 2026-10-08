@@ -1,0 +1,7 @@
+id: bellwether-rite
+name: The Rite at the Bellwether Light
+location: The Bellwether Light - the flooded lower floor
+page: ../arcs/the-drowned-bell.md#the-rite
+creatures:
+  - {id: drowned-priest, count: 1}
+  - {id: tidecaller, count: 3}

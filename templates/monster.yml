@@ -1,0 +1,43 @@
+# Creature template. Copy an entry into a YAML file in data/monsters/ (each file is a list).
+# For a batch from a book (or anywhere), templates/monsters.json is a fill-in sheet that
+# `import-monsters "<sheet>.json"` checks and imports into the encounter builder.
+# Your own creatures go here in YAML. Imported ones (SRD etc.) are generated .json files -
+# to tweak an imported creature, copy it into a YAML file with a new id and edit that.
+# Everything is optional except id, name, and cr; the more you fill in, the more the
+# stat block, hover card, and encounter builder can show.
+
+- id: bog-hag-matron               # unique; lowercase-with-dashes
+  name: Bog Hag Matron
+  group: Homebrew                  # groups the Bestiary page
+  type: Medium fey, neutral evil   # the italic line under the name
+  size: Medium                     # used by the encounter builder's filters
+  creature_type: fey               # used by the encounter builder's filters
+  environments: [Swamp, Forest]    # builder filter; use the builder's environment names
+  cr: 5                            # 0, 1/8, 1/4, 1/2, 1, 2 ... (XP is worked out from this)
+  ac: 16
+  ac_note: natural armor
+  hp: 110
+  hp_formula: 13d8 + 52
+  speed: 30 ft., swim 30 ft.
+  abilities: {str: 18, dex: 12, con: 18, int: 14, wis: 14, cha: 16}
+  initiative: 1                    # optional; defaults to the Dex modifier
+  saves: Con +7, Wis +5
+  skills: Deception +6, Stealth +4
+  vulnerabilities: fire
+  resistances: cold
+  immunities: poison
+  condition_immunities: charmed
+  senses: darkvision 60 ft., passive Perception 12
+  languages: Common, Sylvan
+  traits:
+    - name: Amphibious
+      text: The matron can breathe air and water.
+  actions:
+    - name: Multiattack
+      text: The matron makes two Claw attacks.
+    - name: Claw
+      text: "*Melee Weapon Attack:* +7 to hit, reach 5 ft., one target. *Hit:* 13 (2d8 + 4) slashing damage."
+  bonus_actions: []
+  reactions: []
+  legendary_actions: []
+  note: DM guidance shown at the bottom of the stat block.

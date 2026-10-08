@@ -1,0 +1,93 @@
+{
+  "_how_to_use": [
+    "A monster sheet: fill it in, then import it into the encounter builder with",
+    "    import-monsters \"path/to/this file.json\"   (or drag the file onto the import-monsters script)",
+    "1. Copy this file somewhere (e.g. next to the book it's from) and rename it.",
+    "2. Set source (a short name, lowercase, no spaces - it names the file it becomes) and title (shown in the builder's Source filter).",
+    "3. Replace the two example creatures with yours. Copy the Bog Hag Matron block for each full stat block; the Grave Knight shows the least you need.",
+    "4. Run the import. Anything wrong is listed by the creature's name and that creature is left out; fix the sheet and run it again.",
+    "Importing again replaces everything from this sheet, so the sheet is the thing to keep and edit.",
+    "Anything starting with _ (like this note and _fields below) is ignored, so you can leave it in or delete it.",
+    "JSON rules: text in \"double quotes\", a comma between entries but not after the last one, true/false and numbers without quotes."
+  ],
+  "_fields": {
+    "name": "Required.",
+    "cr": "Required. 0, \"1/8\", \"1/4\", \"1/2\", 1 ... 30 (fractions in quotes). XP is worked out from it.",
+    "id": "Optional; made from source + name (e.g. homebrew-bog-hag-matron).",
+    "type": "The italic line under the name, e.g. \"Medium fey, neutral evil\". Or leave it out and give size, creature_type, and alignment.",
+    "size / creature_type": "For the builder's filters; read from type if left out. size: Tiny, Small, Medium, Large, Huge, Gargantuan.",
+    "environments": "A list: Arctic, Coastal, Desert, Forest, Grassland, Hills, Jungle, Mountains, Swamp, Underdark, Underwater, Urban...",
+    "ac": "15, or \"15 (natural armor)\". ac_note is the part in brackets.",
+    "hp": "Leave it out to use the average of hp_formula (\"13d8 + 52\").",
+    "speed": "\"30 ft., swim 30 ft.\" or {\"walk\": 30, \"swim\": 30}.",
+    "abilities": "All six: {\"str\": 18, ...} or a list [18, 12, 18, 14, 14, 16] in STR DEX CON INT WIS CHA order.",
+    "initiative": "Optional; the Dex modifier otherwise.",
+    "saves / skills": "\"Con +7, Wis +5\" or {\"con\": 7, \"wis\": 5}.",
+    "traits / actions / bonus_actions / reactions / legendary_actions": "Lists of {\"name\": ..., \"text\": ...}. \"Melee Weapon Attack:\" and \"Hit:\" are put in italics for you; *italic* and **bold** work.",
+    "page": "The book page; shown at the bottom of the stat block.",
+    "note": "Anything else for the bottom of the stat block."
+  },
+  "source": "homebrew",
+  "title": "Homebrew",
+  "credit": "Creatures made for my campaign.",
+  "creatures": [
+    {
+      "name": "Bog Hag Matron",
+      "cr": 5,
+      "type": "Medium fey, neutral evil",
+      "environments": [
+        "Swamp",
+        "Forest"
+      ],
+      "ac": "16 (natural armor)",
+      "hp_formula": "13d8 + 52",
+      "speed": "30 ft., swim 30 ft.",
+      "abilities": {
+        "str": 18,
+        "dex": 12,
+        "con": 18,
+        "int": 14,
+        "wis": 14,
+        "cha": 16
+      },
+      "saves": "Con +7, Wis +5",
+      "skills": "Deception +6, Stealth +4",
+      "resistances": "cold",
+      "immunities": "poison",
+      "condition_immunities": "charmed",
+      "senses": "darkvision 60 ft., passive Perception 12",
+      "languages": "Common, Sylvan",
+      "traits": [
+        {
+          "name": "Amphibious",
+          "text": "The matron can breathe air and water."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Multiattack",
+          "text": "The matron makes two Claw attacks."
+        },
+        {
+          "name": "Claw",
+          "text": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) slashing damage."
+        }
+      ],
+      "reactions": [
+        {
+          "name": "Mire Step",
+          "text": "When a creature the matron can see hits her, she sinks into mud and moves up to 10 feet without provoking opportunity attacks."
+        }
+      ],
+      "page": 12
+    },
+    {
+      "name": "Grave Knight",
+      "cr": 8,
+      "type": "Medium undead, lawful evil",
+      "ac": 18,
+      "hp": 136,
+      "note": "Stat block to come - for now it counts in encounters and the tracker has its AC and HP."
+    }
+  ]
+}

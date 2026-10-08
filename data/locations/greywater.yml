@@ -1,0 +1,75 @@
+# Greywater's locations, split into districts. Numbers match the pins on the town map.
+# Fields: see templates/location.yml. NPCs aren't listed here - each NPC's location: puts them
+# under "Found here" automatically.
+
+id: greywater
+name: Greywater
+page: cities/greywater/locations.md
+districts:
+  - name: The Quay
+    blurb: Fish, tar, and gossip - the working waterfront where most of Greywater earns its living.
+    locations:
+      - id: gull-and-lantern
+        number: 1
+        name: The Gull & Lantern
+        aliases: [the Gull]
+        subtitle: Inn and tavern
+        description: >
+          A low, crooked inn leaning against the harbor wall, with a green lantern that has burned
+          over its door every night for a hundred years. Warm, loud, and the best place in town to
+          hear what the fishing fleet saw last night.
+        features:
+          - Rooms upstairs, 5 sp a night; the attic room has a window onto the whole harbor
+          - Eel pie on Fridays, and nobody asks what's in it on other days
+        secret: >
+          The lantern isn't just a tradition. It was lit to keep the drowned away, and Hester
+          Vane's grandmother knew why.
+      - id: fishmarket
+        number: 2
+        name: The Fishmarket
+        subtitle: Open-air market under a slate roof
+        description: >
+          Long stone tables, gutting knives, and shouting from first light until the catch is
+          gone. Anything that comes out of the sea is sold here, and a few things that shouldn't
+          have.
+      - id: watch-house
+        number: 3
+        name: The Watch House
+        subtitle: Headquarters of the Greywater Watch
+        description: >
+          A squat tower of grey stone at the end of the quay, with two cells, a bell, and a
+          signal fire on the roof for the fleet.
+
+  - name: Upper Town
+    blurb: Slate roofs, dry feet, and the people who own the boats.
+    locations:
+      - id: chapel-of-the-tides
+        number: 4
+        name: The Chapel of the Tides
+        subtitle: Shrine to the sea and those it keeps
+        description: >
+          A round chapel of whitewashed stone, its walls hung with the names of the drowned.
+          The bell tower is empty - its bell vanished a month ago, the night of the spring tide.
+        dm_notes: >
+          The bell was taken by the Tidecallers, who need it for the rite at the Bellwether Light.
+      - id: magistrates-hall
+        number: 5
+        name: The Magistrate's Hall
+        subtitle: Courthouse and records
+        description: >
+          The only building in Greywater with glass in every window. The town's deeds, debts, and
+          disputes all end up here, in front of the Magistrate.
+
+  - name: The Marsh Road
+    blurb: A causeway north through the reed-marsh, to places the town would rather forget.
+    locations:
+      - id: bellwether-light
+        number: 6
+        name: The Bellwether Light
+        aliases: [the old lighthouse]
+        subtitle: A drowned lighthouse
+        description: >
+          An old lighthouse on a spit of rock out in the marsh, half sunk and leaning. At low
+          tide you can walk to it along the causeway; at high tide it's an island.
+        secret: >
+          The Tidecallers meet in the flooded lower floor, where the drowned bell will be rung.

@@ -1,0 +1,4 @@
+# Build checks. The site warns about NPCs with near-identical names, which are easy to mix up at
+# the table. List pairs here (by id) that are similar on purpose, and the warning goes away.
+allow_similar: []
+#  - [aldric-marrow, brother-aldric]     # example: different people, different towns - fine

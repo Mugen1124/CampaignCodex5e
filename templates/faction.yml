@@ -1,0 +1,15 @@
+# Faction template. All factions live in one file: data/factions.yml (a list).
+# Required: name, summary.
+
+- id: greywater-watch           # optional; defaults from the name
+  name: The Greywater Watch
+  summary: >                     # shown at the top of the faction and on hover
+    Six tired people, a bell, and a signal fire - the town's entire force of law.
+  structure: >
+    A captain, a sergeant, and four watchmen.
+  goals: Keep the peace and get through the winter.
+  leader: oren-hask              # an NPC id
+  aliases: [the Watch]
+  secret: >                      # DM-only, folded away
+    The Magistrate has told the captain to stop asking about the bell.
+# Members aren't listed here - each NPC's "faction" field adds them automatically.

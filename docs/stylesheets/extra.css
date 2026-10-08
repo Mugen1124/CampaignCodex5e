@@ -1,0 +1,697 @@
+/* =========================================================
+   campaign-codex — look and feel
+   Change the colours in the block below to restyle the whole site.
+   ========================================================= */
+
+/* ---------- Colors ----------
+   Slate header bars, near-black page, dark panels, gold for highlights, blue for links, and
+   red for stat block rules. Everything below uses these names, so a colour
+   change is made here once. The site is dark only (mkdocs.yml has one palette, no toggle);
+   printing swaps in the light set at the end of this block. */
+[data-md-color-scheme="slate"] {
+  /* Segoe UI (system fonts only, so it works offline), with titles and tabs in capitals. */
+  --md-text-font-family:           "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  --cx-heading-font:              "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+
+  --md-default-bg-color:           #101010;
+  --md-default-fg-color:           #d3d8db;
+  --md-default-fg-color--light:    #a4acb1;
+  --md-default-fg-color--lighter:  #6e777d;
+  --md-default-fg-color--lightest: #2a3237;
+  --md-typeset-color:              #d3d8db;
+  --md-primary-fg-color:           #212a2e;   /* header and tabs */
+  --md-primary-fg-color--light:    #293339;
+  --md-primary-fg-color--dark:     #1a2023;
+  --md-primary-bg-color:           #e9eef0;   /* text on the header */
+  --md-primary-bg-color--light:    #a9b3b8;
+  --md-accent-fg-color:            #d0a650;   /* gold: hover, active, highlights */
+  --md-typeset-a-color:            #6ea3e8;   /* link blue, brightened to read on dark */
+  --md-code-bg-color:              #1b2226;
+  --md-code-fg-color:              #d3d8db;
+  --md-footer-bg-color:            #212a2e;
+  --md-footer-bg-color--dark:      #161616;
+  --md-admonition-bg-color:        #161616;
+
+  --cx-panel:        #161616;   /* stat blocks, encounter boxes, cards */
+  --cx-panel-head:   #293339;   /* panel title bars, selected buttons */
+  --cx-line:         #36434a;   /* borders and dividers */
+  --cx-line-soft:    #222a2f;   /* row separators */
+  --cx-line-strong:  #4a5a63;
+  --cx-hover:        rgba(110, 163, 232, 0.14);
+  --cx-rule:         #a33a37;   /* stat block rules - red */
+  --cx-title:        #eef2f4;   /* stat block and card names */
+  --cx-section:      #d0a650;   /* "Actions", "Reactions"... */
+  --cx-highlight:    rgba(208, 166, 80, 0.13);
+  --cx-readaloud:    #c9a24e;
+  --cx-readaloud-bg: rgba(201, 162, 78, 0.12);
+  --cx-dm:           #6b9fd0;
+  --cx-dm-bg:        rgba(107, 159, 208, 0.13);
+  --cx-easy:   #62b36a;
+  --cx-medium: #d9b43a;
+  --cx-hard:   #e0843a;
+  --cx-deadly: #e5574a;
+  --cx-danger-bg: rgba(229, 87, 74, 0.18);
+  --cx-on-accent:    #101010;   /* text on gold buttons */
+}
+
+/* Printing: browsers leave out background colours, so the dark theme would print pale text on
+   white paper. On paper everything switches to dark text on white; stat block rules stay red. */
+@media print {
+  [data-md-color-scheme="slate"] {
+    --md-default-bg-color:           #ffffff;
+    --md-default-fg-color:           #111111;
+    --md-default-fg-color--light:    #444444;
+    --md-default-fg-color--lighter:  #777777;
+    --md-default-fg-color--lightest: #dddddd;
+    --md-typeset-color:              #111111;
+    --md-typeset-a-color:            #1d5bb0;
+    --md-accent-fg-color:            #85611a;
+    --md-code-bg-color:              #f2f2f2;
+    --md-code-fg-color:              #111111;
+    --md-admonition-bg-color:        #ffffff;
+    --cx-panel:        #ffffff;
+    --cx-panel-head:   #eeeeee;
+    --cx-line:         #bbbbbb;
+    --cx-line-soft:    #dddddd;
+    --cx-line-strong:  #999999;
+    --cx-rule:         #902b2d;
+    --cx-title:        #000000;
+    --cx-section:      #6b4e12;
+    --cx-highlight:    transparent;
+    --cx-readaloud:    #85611a;
+    --cx-readaloud-bg: transparent;
+    --cx-dm:           #3f6f9c;
+    --cx-dm-bg:        transparent;
+    --cx-easy:   #2f7a36;
+    --cx-medium: #765d00;
+    --cx-hard:   #9e4c0c;
+    --cx-deadly: #b8322a;
+  }
+  /* Screen-only controls */
+  .enc-edit, .eb-sbbar, .md-typeset .md-button, .headerlink { display: none !important; }
+  .md-typeset a.ref { text-decoration: none; }
+}
+
+/* ---------- Main action buttons (Save, Generate, Start combat): gold, so they stand out ---------- */
+.md-typeset .md-button--primary { background-color: var(--md-accent-fg-color); border-color: var(--md-accent-fg-color); color: var(--cx-on-accent); }
+.md-typeset .md-button--primary:hover, .md-typeset .md-button--primary:focus { filter: brightness(1.12); color: var(--cx-on-accent); }
+/* Plain buttons (Clear, Cancel...): Material draws them in the header colour, which disappears on the dark page. */
+.md-typeset .md-button:not(.md-button--primary) { color: var(--md-default-fg-color--light); border-color: var(--cx-line-strong); }
+.md-typeset .md-button:not(.md-button--primary):hover { color: var(--md-accent-fg-color); border-color: var(--md-accent-fg-color); background: transparent; }
+
+/* ---------- Layout: use more of a laptop screen ---------- */
+.md-grid { max-width: 1440px; }
+
+/* ---------- Headings: Segoe UI, titles and tabs in capitals ---------- */
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-header__topic,
+.md-tabs__link {
+  font-family: var(--cx-heading-font);
+}
+.md-typeset h1 { font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; color: var(--cx-title); }
+.md-typeset h2 { font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; font-size: 1.3em; color: var(--cx-title); }
+.md-typeset h3 { font-weight: 600; }
+.md-typeset .statblock h3, .ref-card .rc-title { text-transform: uppercase; letter-spacing: 0.02em; }
+.md-header__topic { text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+.md-tabs__link { text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.7rem; }
+
+/* ---------- Custom box icons ---------- */
+:root {
+  --icon-read-aloud: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>');
+  --icon-dm: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5z"/></svg>');
+}
+
+/* ---------- Read-aloud box ( !!! read-aloud ) ---------- */
+.md-typeset .admonition.read-aloud,
+.md-typeset details.read-aloud {
+  border-color: var(--cx-readaloud);
+  font-size: 0.8rem;          /* larger than a normal note: easy to read aloud */
+  line-height: 1.6;
+}
+.md-typeset .read-aloud > p:not(.admonition-title) { font-style: italic; }
+.md-typeset .read-aloud > .admonition-title,
+.md-typeset .read-aloud > summary {
+  background-color: var(--cx-readaloud-bg);
+}
+.md-typeset .read-aloud > .admonition-title::before,
+.md-typeset .read-aloud > summary::before {
+  background-color: var(--cx-readaloud);
+  -webkit-mask-image: var(--icon-read-aloud);
+          mask-image: var(--icon-read-aloud);
+}
+
+/* ---------- DM note box ( !!! dm  /  ??? dm for collapsed ) ---------- */
+.md-typeset .admonition.dm,
+.md-typeset details.dm {
+  border-color: var(--cx-dm);
+}
+.md-typeset .dm > .admonition-title,
+.md-typeset .dm > summary {
+  background-color: var(--cx-dm-bg);
+}
+.md-typeset .dm > .admonition-title::before,
+.md-typeset .dm > summary::before {
+  background-color: var(--cx-dm);
+  -webkit-mask-image: var(--icon-dm);
+          mask-image: var(--icon-dm);
+}
+
+/* ---------- Stat blocks ( <div class="statblock" markdown> ) ---------- */
+.md-typeset .statblock {
+  border-top: 4px solid var(--cx-rule);
+  border-bottom: 4px solid var(--cx-rule);
+  background: var(--cx-panel);
+  padding: 0.6rem 1rem;
+  margin: 1.4em 0;
+  max-width: 46rem;
+}
+.md-typeset .statblock h3,
+.md-typeset .statblock h4 {
+  margin: 0.2em 0 0.1em;
+  color: var(--cx-title);
+}
+.md-typeset .statblock p { margin: 0.35em 0; }
+.md-typeset .statblock hr {
+  border-bottom: 2px solid var(--cx-rule);
+  margin: 0.6em 0;
+}
+.md-typeset .statblock table:not([class]) {
+  font-size: 0.7rem;
+  margin: 0.5em 0;
+}
+.md-typeset .statblock table:not([class]) th,
+.md-typeset .statblock table:not([class]) td {
+  text-align: center;
+  padding: 0.3em 0.9em;
+}
+.md-typeset .statblock p.sb-section {
+  margin: 0.9em 0 0.3em;
+  padding-bottom: 0.15em;
+  border-bottom: 1px solid var(--cx-line-strong);
+  font-family: var(--cx-heading-font);
+  text-transform: uppercase;
+  font-size: 0.8em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--cx-section);
+}
+
+/* ---------- Encounter summaries ( {{ encounter id }} ) ---------- */
+.md-typeset .encounter {
+  border-left: 4px solid var(--cx-rule);
+  background: var(--cx-panel);
+  padding: 0.4rem 1rem;
+  margin: 1.2em 0;
+}
+.md-typeset .encounter table:not([class]) { font-size: 0.72rem; margin: 0.4em 0; }
+.md-typeset .encounter p { margin: 0.4em 0; font-size: 0.72rem; }
+
+/* ---------- Location NPC lists ---------- */
+.md-typeset ul.npcs { margin-top: 0.3em; }
+.md-typeset ul.npcs li { margin-bottom: 0.2em; }
+
+/* ---------- [[Mentions]] and hover cards ---------- */
+.md-typeset a.ref {
+  color: inherit;
+  text-decoration: underline dotted;
+  text-decoration-color: var(--md-accent-fg-color);
+  text-underline-offset: 3px;
+}
+.md-typeset a.ref:hover { color: var(--md-accent-fg-color); }
+.md-typeset .ref-missing { text-decoration: underline wavy #c0392b; }
+
+.ref-card {
+  position: absolute;
+  z-index: 10;
+  max-width: 26rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--md-default-bg-color);
+  color: var(--md-default-fg-color);
+  border: 1px solid var(--cx-rule);
+  border-top: 3px solid var(--cx-rule);
+  border-radius: 4px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+.ref-card[hidden] { display: none; }
+.ref-card .rc-title { font-family: var(--cx-heading-font); font-size: 0.95rem; color: var(--cx-title); }
+.ref-card .rc-meta { font-style: italic; opacity: 0.85; margin-bottom: 0.35rem; }
+.ref-card .rc-body, .ref-card .rc-line { margin: 0.25rem 0; }
+.ref-card .rc-scroll { max-height: 16rem; overflow-y: auto; }
+.ref-card p { margin: 0.3em 0; }
+
+/* ---------- NPC Index: group headings and entry names ---------- */
+.md-typeset h3.npc-group {
+  font-size: 1.15rem;
+  color: var(--md-accent-fg-color);
+  border-bottom: 1px solid var(--cx-rule);
+  padding-bottom: 0.2em;
+  margin-top: 2em;
+}
+.md-typeset h4.npc-name {
+  font-family: var(--cx-heading-font);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-top: 1.6em;
+  padding-top: 1.1em;
+  border-top: 1px solid var(--cx-line);   /* divider between NPC entries */
+}
+.md-typeset h3.npc-group + h4.npc-name { border-top: none; padding-top: 0; margin-top: 1em; }
+.md-typeset .npc-status {
+  display: inline-block;
+  margin-left: 0.4em;
+  padding: 0 0.45em;
+  border: 1px solid var(--cx-rule);
+  border-radius: 3px;
+  font-size: 0.62rem;
+  font-style: normal;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--md-accent-fg-color);
+  vertical-align: 0.1em;
+}
+
+/* ---------- Location sub-sections ("Key Locations Within ...") ---------- */
+.md-typeset h4.loc-section {
+  font-family: var(--cx-heading-font);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--md-accent-fg-color);
+  border-bottom: 1px solid var(--cx-line);
+  padding-bottom: 0.15em;
+  margin-top: 1.6em;
+}
+
+/* ---------- Dividers between entries (Items, Bestiary) ---------- */
+.md-typeset h3.entry-name {
+  margin-top: 1.6em;
+  padding-top: 1.1em;
+  border-top: 1px solid var(--cx-line);
+}
+.md-typeset h2 + h3.entry-name { border-top: none; padding-top: 0; margin-top: 1em; }
+.md-typeset hr.entry-divider {
+  width: 60%;
+  margin: 2.6em auto;
+  border: none;
+  border-top: 2px solid var(--cx-rule);
+}
+
+/* ---------- Encounter builder ---------- */
+.eb-cols { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 1.4rem; }
+@media (max-width: 1100px) { .eb-cols { grid-template-columns: 1fr; } }
+.eb input, .eb select, .eb textarea {
+  background: var(--md-default-bg-color);
+  color: var(--md-default-fg-color);
+  border: 1px solid var(--cx-line);
+  border-radius: 3px;
+  padding: 0.25rem 0.4rem;
+  font: inherit;
+  font-size: 0.7rem;
+}
+.eb-filters { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; font-size: 0.7rem; }
+.eb-q { flex: 1 1 100%; }
+.eb-count, .eb-hint { font-size: 0.65rem; opacity: 0.7; margin: 0.5rem 0 0.3rem; }
+.eb-list {
+  max-height: 72vh; overflow-y: auto; border-top: 1px solid var(--cx-line);
+  scrollbar-gutter: stable;   /* reserve room for the scrollbar */
+  padding-right: 0.5rem;      /* and keep the source badges clear of it */
+}
+.eb-row, .eb-trow {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.25rem 0.1rem;
+  border-bottom: 1px solid var(--cx-line-soft);
+  font-size: 0.7rem;
+}
+/* Creature list: fixed, left-aligned columns - add · name · CR · size · type · source */
+.eb-list .eb-row {
+  display: grid;
+  grid-template-columns: 1.6rem minmax(0, 1fr) 2.6rem 5.2rem 7.2rem 6.4rem;
+  gap: 0.6rem;
+  text-align: left;
+}
+.eb-list .eb-row > * { justify-self: start; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.eb-list .eb-row .eb-meta { min-width: 0; font-size: 0.66rem; }
+.eb-list .eb-row .eb-name-link { display: block; max-width: 100%; }
+.eb-type-col { text-transform: capitalize; }
+.eb-head {
+  position: sticky; top: 0; z-index: 1;
+  background: var(--md-default-bg-color);
+  font-size: 0.6rem !important; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+  opacity: 0.75;
+  border-bottom: 1px solid var(--cx-line) !important;
+}
+/* The builder page uses more of the screen width than normal pages. */
+.md-main__inner:has(#eb-root) { max-width: 92rem; }
+.md-content:has(#eb-root) { max-width: none; }
+.eb-name-link { flex: 1; cursor: pointer; color: var(--md-typeset-a-color); }
+.eb-name-link:hover { text-decoration: underline; }
+.eb-cr { opacity: 0.85; white-space: nowrap; }
+.eb-meta { opacity: 0.65; font-size: 0.62rem; min-width: 7.5rem; }
+.eb-src {
+  font-size: 0.55rem; padding: 0 0.35em; border: 1px solid currentColor; border-radius: 3px;
+  letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.8;
+}
+.eb-src-campaign { color: var(--md-accent-fg-color); opacity: 1; }
+.eb button:not(.md-button) {
+  width: 1.4rem; height: 1.4rem; line-height: 1; border-radius: 3px; cursor: pointer;
+  border: 1px solid var(--cx-line-strong); background: transparent; color: var(--md-default-fg-color);
+}
+.eb button:not(.md-button):hover { background: var(--cx-hover); }
+.eb-n { min-width: 1.2rem; text-align: center; font-weight: 700; }
+.eb-side { position: sticky; top: 3.6rem; align-self: start; max-height: calc(100vh - 4.5rem); overflow-y: auto; scrollbar-gutter: stable; padding-right: 0.5rem; }
+.eb-party { font-size: 0.7rem; margin-bottom: 0.6rem; }
+.eb-party input { width: 3.2rem; }
+.eb-diff { margin: 0.8rem 0; font-size: 0.7rem; }
+.eb-label { font-family: var(--cx-heading-font); font-size: 1.2rem; font-weight: 700; }
+.eb-easy { color: var(--cx-easy); } .eb-medium { color: var(--cx-medium); } .eb-hard { color: var(--cx-hard); }
+.eb-deadly { color: var(--cx-deadly); } .eb-trivial, .eb-none { opacity: 0.6; }
+.eb-thresh { opacity: 0.7; font-size: 0.62rem; }
+.eb-save input { width: 100%; margin-bottom: 0.35rem; }
+.eb-saverow { display: flex; gap: 0.4rem; align-items: center; }
+.eb-saverow .eb-id { flex: 1; margin: 0; }
+.eb-saverow .md-button { margin: 0; padding: 0.3em 1em; font-size: 0.7rem; }
+.eb-msg { margin-top: 0.5rem; padding: 0.4rem 0.6rem; border-left: 3px solid; font-size: 0.68rem; }
+.eb-ok { border-color: var(--cx-easy); } .eb-warn { border-color: var(--cx-hard); } .eb-info { border-color: var(--cx-title); }
+.eb-yaml { width: 100%; margin-top: 0.4rem; font-family: monospace; }
+.eb-sb { margin-top: 1rem; }
+.eb-sb .statblock { margin-top: 0; }
+.eb-sb .statblock table { display: table; width: 100%; table-layout: fixed; }
+.eb-sb .statblock th, .eb-sb .statblock td { padding: 0.3em 0.2em; }
+
+/* ---------- Encounter generator panel ---------- */
+.eb-gen {
+  border: 1px solid var(--cx-line);
+  border-radius: 4px;
+  padding: 0.6rem 0.7rem;
+  margin-bottom: 0.8rem;
+  font-size: 0.7rem;
+}
+.eb-gen-title {
+  font-family: var(--cx-heading-font);
+  text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.62rem; font-weight: 600;
+  color: var(--md-accent-fg-color);
+  margin-bottom: 0.4rem;
+}
+.eb-gen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin-bottom: 0.5rem; }
+.eb-gen .md-button { margin: 0; padding: 0.3em 1.1em; font-size: 0.7rem; }
+.eb-g-note { margin-left: 0.6rem; opacity: 0.8; }
+
+/* ---------- Encounters page: views, lists ---------- */
+.eb-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.8rem; margin-bottom: 0.8rem; }
+.eb-views { display: flex; gap: 0.3rem; }
+/* (button.eb-... beats the builder's small square +/- button style) */
+.eb button.eb-vbtn, .eb button.eb-act {
+  width: auto; height: auto; line-height: 1.4; white-space: nowrap;
+  padding: 0.25rem 0.9rem;
+  font: inherit; font-size: 0.72rem;
+}
+.eb button.eb-vbtn.eb-on { background: var(--cx-panel-head); border-color: var(--md-accent-fg-color); color: var(--cx-title); }
+.eb-top .eb-party { margin: 0; }
+.eb-listbar { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; }
+.eb-listbar .eb-lq { flex: 1; }
+.eb-listbar .md-button { margin: 0; padding: 0.3em 1.1em; font-size: 0.7rem; }
+.eb-erow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr) minmax(0, 1.6fr) 11rem 18.8rem;
+  gap: 0.8rem; align-items: center;
+  padding: 0.35rem 0.1rem;
+  border-bottom: 1px solid var(--cx-line-soft);
+  font-size: 0.7rem;
+}
+.eb-erow > * { min-width: 0; }
+.eb-erow.eb-head {
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.75;
+  border-bottom: 1px solid var(--cx-line);
+}
+.eb-ecreatures { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.eb-actions { display: flex; gap: 0.3rem; justify-content: flex-end; }
+.eb button.eb-act { padding: 0.15rem 0.6rem; font-size: 0.65rem; }
+.eb button.eb-danger { border-color: var(--cx-deadly); color: var(--cx-deadly); }
+.eb button.eb-danger:hover { background: var(--cx-danger-bg); }
+.eb-flash .eb-msg { margin: 0 0 0.6rem; }
+.eb-editing .eb-msg { margin: 0 0 0.6rem; }
+.eb-stop { cursor: pointer; margin-left: 0.4rem; }
+/* "Open in the encounter builder" link under encounter boxes on story pages */
+.md-typeset .encounter .enc-edit { font-size: 0.68rem; }
+
+/* ---------- Custom creatures: New creature form, edit buttons ---------- */
+.eb-countbar { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin: 0.4rem 0 0.2rem; }
+.eb-countbar .eb-count { margin: 0; }
+.eb-countbar .md-button { margin: 0; padding: 0.25em 1em; font-size: 0.68rem; }
+.eb-src-custom { color: var(--cx-dm); opacity: 1; }
+.eb-list .eb-row button.eb-cedit { width: 1.2rem; height: 1.2rem; margin-left: 0.3rem; font-size: 0.62rem; vertical-align: middle; }
+.eb-sbbar { display: flex; gap: 0.3rem; justify-content: flex-end; margin-bottom: 0.4rem; }
+.eb-cf-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.eb-cf-title { font-family: var(--cx-heading-font); font-size: 1.1rem; font-weight: 700; }
+.eb-cf-btns { display: flex; gap: 0.4rem; }
+.eb-cf-btns .md-button { margin: 0; padding: 0.3em 1.1em; font-size: 0.7rem; }
+.eb-cf-status .eb-msg { margin: 0.5rem 0 0; }
+.eb-cf-cols { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 1.4rem; margin-top: 0.6rem; }
+@media (max-width: 1100px) { .eb-cf-cols { grid-template-columns: 1fr; } }
+.eb-cf-form fieldset {
+  border: 1px solid var(--cx-line); border-radius: 4px;
+  margin: 0 0 0.7rem; padding: 0.4rem 0.7rem 0.6rem; font-size: 0.7rem;
+}
+.eb-cf-form legend {
+  font-family: var(--cx-heading-font); text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.62rem; font-weight: 600;
+  color: var(--md-accent-fg-color); padding: 0 0.3rem;
+}
+.eb-cf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem 0.7rem; }
+@media (max-width: 600px) { .eb-cf-grid { grid-template-columns: 1fr; } }
+.eb-cf-grid label { display: flex; flex-direction: column; gap: 0.15rem; opacity: 0.95; }
+.eb-cf-grid .eb-w2 { grid-column: 1 / -1; }
+.eb-cf-grid label:has(select[data-f="cr"]) { flex-direction: row; flex-wrap: wrap; align-items: center; column-gap: 0.4rem; }
+.eb-cf-grid label:has(select[data-f="cr"]) > :first-child { flex: 0 0 auto; }
+.eb-cf-xp { opacity: 0.7; }
+.eb-cf-form input:not([type="checkbox"]), .eb-cf-form textarea, .eb-cf-grid select { width: 100%; box-sizing: border-box; }
+.eb-cf-grid select[data-f="cr"] { width: auto; }
+.eb-cf-form textarea { resize: vertical; line-height: 1.4; }
+.eb-cf-form input[readonly] { opacity: 0.6; }
+.eb-cf-hint { font-size: 0.64rem; opacity: 0.75; margin-top: 0.35rem; }
+.eb-cf-namehint:not(:empty) { opacity: 1; color: var(--cx-hard); }
+.eb-cf-envs { display: flex; flex-wrap: wrap; gap: 0.25rem 0.9rem; }
+.eb-cf-envs label { white-space: nowrap; cursor: pointer; }
+.eb-cf-abil { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.5rem; text-align: center; }
+@media (max-width: 600px) { .eb-cf-abil { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.eb-cf-abil label { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; font-weight: 700; }
+.eb-cf-abil input { text-align: center; }
+.eb-cf-mod { font-weight: 400; opacity: 0.7; }
+.eb-cf-entry { margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--cx-line-soft); }
+.eb-cf-entryhead { display: flex; gap: 0.4rem; margin-bottom: 0.25rem; }
+.eb-cf-entryhead input { flex: 1; font-weight: 700; }
+.eb-cf-preview { position: sticky; top: 3.6rem; align-self: start; max-height: calc(100vh - 4.5rem); overflow-y: auto; }
+.eb-cf-preview .statblock { margin-top: 0; }
+.eb-cf-preview .statblock table { display: table; width: 100%; table-layout: fixed; }
+.eb-cf-preview .statblock th, .eb-cf-preview .statblock td { padding: 0.3em 0.2em; }
+
+/* ---------- Initiative tracker (Encounters -> Initiative) ---------- */
+.eb button.eb-vbtn:disabled { opacity: 0.4; cursor: not-allowed; }
+.eb button.eb-run { border-color: var(--md-accent-fg-color); color: var(--md-accent-fg-color); }
+.ei-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.6rem; }
+.ei-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.8rem; }
+.ei-name { font-family: var(--cx-heading-font); font-size: 1.1rem; font-weight: 700; }
+.ei-round { font-size: 0.75rem; padding: 0 0.5em; border: 1px solid var(--md-accent-fg-color); border-radius: 3px; color: var(--md-accent-fg-color); }
+.ei-now { font-size: 0.75rem; opacity: 0.85; }
+.ei-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; font-size: 0.7rem; }
+.ei-btns .md-button { margin: 0; padding: 0.3em 1.1em; font-size: 0.72rem; }
+.ei-group { white-space: nowrap; cursor: pointer; }
+.ei-cols { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 1.2rem; margin-top: 0.6rem; }
+@media (max-width: 1100px) { .ei-cols { grid-template-columns: 1fr; } }
+.ei-row {
+  display: grid; align-items: center; gap: 0.5rem;
+  grid-template-columns: 1rem 3rem minmax(0, 1.1fr) 2.8rem 6.4rem 4.4rem minmax(0, 1.7fr) 1.5rem;
+  padding: 0.3rem 0.2rem; border-bottom: 1px solid var(--cx-line-soft); font-size: 0.72rem;
+}
+.ei-row.ei-head { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.75;
+  border-bottom: 1px solid var(--cx-line); }
+.ei-row > * { min-width: 0; }
+.ei-row input { width: 100%; box-sizing: border-box; }
+.ei-row input[type="number"] { -moz-appearance: textfield; }
+.ei-row input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.ei-init { font-weight: 700; text-align: center; }
+.ei-who { display: flex; flex-direction: column; overflow: hidden; }
+.ei-who > * { overflow-wrap: anywhere; line-height: 1.25; }   /* long names wrap rather than being cut off */
+.ei-show { cursor: pointer; color: var(--md-typeset-a-color); font-weight: 700; }
+.ei-show:hover { text-decoration: underline; }
+.ei-sub { font-size: 0.6rem; opacity: 0.65; }
+.ei-hpcell { display: flex; align-items: center; gap: 0.25rem; }
+.ei-hpcell .ei-hp { width: 3rem; text-align: center; font-weight: 700; }
+.ei-max { display: flex; align-items: center; gap: 0.2rem; opacity: 0.7; }
+.ei-max .ei-maxin { width: 2.8rem; text-align: center; }
+.ei-bloodied .ei-hp { color: var(--cx-deadly); border-color: var(--cx-deadly); }
+.ei-pc .ei-who b, .ei-pc .ei-show { color: var(--md-accent-fg-color); }   /* players in gold, creatures in blue */
+.ei-cur { background: var(--cx-highlight); box-shadow: inset 3px 0 0 var(--md-accent-fg-color); }
+.ei-mark { color: var(--md-accent-fg-color); }
+.ei-out { opacity: 0.4; }
+.ei-out .ei-who { text-decoration: line-through; }
+.ei-add { display: grid; grid-template-columns: minmax(0, 1fr) 4rem 3.6rem 4rem auto; gap: 0.4rem; margin-top: 0.6rem; }
+.ei-sb { position: sticky; top: 3.6rem; align-self: start; max-height: calc(100vh - 4.5rem); overflow-y: auto; }
+.ei-sb .statblock { margin-top: 0; }
+.ei-sb .statblock table { display: table; width: 100%; table-layout: fixed; }
+.ei-sb .statblock th, .ei-sb .statblock td { padding: 0.3em 0.2em; }
+
+.ei-share { white-space: nowrap; cursor: pointer; }
+.ei-share-status { font-size: 0.65rem; opacity: 0.8; }
+.ei-share-status.ei-share-ok { color: var(--cx-easy, #6fbf73); opacity: 1; }
+.ei-share-status.ei-share-bad { color: var(--cx-deadly); opacity: 1; }
+.eb .ei-who button.ei-hide, .ei-who button.ei-hide { align-self: flex-start; background: none; border: 0; box-shadow: none; padding: 0; margin: 0; min-height: 0; cursor: pointer; font-size: 0.6rem; opacity: 0.55; color: inherit; text-decoration: underline dotted; }
+.ei-who .ei-hide:hover { opacity: 1; color: var(--md-accent-fg-color); }
+.ei-hidden .ei-who b, .ei-hidden .ei-show { font-style: italic; opacity: 0.6; }
+.ei-hidden .ei-hide { opacity: 1; color: var(--md-accent-fg-color); }
+
+/* ---------- Players' live initiative tracker (player site, docs/players/tracker.md): phone first ---------- */
+.live-tracker { margin: 0.6rem 0 1rem; }
+.lt-wait { opacity: 0.75; }
+.lt-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.8rem; margin-bottom: 0.5rem; }
+.lt-round { font-size: 0.8rem; padding: 0 0.5em; border: 1px solid var(--md-accent-fg-color); border-radius: 3px; color: var(--md-accent-fg-color); }
+.lt-now { font-family: var(--cx-heading-font); font-size: 1.15rem; font-weight: 700; }
+.md-typeset ol.lt-list { list-style: none; margin: 0; padding: 0; }
+.md-typeset ol.lt-list > li.lt-row {
+  display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 0.1rem 0.6rem; align-items: center;
+  margin: 0; padding: 0.55rem 0.4rem; border-bottom: 1px solid var(--cx-line-soft); font-size: 0.9rem;
+}
+.lt-init { grid-row: span 2; text-align: center; font-weight: 700; font-size: 1.05rem; opacity: 0.85; }
+.lt-name { font-weight: 700; overflow-wrap: anywhere; }
+.lt-pc .lt-name { color: var(--md-accent-fg-color); }   /* players in gold, as on the DM's tracker */
+.lt-conds { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.lt-conds:empty { display: none; }
+.lt-chip { font-size: 0.65rem; padding: 0.05em 0.45em; border: 1px solid var(--cx-line-strong); border-radius: 3px; }
+.lt-chip i { font-style: normal; font-weight: 700; margin-left: 0.2em; }
+.lt-conc { border-color: var(--md-accent-fg-color); color: var(--md-accent-fg-color); }
+.md-typeset ol.lt-list > li.lt-cur { background: var(--cx-highlight); box-shadow: inset 4px 0 0 var(--md-accent-fg-color); }
+.lt-out { opacity: 0.4; }
+.lt-out .lt-name { text-decoration: line-through; }
+.lt-status { font-size: 0.65rem; opacity: 0.6; margin-top: 0.5rem; }
+.lt-status.lt-live { color: var(--cx-easy, #6fbf73); opacity: 0.9; }
+.md-typeset .lt-sound { margin-left: 0.8em; padding: 0.15em 0.6em; font-size: 0.65rem; border: 1px solid var(--cx-line-strong); border-radius: 3px; background: none; color: var(--md-default-fg-color); cursor: pointer; }
+.lt-victory { font-family: var(--cx-heading-font); font-size: 1.8rem; font-weight: 700; color: var(--md-accent-fg-color); margin: 0.4rem 0; }
+.eb button.ei-victory { border-color: var(--md-accent-fg-color); color: var(--md-accent-fg-color); }
+
+/* ---------- Character cards (Party page, initiative tracker): stat block style, gold rules ---------- */
+.md-typeset .statblock.pc-card { border-top-color: var(--md-accent-fg-color); border-bottom-color: var(--md-accent-fg-color); }
+.md-typeset .statblock.pc-card hr { border-bottom-color: var(--md-accent-fg-color); }
+.md-typeset .pc-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: 0 1.4rem; align-items: start; }
+.md-typeset .pc-cards .statblock { margin: 0.8em 0; max-width: none; }
+.md-typeset .pc-cards .statblock table { display: table; width: 100%; table-layout: fixed; }
+.md-typeset .pc-cards .statblock th, .md-typeset .pc-cards .statblock td { padding: 0.3em 0.1em; font-size: 0.62rem; white-space: nowrap; }
+
+/* ---------- Who carries what (javascripts/items-editor.js, DM site at home) ---------- */
+.item-hold { margin: -0.3rem 0 1rem; font-size: 0.7rem; }
+.item-hold-label { opacity: 0.85; }
+.item-reveal-label { margin-left: 0.8rem; }
+.item-hold select, .item-give select, .item-sug select { margin-left: 0.3rem; }
+.item-hold-msg .eb-msg { display: inline-block; margin: 0 0 0 0.4rem; }
+.item-give { margin-top: 0.6rem; font-size: 0.68rem; }
+.item-give-box { position: relative; max-width: 18rem; }
+.item-give-q { width: 100%; box-sizing: border-box; }
+.item-give-list { position: absolute; z-index: 5; left: 0; right: 0; top: 100%; margin-top: 2px; max-height: 16rem; overflow-y: auto;
+  background: var(--cx-panel); border: 1px solid var(--cx-line-strong); border-radius: 3px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+.item-give-opt { padding: 0.3rem 0.5rem; cursor: pointer; }
+.item-give-opt.item-give-on, .item-give-opt:hover { background: var(--cx-highlight); }
+.item-give-held { opacity: 0.6; font-size: 0.6rem; }
+.item-give-none { padding: 0.3rem 0.5rem; opacity: 0.6; font-style: italic; }
+.item-sug-box { border: 1px solid var(--md-accent-fg-color); border-radius: 4px; padding: 0.6rem 0.8rem; margin: 0.8rem 0 1.2rem; font-size: 0.7rem; }
+.item-sug-title { margin: 0 0 0.4rem; font-weight: 700; color: var(--md-accent-fg-color); }
+.item-sug { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.4rem 1rem; padding: 0.4rem 0; border-top: 1px solid var(--cx-line-soft); }
+.item-sug-when { opacity: 0.6; font-size: 0.62rem; }
+.item-sug-line { font-style: italic; opacity: 0.8; }
+.item-sug-act { display: flex; align-items: center; gap: 0.3rem; }
+.item-sug-done { opacity: 0.55; }
+/* players' site: claiming an up-for-grabs item (players/items-live.js) */
+.item-claim { margin-left: 0.5rem; font-size: 0.68rem; }
+.md-typeset .item-claim button { padding: 0.1em 0.6em; font-size: 0.66rem; border: 1px solid var(--md-accent-fg-color); border-radius: 3px;
+  background: none; color: var(--md-accent-fg-color); cursor: pointer; }
+.md-typeset .item-claim button.item-claim-undo { border-color: var(--cx-line-strong); color: inherit; opacity: 0.8; }
+.item-claim-status { opacity: 0.8; font-style: italic; }
+.item-claim-others { opacity: 0.6; margin-left: 0.4rem; }
+
+/* ---------- Party page editor (Edit / Remove / Add character; the form reuses the creature form's styles) ---------- */
+.pe-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; margin: 0.4rem 0 0.2rem; }
+.md-typeset .pe-bar .md-button { margin: 0; padding: 0.3em 1.1em; font-size: 0.7rem; }
+.pe-msg .eb-msg { display: inline-block; margin: 0; }
+.pe-form { margin-top: 0.6rem; }
+.md-typeset .pc-card .eb-sbbar { margin: 0.2rem 0 -0.4rem; }
+
+.pe-sug-box { border: 1px solid var(--md-accent-fg-color); border-radius: 4px; padding: 0.6rem 0.8rem; margin: 0.6rem 0 1rem; font-size: 0.7rem; }
+.pe-sug-title { margin: 0 0 0.4rem; font-weight: 700; color: var(--md-accent-fg-color); }
+.pe-sug { padding: 0.5rem 0; border-top: 1px solid var(--cx-line-soft); }
+.pe-sug-when { opacity: 0.6; font-size: 0.62rem; }
+.md-typeset .pe-sug-table { font-size: 0.65rem; margin: 0.4rem 0; }
+.md-typeset .pe-sug-table th, .md-typeset .pe-sug-table td { padding: 0.25rem 0.8rem 0.25rem 0; vertical-align: top; text-align: left; }
+.md-typeset .pe-sug-table td:first-child { font-weight: 600; white-space: nowrap; }
+.pe-sug-act { display: flex; align-items: center; gap: 0.4rem; }
+.pe-sug-done { opacity: 0.6; }
+
+/* ---------- Record & Transcribe page ---------- */
+.rec-panel { border: 1px solid var(--cx-line); border-radius: 4px; background: var(--cx-panel); padding: 0.8rem 1rem; margin: 1rem 0; font-size: 0.72rem; }
+.rec-grid { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 0.55rem 0.8rem; align-items: center; }
+.rec-grid > label { font-weight: 600; opacity: 0.85; }
+.rec-line { display: flex; gap: 0.4rem; align-items: center; min-width: 0; }
+.rec-line select, .rec-line input { flex: 1; min-width: 0; }
+.rec-meter { flex: 1; height: 0.7rem; border: 1px solid var(--cx-line-strong); border-radius: 3px; overflow: hidden; background: var(--md-default-bg-color); }
+.rec-meter-fill { height: 100%; width: 0; background: var(--cx-easy); transition: width 0.08s linear; }
+.rec-meter-fill.rec-hot { background: var(--cx-deadly); }
+.rec-level-note { min-width: 12rem; font-size: 0.64rem; opacity: 0.8; }
+.rec-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin: 1rem 0 0.4rem; }
+.md-typeset .rec-controls .md-button { margin: 0; padding: 0.35em 1.3em; font-size: 0.78rem; }
+.rec-clock { font-family: var(--md-code-font-family, monospace); font-size: 1.1rem; font-weight: 700; margin-left: 0.4rem; }
+.rec-state { opacity: 0.8; }
+.rec-status .eb-msg { margin: 0.4rem 0 0; }
+.rec-list-title { font-family: var(--cx-heading-font); text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.72rem;
+  font-weight: 600; color: var(--cx-section); margin: 1.4rem 0 0.4rem; }
+.rec-item { display: grid; grid-template-columns: minmax(0, 1.2fr) 11rem minmax(0, 1.6fr); gap: 0.8rem; align-items: center;
+  padding: 0.4rem 0.2rem; border-bottom: 1px solid var(--cx-line-soft); font-size: 0.72rem; }
+.rec-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rec-what { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rec-tag { display: inline-block; padding: 0 0.5em; border: 1px solid currentColor; border-radius: 3px; font-size: 0.62rem;
+  text-transform: uppercase; letter-spacing: 0.05em; }
+.rec-live { color: var(--cx-deadly); } .rec-ok { color: var(--cx-easy); } .rec-bad { color: var(--cx-hard); }
+@media (max-width: 700px) { .rec-item { grid-template-columns: 1fr; gap: 0.2rem; } .rec-grid { grid-template-columns: 1fr; } }
+.rec-controls [hidden] { display: none !important; }   /* the theme's button style would otherwise show hidden buttons */
+
+/* ---------- Recorder pop-out window and the REC light in the header ---------- */
+/* The pop-out (recording.html?popout) shows only the recorder. */
+html.rec-popout .md-header, html.rec-popout .md-tabs, html.rec-popout .md-sidebar, html.rec-popout .md-footer,
+html.rec-popout .md-content__inner > :not(#rec-root), html.rec-popout .rec-list-title, html.rec-popout .rec-list { display: none !important; }
+html.rec-popout .md-main__inner { margin: 0; padding: 0; }
+html.rec-popout .md-content__inner { margin: 0.4rem 0.6rem; padding: 0; }
+html.rec-popout .rec-panel { margin: 0; }
+html.rec-popout .rec-grid { grid-template-columns: 5.5rem minmax(0, 1fr); }
+html.rec-popout .rec-level-note { min-width: 0; }
+.md-typeset .rec-controls .md-button:disabled { opacity: 0.45; cursor: not-allowed; }
+.rec-bring { cursor: pointer; }
+/* The REC light: shows on every page while the recorder window is recording. */
+.rec-light {
+  margin: 0 0.8rem; padding: 0.15rem 0.7rem; border-radius: 1rem; cursor: pointer; white-space: nowrap;
+  font: inherit; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em;
+  color: #fff; background: #b8322a; border: 1px solid #e5574a;
+  animation: rec-pulse 2s ease-in-out infinite;
+}
+.rec-light[hidden] { display: none; }
+.rec-light-paused { background: transparent; color: var(--md-primary-bg-color); border-color: var(--cx-line-strong); animation: none; }
+.rec-light-warn { background: #9e4c0c; border-color: var(--cx-hard); }
+.rec-light-lost { background: transparent; color: var(--cx-deadly); border: 1px dashed var(--cx-deadly); animation: none; }
+@keyframes rec-pulse { 50% { box-shadow: 0 0 0 0.25rem rgba(229, 87, 74, 0.25); } }
+@media print { .rec-light { display: none !important; } }
+
+/* ---------- Initiative tracker: conditions, concentration, reminders ---------- */
+.ei-condcell { display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem; min-width: 0; }
+.ei-chip { display: inline-flex; align-items: center; gap: 0.2rem; padding: 0 0.15rem 0 0.4rem; border-radius: 0.8rem;
+  border: 1px solid var(--cx-line-strong); background: var(--cx-panel-head); font-size: 0.6rem; white-space: nowrap; }
+.ei-chip i { font-style: normal; font-weight: 700; color: var(--md-accent-fg-color); }
+.eb .ei-chip button { width: 0.95rem; height: 0.95rem; border: none; font-size: 0.6rem; line-height: 1; padding: 0; opacity: 0.7; }
+.ei-conc { border-color: var(--cx-dm); color: var(--cx-dm); }
+.eb .ei-addcond { width: 2.2rem; padding: 0.1rem; font-size: 0.64rem; }
+.eb .ei-condcell .ei-cond { flex: 1; min-width: 3.5rem; width: auto; }
+.ei-alert a { cursor: pointer; margin-left: 0.4rem; font-weight: 700; }
+
+/* ---------- Families line in the builder's stat block panel ---------- */
+.eb-fams { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; margin: 0 0 0.6rem; font-size: 0.66rem; }
+.eb-fams-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.6rem; color: var(--cx-section); margin-right: 0.2rem; }
+.eb .eb-fams select { font-size: 0.64rem; padding: 0.1rem 0.2rem; }
+.eb-fams-msg { opacity: 0.85; }

@@ -1,0 +1,7 @@
+id: dock-ambush
+name: Ambush on the Quay
+location: Greywater - the quay, after dark
+page: ../index.md#ambush-on-the-quay
+creatures:
+  - {id: tidecaller, count: 4}
+  - {id: bog-lurker, count: 1}

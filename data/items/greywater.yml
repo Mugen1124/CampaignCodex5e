@@ -1,0 +1,31 @@
+# Items found around Greywater. Fields: see templates/item.yml.
+# holder: is who carries it now (set it with the picker on the Items page while serve is running).
+
+- id: tidewalker-boots
+  name: Tidewalker Boots
+  group: Greywater
+  type: Wondrous item
+  rarity: uncommon
+  found: In Pip Larkin's boat, under the nets
+  holder: Kestrel
+  flavor: >
+    Sealskin boots, salt-stained and patched, that never seem to get wet inside.
+  text: |-
+    While wearing these boots, you can walk across mud, marsh, and shallow water as if it were
+    solid ground, and you ignore difficult terrain caused by water or mud.
+
+- id: drowned-bell
+  name: The Drowned Bell
+  group: Greywater
+  type: Wondrous item
+  rarity: rare
+  found: Stolen from the Chapel of the Tides
+  revealed: false
+  flavor: >
+    A bronze bell the size of a barrel, green with age, cast with the names of the town's
+    first drowned.
+  text: |-
+    When the bell is rung at high tide, every creature within a mile that has drowned and been
+    brought back must succeed on a DC 15 Wisdom saving throw or walk into the sea.
+
+    **Curse.** Whoever rings it hears the drowned call their name for a year and a day.

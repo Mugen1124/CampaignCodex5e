@@ -1,0 +1,42 @@
+# Your campaign's settings. This is the one file that makes the site *yours* - the rest of the
+# engine (hooks/, tools/, codex/) reads it, so you never need to edit code.
+# `new` (the setup wizard) fills it in for you; edit by hand any time.
+
+name: The Lantern Coast                # shown as the site's title
+tagline: A demo campaign - run `new` to replace it with yours
+
+# Factions with no region: are listed under this heading on the Factions page.
+default_region: The Lantern Coast
+
+# The town or city (a file name in data/locations/, without .yml) the party is in right now.
+# Transcription puts its people and places first in the names it gives the speech model.
+focus: greywater
+
+# Words that should never appear outside the House Rules page - a feat or spell your table has
+# removed, say. The build warns when a page mentions one.
+banned: []
+
+# Names add-mentions should never wrap automatically (standard rulebook items, or one-word
+# names that are also ordinary words).
+skip_mentions: [Potion of Healing, Old]
+
+maps:
+  base: maps          # where your map exports live (data/maps.yml paths start here)
+  max_width: 4000     # larger maps are scaled down for the web
+  quality: 85
+
+recordings: recordings   # where session recordings are saved (never published)
+
+transcribe:
+  model: large-v3-turbo
+  intro: "A Dungeons & Dragons session on the Lantern Coast, in the town of Greywater."
+
+# Going online is optional: everything works on your own computer without it.
+# To put the site online (privately, free), follow "Going online" in the site's guide.
+online:
+  enabled: false
+  dm_worker: ""            # e.g. lantern-coast
+  players_worker: ""       # e.g. lantern-coast-players
+  subdomain: ""            # your workers.dev subdomain
+  access_team: ""          # your Cloudflare Access team name
+  players_site: true       # also publish the players' site
