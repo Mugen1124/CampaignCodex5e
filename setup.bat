@@ -92,6 +92,11 @@ echo.
 echo  Starting the site - leave this window open while you use it. From now on, just double-click CampaignCodex5e.bat.
 echo.
 "%VENV%\Scripts\python.exe" -m codex serve
+if errorlevel 1 (
+  echo.
+  echo  The site stopped with an error ^(above^). Close this window when you've read it.
+  pause
+)
 exit /b 0
 
 
