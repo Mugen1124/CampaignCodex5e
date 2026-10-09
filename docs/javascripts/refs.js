@@ -29,12 +29,18 @@
     function hideSoon() {
       hideTimer = setTimeout(function () { box.hidden = true; }, 150);
     }
-    document.querySelectorAll("a.ref").forEach(function (a) {
-      a.addEventListener("mouseenter", function () { show(a); });
-      a.addEventListener("mouseleave", hideSoon);
-      a.addEventListener("focus", function () { show(a); });
-      a.addEventListener("blur", hideSoon);
+    // Listened for on the whole page, so links drawn after it loads (the Party page's cards) work too.
+    function refOf(ev) { return ev.target.closest && ev.target.closest("a.ref"); }
+    document.addEventListener("mouseover", function (ev) {
+      var a = refOf(ev);
+      if (a && !(ev.relatedTarget && a.contains(ev.relatedTarget))) show(a);
     });
+    document.addEventListener("mouseout", function (ev) {
+      var a = refOf(ev);
+      if (a && !(ev.relatedTarget && a.contains(ev.relatedTarget))) hideSoon();
+    });
+    document.addEventListener("focusin", function (ev) { var a = refOf(ev); if (a) show(a); });
+    document.addEventListener("focusout", function (ev) { if (refOf(ev)) hideSoon(); });
     // Moving the mouse onto the card keeps it open (for scrolling long item text).
     box.addEventListener("mouseenter", function () { clearTimeout(hideTimer); });
     box.addEventListener("mouseleave", hideSoon);

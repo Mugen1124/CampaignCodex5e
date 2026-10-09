@@ -10,6 +10,7 @@ members:
     character: Tamsin "Tam" Underbough
     race: Lightfoot Halfling
     class: Rogue (Thief)
+    background: Acolyte
     level: 3
     ac: 14
     ac_note: leather
@@ -22,6 +23,10 @@ members:
     saves: Dex +5, Int +3
     skills: Acrobatics +5, Insight +3, Investigation +3, Perception +3, Religion +3, Stealth +7
     languages: Thieves’ Cant, Common, Halfling, Elvish, Dwarvish
+    proficiencies:
+      armor: Light Armor
+      weapons: Simple Weapons, Unarmed Strike, Hand Crossbow, Longsword, Rapier, Shortsword
+      tools: Tool Proficiency (Thieves’ tools)
     features:
       - name: Sneak Attack
         text: Once per turn, you can deal an extra 2d6 damage to one creature you hit with an attack if you have advantage on the attack roll. The attack must use a finesse or a ranged weapon. You don’t need advantage on the attack roll if another enemy of the target is within 5 feet of it, that enemy isn’t incapacitated, and you don’t have disadvantage on the attack roll.
@@ -51,11 +56,80 @@ members:
         text: You can take the Dash, Disengage, or Hide action.
       - name: Fast Hands
         text: You can make a Sleight of Hand check, use your thieves’ tools to disarm a trap or open a lock, or take the Use an Object action.
+    inventory:
+    - name: Shortsword
+      equipped: true
+    - name: Shortbow
+      equipped: true
+    - name: Quiver
+    - name: Arrow
+      qty: 20
+    - name: Backpack
+    - name: Ball Bearings (bag of 1,000)
+    - name: String (10 feet)
+    - name: Bell
+    - name: Candle
+      qty: 5
+    - name: Crowbar
+    - name: Hammer
+    - name: Piton
+      qty: 10
+    - name: Lantern, Hooded
+    - name: Oil (flask)
+      qty: 2
+    - name: Rations (1 day)
+      qty: 5
+    - name: Tinderbox
+    - name: Waterskin
+    - name: Rope, Hempen (50 feet)
+    - name: Leather
+      equipped: true
+    - name: Dagger
+      qty: 2
+      equipped: true
+    - name: Thieves’ Tools
+    - name: Holy symbol (a gift to you when you entered the priesthood)
+    - name: Book
+    - name: 5 sticks of incense
+    - name: Vestments
+    - name: Clothes, Common
+    - name: Pouch
+    - name: Boots of Elvenkind
+      equipped: true
+      magic: true
+    - name: Potion of Healing
+      magic: true
+    currency:
+      cp: 27
+      sp: 14
+      gp: 38
+    persona:
+      traits:
+      - I always have an exit planned — and a second one, in case the first is on fire.
+      - I can't resist a locked box. Not to steal from, just to know.
+      ideal: Freedom. Chains are meant to be picked, and so are the people who make them.
+      bond: My little brother Wim is apprenticed to a locksmith in Greyhaven. Everything I send home is so he never has to do what I do.
+      flaw: I talk my way into trouble faster than I can sneak out of it.
+      appearance: 24 years, Female, 2'11", 36 lb, Hazel eyes, Freckled tan skin, Curly auburn hair
+      backstory: 'Tam grew up on the barges of the Silverflow, running dice games and cons for her aunt''s crew. When the crew sold a debtor to slavers, she picked the lock on his chains, sank the slavers'' skiff, and has been working the other side of the law ever since — mostly.
+    
+    
+        Level 1: Signs on with a caravan heading upriver after a card game goes badly wrong in Greyhaven.
+    
+    
+        Level 3: Takes the Boots of Elvenkind off a smuggler who won''t be needing them. Joins the Thieves'' Guild of Rellport on probation — the guildmaster wants her fast hands for a job in the duke''s vault.'
+      allies: Aunt Morra (estranged, still running the barge crew); Wim Underbough; Old Hobb the fence at the Crooked Kettle
+      deity: Brandobaris
+      alignment: Chaotic Good
+    source:
+      from: CCC5e
+      imported: '2026-10-08'
     note: Owes Pip Larkin twenty gold, and Pip hasn't forgotten.
   - player: Player Two
     character: Brother Kaelen Ashvale
     race: Human
     class: Monk (Way of the Open Hand)
+    background: Acolyte
     level: 3
     ac: 16
     hp: 24
@@ -67,6 +141,9 @@ members:
     saves: Str +1, Dex +5
     skills: Acrobatics +5, Insight +5, Religion +1, Stealth +5
     languages: Common, Elvish, Celestial, Dwarvish
+    proficiencies:
+      weapons: Simple Weapons, Unarmed Strike, Shortsword
+      tools: Tool Proficiency (Calligrapher's supplies)
     features:
       - name: Unarmored Defense
         text: While you are wearing no armor and not wielding a shield, your AC equals 16.
@@ -97,10 +174,57 @@ members:
     reactions:
       - name: Deflect Missiles
         text: You can deflect or catch the missile when you are hit by a ranged weapon attack. When you do so, the damage you take from the attack is reduced by 1d10+6. If you reduce the damage to 0, you can catch the missile if it is small enough for you to hold in one hand and you have at least one hand free. If you catch a missile in this way, you can spend 1 ki point to make a ranged attack with the weapon or piece of ammunition you just caught, as part of the same reaction. You make this attack with proficiency, regardless of your weapon proficiencies, and the missile counts as a monk weapon for the attack.
+    inventory:
+    - name: Shortsword
+      equipped: true
+    - name: Backpack
+    - name: Crowbar
+    - name: Hammer
+    - name: Piton
+      qty: 10
+    - name: Torch
+      qty: 10
+    - name: Tinderbox
+    - name: Rations (1 day)
+      qty: 10
+    - name: Waterskin
+    - name: Rope, Hempen (50 feet)
+    - name: Dart
+      qty: 10
+      equipped: true
+    - name: Holy symbol (a gift to you when you entered the priesthood)
+    - name: Book
+    - name: 5 sticks of incense
+    - name: Vestments
+    - name: Clothes, Common
+    - name: Pouch
+    currency:
+      sp: 40
+      gp: 112
+      pp: 3
+    persona:
+      traits:
+      - I meditate at dawn and dusk, and I will politely refuse to leave until I'm finished.
+      - I answer insults with a bow. It unsettles people more than a fist.
+      ideal: Balance. Every strike must be one I'd be willing to receive.
+      bond: The monastery of the Ninth Bell burned while I was away on pilgrimage. I will find out who lit the fire.
+      flaw: I trust anyone who shows me kindness, which has not always gone well.
+      appearance: 31 years, Male, 5'10", 160 lb, Pale grey eyes, Olive skin, Shaved hair
+      backstory: 'Kaelen was a dockworker''s son sold to pay a debt, who escaped and collapsed at the gate of the Ninth Bell monastery. The monks took him in, and he stayed twenty years. He was on a silent pilgrimage when the monastery burned; he came home to ash and a single bell, cracked, still hanging.
+    
+    
+        Level 3: Takes the vows of the Open Hand at the ruins, alone, with the cracked bell as his witness.'
+      allies: Sister Oriane (the only other survivor, now a healer in Vell); the ferrymen's guild of the Tarn; Master Iro's memory
+      deity: The Open Hand
+      alignment: Lawful Good
+    source:
+      from: CCC5e
+      imported: '2026-10-08'
   - player: Player Three
     character: Magister Ilvara Sorn
     race: Tiefling
     class: Wizard (School of Evocation)
+    background: Acolyte
     level: 3
     ac: 12
     hp: 17
@@ -114,6 +238,8 @@ members:
     resistances: Fire resistance
     senses: Darkvision 60 ft.
     languages: Common, Infernal, Draconic, Abyssal
+    proficiencies:
+      weapons: Dagger, Dart, Sling, Quarterstaff, Light Crossbow
     features:
       - name: Arcane Recovery
         text: Once per day when you finish a short rest, you can choose expended spell slots up to 5th level to recover. The spell slots can have a combined level that is equal to or less than 2.
@@ -127,10 +253,6 @@ members:
         text: You know the thaumaturgy cantrip. You can cast the hellish rebuke spell as a 2nd-level spell once per rest. Charisma is your spellcasting ability for these spells.
       - name: Shelter of the Faithful
         text: As an acolyte, you command the respect of those who share your faith, and you can perform the religious ceremonies of your deity. You and your adventuring companions can expect to receive free healing and care at a temple, shrine, or other established presence of your faith, though you must provide any material components needed for spells. Those who share your religion will support you (but only you) at a modest lifestyle. You might also have ties to a specific temple dedicated to your chosen deity or pantheon, and you have a residence there. This could be the temple where you used to serve, if you remain on good terms with it, or a temple where you have found a new home. While near your temple, you can call upon the priests for assistance, provided the assistance you ask for is not hazardous and you remain in good standing with your temple.
-      - name: Spellcasting (Wizard)
-        text: 'Intelligence; spell save DC 13, +5 to hit with spell attacks. Slots: 1st ×4, 2nd ×2. Cantrips: Fire Bolt, Ray of Frost, Shocking Grasp. Spells: Burning Hands*, Detect Magic*, Find Familiar*, Identify, Mage Armor, Magic Missile*, Shield*, Thunderwave*, Misty Step, Scorching Ray. (* prepared)'
-      - name: Innate spellcasting (Infernal Legacy)
-        text: Charisma; spell save DC 11. Thaumaturgy, Hellish Rebuke.
     actions:
       - name: Quarterstaff
         text: '*Attack:* +1 to hit, range 5 ft. *Hit:* 1d6-1 bludgeoning. Versatile (1d8-1 bludgeoning)'
@@ -142,3 +264,87 @@ members:
         text: '*Attack:* +5 to hit, range 60 ft. *Hit:* 1d8 cold. Cantrip'
       - name: Shocking Grasp
         text: '*Attack:* +5 to hit, range Touch. *Hit:* 1d8 lightning. Cantrip'
+    spellcasting:
+    - name: Wizard
+      ability: Intelligence
+      save_dc: 13
+      attack: 5
+      slots:
+        1: 4
+        2: 2
+      cantrips:
+      - Fire Bolt
+      - Ray of Frost
+      - Shocking Grasp
+      spells:
+      - name: Burning Hands
+        level: 1
+        prepared: true
+      - name: Detect Magic
+        level: 1
+        prepared: true
+      - name: Find Familiar
+        level: 1
+        prepared: true
+      - name: Identify
+        level: 1
+      - name: Mage Armor
+        level: 1
+      - name: Magic Missile
+        level: 1
+        prepared: true
+      - name: Shield
+        level: 1
+        prepared: true
+      - name: Thunderwave
+        level: 1
+        prepared: true
+      - name: Misty Step
+        level: 2
+      - name: Scorching Ray
+        level: 2
+    - name: Innate (Infernal Legacy)
+      ability: Charisma
+      save_dc: 11
+      attack: 3
+      spells:
+      - name: Thaumaturgy
+        level: 0
+      - name: Hellish Rebuke
+        level: 1
+    inventory:
+    - name: Quarterstaff
+      equipped: true
+    - name: Component Pouch
+    - name: Backpack
+    - name: Book
+      qty: 2
+    - name: Ink (1 ounce bottle)
+    - name: Ink Pen
+    - name: Parchment (one sheet)
+      qty: 10
+    - name: Spellbook
+    - name: Dagger
+      equipped: true
+    - name: Holy symbol (a gift to you when you entered the priesthood)
+    - name: 5 sticks of incense
+    - name: Vestments
+    - name: Clothes, Common
+    - name: Pouch
+    currency:
+      sp: 30
+      gp: 64
+    persona:
+      traits:
+      - I correct people's pronunciation of spell names. I cannot stop myself.
+      - 'Every argument ends the same way with me: a book, open to the right page.'
+      ideal: Knowledge. Fire destroys; understanding is what you build with the light.
+      bond: The Collegium of Ashen Spires took me in when no one else would teach a tiefling. I defend it and its students.
+      flaw: I believe every problem can be solved with a sufficiently large explosion. I am usually right, which is the problem.
+      appearance: 58 years, Female, 5'9", 140 lb, Molten gold eyes, Deep crimson skin, Silver-white hair
+      backstory: Ilvara was born in the slums of Tarsakh to parents who feared her horns. She taught herself to read from stolen almanacs and set her first fire at nine — by accident, reading aloud. The Collegium of Ashen Spires found her through the scorch marks and made her their first tiefling student. Forty years later she runs its war college.
+      allies: The Collegium of Ashen Spires; Archmage Deren Holt (mentor, retired); her former students across three kingdoms
+      alignment: Neutral Good
+    source:
+      from: CCC5e
+      imported: '2026-10-08'

@@ -104,10 +104,14 @@ PARTY = ROOT / "data" / "party.yml"
 PARTY_BACKUPS = ROOT / "sources" / "backups" / "party"
 PARTY_BACKUPS_KEPT = 30
 # Character fields in the order templates\character.yml uses.
-CHARACTER_ORDER = ("player", "email", "character", "race", "class", "level", "ac", "ac_note", "hp", "hp_formula", "speed",
-                   "initiative", "passive_perception", "abilities", "saves", "skills", "resistances", "immunities",
-                   "condition_immunities", "senses", "languages", "features", "actions", "bonus_actions",
-                   "reactions", "note")
+CHARACTER_ORDER = ("player", "email", "character", "race", "class", "background", "level", "ac", "ac_note", "hp",
+                   "hp_formula", "speed", "initiative", "passive_perception", "abilities", "saves", "skills",
+                   "resistances", "immunities", "condition_immunities", "senses", "languages", "proficiencies",
+                   "features", "actions", "bonus_actions", "reactions", "spellcasting", "inventory", "currency",
+                   "persona", "portrait", "private", "source", "note")
+# Kept as given (lists and maps the Party page's importer writes; see templates\character.yml).
+CHARACTER_STRUCTURED = {"proficiencies": dict, "spellcasting": list, "inventory": list, "currency": dict,
+                        "persona": dict, "private": list, "source": dict}
 CHARACTER_LISTS = ("features", "actions", "bonus_actions", "reactions")
 CHARACTER_NUMBERS = ("level", "ac", "hp", "initiative", "passive_perception")
 IDENTITY = ("player", "email", "character", "race", "class", "level")   # members with only these stay on one line
@@ -368,13 +372,17 @@ def clean_member(raw: dict, keep: dict = None):
     know about are kept from `keep` (the member being edited)."""
     m = {k: v for k, v in (keep or {}).items() if k not in CHARACTER_ORDER}
     for key in CHARACTER_ORDER:
-        value = raw.get(key)
+        # A field the form doesn't send at all (the imported inventory, persona, spellcasting... which it
+        # doesn't show) keeps its value; one it sends empty is cleared.
+        value = raw.get(key) if key in raw else (keep or {}).get(key)
         if key in CHARACTER_LISTS:
             entries = [{"name": str(e.get("name", "")).strip(), "text": str(e.get("text", "")).strip()}
                        for e in value or [] if isinstance(e, dict)]
             value = [e for e in entries if e["name"] or e["text"]]
             if any(not e["name"] for e in value):
                 return None, f"Every entry under {key.replace('_', ' ')} needs a name."
+        elif key in CHARACTER_STRUCTURED:
+            value = value if isinstance(value, CHARACTER_STRUCTURED[key]) and value else None
         elif key == "abilities":
             scores = {}
             for a in ABILITIES:
@@ -868,6 +876,7 @@ class Handler(BaseHTTPRequestHandler):
                   "/party/member/delete": self.delete_member, "/family": self.family,
                   "/item/holder": self.item_holder, "/item/suggestion": self.item_suggestion,
                   "/party/suggestion": self.party_suggestion, "/item/claim": self.item_claim,
+                  "/party/import": self.party_import,
                   "/item/reveal": self.item_reveal}
         if self.path not in routes:
             return self._reply(404, {"error": "not found"})
@@ -1150,6 +1159,55 @@ class Handler(BaseHTTPRequestHandler):
         write_party(members, size)
         self._reply(200, {"saved": "data/party.yml", "character": member["character"], "updated": editing,
                           "size": size})
+
+    def party_import(self, data):
+        """A CCC5e export (.ccc5e) onto the Party page: {"file": its text, "index": the card to update (or none:
+        the character of that name, or a new one), "expect": that card's name, "save": false for the preview}.
+        The preview lists what would change; saving keeps the player, email, note and private marks."""
+        import import_ccc5e as ccc
+        try:
+            src = ccc.load_text(str(data.get("file") or ""), str(data.get("name") or "That file"))
+        except ValueError as err:
+            return self._reply(400, {"error": str(err)})
+        new = ccc.card(src)
+        if not new.get("character"):
+            return self._reply(400, {"error": "That file's character has no name."})
+        party, members = self._party()
+        if data.get("index") is not None:
+            index = self._check_index(members, data)
+            if index is None:
+                return
+        else:
+            index = ccc.find(members, new["character"])
+        old = members[index] if index is not None else {}
+        merged = ccc.merge(old, new)
+        if old.get("portrait"):
+            merged["portrait"] = old["portrait"]
+        merged, error = clean_member(merged)
+        if error:
+            return self._reply(400, {"error": error})
+        name = merged["character"].strip().lower()
+        if any(str(m.get("character", "")).strip().lower() == name for i, m in enumerate(members) if i != index):
+            return self._reply(409, {"error": f"There's already a character called {merged['character']} - import it onto that card."})
+        if not data.get("save"):
+            return self._reply(200, {
+                "character": merged["character"], "adding": index is None, "replacing": old.get("character"),
+                "has_sheet": isinstance(src.get("Sheet"), dict), "portrait": bool(ccc.portrait_bytes(src)),
+                "summary": " ".join(str(x) for x in (merged.get("race"), merged.get("class"), merged.get("level")) if x),
+                "changes": [list(c) for c in ccc.changes(old, merged)] if old else []})
+        portrait = ccc.save_portrait(src, merged["character"])
+        if portrait:
+            merged["portrait"] = portrait
+        size = None
+        backup_party()
+        if index is None:
+            members.append(merged)
+            if party.get("size") == len(members) - 1:   # the size followed the party: keep it that way
+                size = len(members)
+        else:
+            members[index] = merged
+        write_party(members, size)
+        self._reply(200, {"saved": "data/party.yml", "character": merged["character"], "added": index is None})
 
     def delete_member(self, data):
         party, members = self._party()

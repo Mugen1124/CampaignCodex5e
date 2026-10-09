@@ -174,6 +174,34 @@ def main() -> int:
         check("...and it's plain text there", "the town's events" in html_ and "events.md" not in html_ and "events.html" not in html_)
         page.write_text(original, encoding="utf-8")
 
+        print("The Party page and private fields:")
+        party_file = proj / "data" / "party.yml"
+        party_text = party_file.read_text(encoding="utf-8")
+        party = yaml.safe_load(party_text)
+        tam = next(m for m in party["members"] if m["character"].startswith("Tamsin"))
+        bond, backstory = tam["persona"]["bond"], tam["persona"]["backstory"]
+        tam["private"] = ["persona.bond", "persona.backstory"]
+        party_file.write_text(yaml.safe_dump(party, allow_unicode=True, sort_keys=False, width=1000), encoding="utf-8")
+        build(proj, "mkdocs.yml", out / "private-dm")
+        build(proj, "mkdocs-players.yml", out / "private-pl")
+        pl_party = (out / "private-pl" / "party" / "index.html").read_text(encoding="utf-8")
+        dm_party = (out / "private-dm" / "party" / "index.html").read_text(encoding="utf-8")
+        first_words = " ".join(backstory.split()[:6])
+        check("the Party page draws its cards from embedded data", 'class="party-data"' in dm_party and "pc-cards party" in dm_party)
+        check("players' site: a private bond and backstory aren't there", bond not in pl_party and first_words not in pl_party)
+        check("players' site: nor the DM's note, nor the private list", tam.get("note", "~~") not in pl_party and '"private"' not in pl_party)
+        check("DM site: both are there, marked private", bond in dm_party and first_words in dm_party and "persona.bond" in dm_party)
+        r = run(proj, "tools/leak_check.py", out / "private-pl")
+        check("...and the leak check passes", r.returncode == 0, r.stdout[-1500:])
+        page = proj / "docs" / "world" / "index.md"
+        original = page.read_text(encoding="utf-8")
+        page.write_text(original + "\n" + bond + "\n", encoding="utf-8")
+        build(proj, "mkdocs-players.yml", out / "private-leak")
+        r = run(proj, "tools/leak_check.py", out / "private-leak")
+        check("...but it catches a private field pasted into a public page", r.returncode != 0 and "private: persona.bond" in r.stdout, r.stdout[-1500:])
+        page.write_text(original, encoding="utf-8")
+        party_file.write_text(party_text, encoding="utf-8")
+
         print("A banned word:")
         conf = proj / "campaign.yml"
         conf_text = conf.read_text(encoding="utf-8")

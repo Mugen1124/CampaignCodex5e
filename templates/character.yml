@@ -33,4 +33,35 @@
       text: "*Melee Weapon Attack:* +7 to hit, reach 5 ft. *Hit:* 10 (1d12 + 4) slashing damage."
   bonus_actions: []
   reactions: []
-  note: DM reminders shown at the bottom of the card.
+  # Everything below is optional - a CCC5e import fills it in (Import on the Party page, or
+  # `codex import-character`), and it can be written by hand too.
+  background: Outlander
+  proficiencies: {armor: "Light Armor, Medium Armor, Shields", weapons: "Simple Weapons, Martial Weapons", tools: ""}
+  spellcasting:                     # one entry per casting class (and innate spells)
+    - name: Wizard
+      ability: Intelligence
+      save_dc: 13
+      attack: 5
+      slots: {1: 4, 2: 2}           # spell level: how many slots
+      cantrips: [Fire Bolt, Mage Hand]
+      spells:
+        - {name: Magic Missile, level: 1, prepared: true}
+        - {name: Misty Step, level: 2}
+  inventory:                        # equipped, attuned and magic items show first; the rest fold away
+    - {name: Greataxe, equipped: true}
+    - {name: Potion of Healing, qty: 2, magic: true}
+    - {name: A letter from home, private: true}   # private: only the player and the DM see it
+  currency: {gp: 42, sp: 7}
+  persona:
+    traits: [I count everything twice.]
+    ideal: Freedom.
+    bond: My village.
+    flaw: I never back down.
+    appearance: 28 years, 6'2", grey eyes
+    backstory: |
+      A paragraph or two. Blank lines start new paragraphs.
+  portrait: party/portraits/example-hero.jpg   # an image in docs/ (an import saves one here)
+  private: [persona.bond, persona.backstory]  # fields the other players don't see - the DM still does;
+                                              # a whole field (skills) or one part of the persona
+  source: {from: CCC5e, imported: 2026-10-08}  # where the card came from (an import sets it)
+  note: DM reminders shown at the bottom of the card - never on the players' site.

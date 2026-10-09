@@ -6,15 +6,7 @@ hide:
 
 # Party
 
-| Player | Character | Race | Class | Level |
-|---|---|---|---|:-:|
-| Player One | Tamsin "Tam" Underbough | Lightfoot Halfling | Rogue (Thief) | 3 |
-| Player Two | Brother Kaelen Ashvale | Human | Monk (Way of the Open Hand) | 3 |
-| Player Three | Magister Ilvara Sorn | Tiefling | Wizard (School of Evocation) | 3 |
-
 The three are CCC5e's sample characters, rebuilt at level 3 - each card was imported from a `.ccc5e` file with `codex import-character`.
-
-## Character cards
 
 {{ party-cards }}
 

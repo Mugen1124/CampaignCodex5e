@@ -71,7 +71,8 @@
     // ------------------------------------------------------------ buttons
     var bar = document.createElement("div");
     bar.className = "eb pe-bar";
-    bar.innerHTML = (PLAYER ? "" : '<button class="md-button pe-add">Add character</button>') + '<span class="pe-msg"></span>';
+    bar.innerHTML = (PLAYER ? "" : '<button class="md-button pe-add">Add character</button>' +
+      '<button class="md-button pe-import">Import from CCC5e</button>') + '<span class="pe-msg"></span>';
     grid.parentNode.insertBefore(bar, grid);
     var sugBox = document.createElement("div");
     sugBox.className = "eb pe-sugs";
@@ -82,7 +83,8 @@
       tools.className = "eb eb-sbbar";
       tools.innerHTML = PLAYER
         ? '<button class="eb-act" data-pe="suggest">' + (me.suggestion && me.suggestion.status === "pending" ? "Edit my suggestion" : "Suggest changes") + "</button>"
-        : '<button class="eb-act" data-pe="edit">Edit</button><button class="eb-act eb-danger" data-pe="remove">Remove</button>';
+        : '<button class="eb-act" data-pe="import" title="Update this card from a CCC5e export">Import .ccc5e</button>' +
+          '<button class="eb-act" data-pe="edit">Edit</button><button class="eb-act eb-danger" data-pe="remove">Remove</button>';
       card.insertBefore(tools, card.firstChild);
     });
     var box = document.createElement("div");
@@ -261,6 +263,63 @@
       loadParty().then(function () { open({ index: null, expect: "", m: formValues({}) }); })
         .catch(function (e) { msg(e.message === "Failed to fetch" ? OFFLINE : esc(e.message), "warn"); });
     }
+    // A CCC5e export (.ccc5e): onto card i, or (i null) onto the character of that name or a new one.
+    function importFile(i) {
+      var input = document.createElement("input");
+      input.type = "file";
+      input.accept = ".ccc5e,.json";
+      input.addEventListener("change", function () {
+        var file = input.files && input.files[0];
+        if (!file) return;
+        file.text().then(function (text) {
+          return loadParty().then(function (members) {
+            var req = { file: text, name: file.name };
+            if (i != null) { req.index = i; req.expect = members[i] && members[i].character; }
+            return call("/party/import", req).then(function (res) {
+              if (res.status !== 200) return msg(esc(res.body.error || "Couldn't read that file."), "warn");
+              showImport(req, res.body, i);
+            });
+          });
+        }).catch(function (e) { msg(e.message === "Failed to fetch" ? OFFLINE : esc(e.message), "warn"); });
+      });
+      input.click();
+    }
+    // The preview goes where it's about: inside the card being updated, or under the bar for a new one.
+    function showImport(req, p, i) {
+      var old = document.querySelector(".pe-import-box");
+      if (old) old.remove();
+      var holder = document.createElement("div");
+      var card = i != null ? grid.querySelector('.pc-card[data-pc="' + i + '"]') : null;
+      if (card) card.insertBefore(holder, card.querySelector(".pcx-strip") || card.firstChild.nextSibling);
+      else bar.parentNode.insertBefore(holder, bar.nextSibling);
+      var box = holder;
+      var rows = (p.changes || []).map(function (c) {
+        return "<tr><td>" + esc(String(c[0]).replace(/_/g, " ")) + '</td><td class="pe-old">' + esc(c[1]) + '</td><td class="pe-new">' + esc(c[2]) + "</td></tr>";
+      }).join("");
+      var title = p.adding ? "Add " + esc(p.character) + " to the party" :
+        p.replacing && p.replacing !== p.character ? "Import " + esc(p.character) + " onto " + esc(p.replacing) + "'s card" : "Update " + esc(p.character);
+      box.innerHTML = '<div class="pe-import-box"><p class="pe-sug-title">' + title + "</p>" +
+        '<p class="eb-hint">' + esc(p.summary) + (p.portrait ? " · with a portrait" : "") + "</p>" +
+        (p.has_sheet ? "" : '<div class="eb-msg eb-warn">This file is from CCC5e before 1.0.21: only the name, race, class and level come in. ' +
+          "Export it again from a newer CCC5e for the whole card.</div>") +
+        (p.adding ? "" : rows ? '<table class="pe-sug-table"><tr><th>What</th><th>Now</th><th>After the import</th></tr>' + rows + "</table>"
+          : '<p class="eb-hint">Nothing changes.</p>') +
+        '<p class="eb-hint">Kept as they are: the player, their email, your note, and anything marked private.</p>' +
+        '<div class="pe-sug-act"><button class="md-button md-button--primary pe-import-save">' + (p.adding ? "Add character" : "Save the import") +
+        '</button><button class="md-button pe-import-cancel">Cancel</button></div></div>';
+      box.scrollIntoView({ behavior: "smooth", block: "center" });
+      box.querySelector(".pe-import-cancel").addEventListener("click", function () { holder.remove(); });
+      box.querySelector(".pe-import-save").addEventListener("click", function (ev) {
+        ev.target.disabled = true;
+        call("/party/import", Object.assign({}, req, { save: true })).then(function (res) {
+          if (res.status !== 200) { ev.target.disabled = false; return msg(esc(res.body.error || "Couldn't save it."), "warn"); }
+          holder.remove();
+          msg((res.body.added ? "Added " : "Updated ") + esc(res.body.character) +
+              " from CCC5e. The page refreshes when the site rebuilds.", "ok");
+        }).catch(function () { ev.target.disabled = false; msg(OFFLINE, "warn"); });
+      });
+    }
+
     function remove(i) {
       loadParty().then(function (members) {
         var m = members[i];
@@ -344,11 +403,13 @@
 
     // ------------------------------------------------------------ wiring
     if (!PLAYER) bar.querySelector(".pe-add").addEventListener("click", add);
+    if (!PLAYER) bar.querySelector(".pe-import").addEventListener("click", function () { importFile(null); });
     grid.addEventListener("click", function (ev) {
       var act = ev.target.getAttribute("data-pe");
       if (!act) return;
       var i = +ev.target.closest("[data-pc]").getAttribute("data-pc");
       if (act === "suggest") startSuggest(); else if (act === "edit") edit(i); else if (act === "remove") remove(i);
+      else if (act === "import") importFile(i);
     });
     box.addEventListener("input", function (ev) {
       var t = ev.target;

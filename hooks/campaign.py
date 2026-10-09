@@ -8,13 +8,15 @@ the page is built:
     {{ statblock bog-lurker }}    one full stat block
     {{ bestiary }}                every creature, grouped, with link anchors
     {{ encounter dock-ambush }}   encounter summary with automatic XP math
-    {{ party-cards }}             a card for each character in data/party.yml
-    {{ party-card kestrel }}      one character's card (named as in its anchor: pc-kestrel)
+    {{ party-cards }}             the Party page: the party table and a full card for each character
+                                  (drawn by javascripts/party-cards.js from data embedded here)
+    {{ party-card tam }}          one character's compact card (named as in its anchor: pc-tam)
 
 Keeping the numbers as data (not prose) is what lets future table tools
 (initiative tracker, stat cards, encounter builder) reuse them.
 """
 
+import copy
 import json
 import logging
 import posixpath
@@ -473,13 +475,67 @@ def _party_members() -> list:
     return [p for p in PARTY.get("members") or [] if isinstance(p, dict)]
 
 
-def render_party_cards() -> str:
-    cards = [render_pc_card(p, anchor=True, index=i) for i, p in enumerate(_party_members())]
+def strip_private(p: dict) -> dict:
+    """A card as the other players see it: without the fields its `private:` list names (a field, or one
+    part of the persona - "persona.bond"), without inventory items marked `private: true`, and without
+    the list itself."""
+    out = copy.deepcopy(p)
+    for path in out.pop("private", None) or []:
+        head, _, sub = str(path).partition(".")
+        if sub and isinstance(out.get(head), dict):
+            out[head].pop(sub, None)
+            if not out[head]:
+                out.pop(head)
+        elif not sub:
+            out.pop(head, None)
+    if isinstance(out.get("inventory"), list):
+        out["inventory"] = [i for i in out["inventory"] if not (isinstance(i, dict) and i.get("private"))]
+    return out
+
+
+def _party_card_data(p: dict, index: int, src: str) -> dict:
+    """One character for the Party page's script. The players' site never gets the DM's note, an email,
+    or anything the player marked private."""
+    d = {k: v for k, v in p.items() if k != "email"}
+    if PLAYERS[0]:
+        d = strip_private(d)
+        d.pop("note", None)
+    d["id"] = "pc-" + _pc_id(p)
+    d["index"] = index
+    d.setdefault("level", PARTY.get("level"))
+    if d.get("portrait"):
+        d["portrait"] = posixpath.relpath(str(d["portrait"]), posixpath.dirname(src) or ".")
+    return d
+
+
+def render_party_cards(src: str = "party/index.md") -> str:
+    """The Party page: the party's cards as data for javascripts/party-cards.js, which draws the party
+    table and one full-width card per character. Items each character carries (data/items, holder:)
+    go in as [[mentions]], so they keep their hover cards; the script moves them into the cards."""
+    members = _party_members()
+    data = {"level": PARTY.get("level"), "audience": "players" if PLAYERS[0] else "dm",
+            "cards": [_party_card_data(p, i, src) for i, p in enumerate(members)]}
+    blob = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+    held = []
+    for i, p in enumerate(members):
+        items = _carried_by(p.get("character", ""))
+        if items:
+            held += [f'<div data-carried="{i}" markdown>', "", " · ".join(f"[[{it['name']}]]" for it in items), "", "</div>", ""]
     shared = _carried_by("Party")
-    tail = ("\n**Shared by the party:** " + " · ".join(f"[[{i['name']}]]" for i in shared) + "\n") if shared else ""
+    if shared:
+        held += ['<div data-carried="party" markdown>', "", " · ".join(f"[[{it['name']}]]" for it in shared), "", "</div>", ""]
     # On the players' site, javascripts/party-editor.js offers each player "Suggest changes" on their own card.
     audience = ' data-audience="players"' if PLAYERS[0] else ""
-    return f'<div class="pc-cards"{audience} markdown>\n\n' + "\n".join(cards) + "\n</div>\n" + tail
+    # A placeholder per card carries its anchor (#pc-tam), so links to a character (from the Items page,
+    # say) are checked at build time like any other; the script draws the card into it.
+    slots = [f'<section class="pc-card pcx" id="pc-{_pc_id(p)}" data-pc="{i}"></section>' for i, p in enumerate(members)]
+    return "\n".join([
+        f'<script type="application/json" class="party-data">{blob}</script>', "",
+        f'<div class="pc-cards party"{audience} markdown>', "",
+        '<div class="party-carried" hidden markdown>', "", *held, "</div>", "",
+        *slots, "",
+        "</div>", "",
+    ])
 
 
 # ---------------------------------------------------------------- bestiary
@@ -740,14 +796,14 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
         if kind == "encounter-builder":
             return render_encounter_builder()
         if kind == "party-cards":
-            return render_party_cards()
+            return render_party_cards(src)
         if kind == "party-card":
             p = next((m for m in _party_members() if _pc_id(m) == key), None)
             if p:
                 return render_pc_card(p)
-            log.warning("Unknown character in {{ party-card %s }} (use the name as in its card's anchor, e.g. kestrel)", key)
+            log.warning("Unknown character in {{ party-card %s }} (use the name as in its card's anchor, e.g. tam)", key)
             return (f'\n!!! failure "Missing character"\n'
-                    f"    No character `{key}` in `data/party.yml` (written like its card's anchor: `kestrel`, `oskar-fenn`).\n")
+                    f"    No character `{key}` in `data/party.yml` (written like its card's anchor: `tam`, `brother-kaelen-ashvale`).\n")
         if kind == "statblock":
             m = MONSTERS.get(key)
             return render_statblock(m) if m else _missing("monster", key)

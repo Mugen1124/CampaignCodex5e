@@ -91,9 +91,24 @@ def dm_secrets():
         for field in ("details", "structure", "goals", "secret"):
             found += [(f"faction {fac['name']} ({field})", s) for s in sentences(fac.get(field) or "")]
     party = yaml.safe_load((ROOT / "data" / "party.yml").read_text(encoding="utf-8")) or {}
+    def texts(value):
+        if isinstance(value, dict):
+            return [t for v in value.values() for t in texts(v)]
+        if isinstance(value, list):
+            return [t for v in value for t in texts(v)]
+        return [str(value)] if isinstance(value, str) else []
+
     for p in party.get("members") or []:
         if isinstance(p, dict):
             found += [(f"{p.get('character')}'s card (DM note)", s) for s in sentences(p.get("note") or "")]
+            # What the player marked private: other players must never see it.
+            for path in p.get("private") or []:
+                head, _, sub = str(path).partition(".")
+                value = (p.get(head) or {}).get(sub) if sub and isinstance(p.get(head), dict) else p.get(head)
+                found += [(f"{p.get('character')}'s card (private: {path})", s) for t in texts(value) for s in sentences(t)]
+            for item in p.get("inventory") or []:
+                if isinstance(item, dict) and item.get("private"):
+                    found += [(f"{p.get('character')}'s card (private item)", s) for s in sentences(str(item.get("name", "")))]
     # DM boxes and hidden stretches on the pages the player site includes
     players = yaml.safe_load(re.sub(r"^INHERIT:.*$", "", (ROOT / "mkdocs-players.yml").read_text(encoding="utf-8"), flags=re.M))
     excluded = [x.strip() for x in (players.get("exclude_docs") or "").splitlines() if x.strip()]
