@@ -163,11 +163,7 @@ def nav_players(town: str, town_id: str) -> str:
   - Sessions: []          # filled in by hooks/sessions.py: each session, newest first (the home page is the latest)
   - Initiative: players/tracker.md
   - My Notes: players/notes.md
-  - Party:
-      - party/index.md
-      - About this site: players/about.md
-      - People: reference/npcs.md
-      - Items: reference/items.md
+  - Party: party/index.md
   - World:
       - world/index.md
       - Factions: world/factions.md
@@ -193,6 +189,10 @@ def nav_players(town: str, town_id: str) -> str:
       - Equipment: rules/equipment.md
       - Characters: rules/characters.md
       - Monsters, NPCs & planes: rules/more.md
+  - Reference:
+      - People: reference/npcs.md
+      - Items: reference/items.md
+      - About this site: players/about.md
 """
 
 
@@ -276,6 +276,11 @@ names_ok: []
 
     table = "\n".join(f"| {p['player']} | {p['character']} | {p['race']} | {p['class']} | {level} |" for p in party)
     write("docs/party/index.md", f"""
+---
+hide:
+  - navigation
+---
+
 # Party
 
 | Player | Character | Race | Class | Level |

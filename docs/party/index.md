@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # Party
 
 | Player | Character | Race | Class | Level |
