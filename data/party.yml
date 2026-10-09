@@ -4,33 +4,141 @@
 # email: (optional) is the address a player signs in to the players' site with - only needed if
 # you put the players' site online. Emails never appear on any page.
 level: 3
-size: 4
+size: 3
 members:
   - player: Player One
-    character: Kestrel
-    race: Halfling
-    class: Rogue
+    character: Tamsin "Tam" Underbough
+    race: Lightfoot Halfling
+    class: Rogue (Thief)
+    level: 3
     ac: 14
-    ac_note: leather armor
+    ac_note: leather
     hp: 24
+    hp_formula: 3d8
     speed: 25 ft.
-    passive_perception: 14
-    abilities: {str: 8, dex: 17, con: 12, int: 12, wis: 14, cha: 13}
+    initiative: 3
+    passive_perception: 13
+    abilities: {str: 8, dex: 17, con: 14, int: 12, wis: 12, cha: 12}
     saves: Dex +5, Int +3
-    skills: Acrobatics +5, Perception +4, Sleight of Hand +7, Stealth +7
-    senses: passive Perception 14
-    languages: Common, Halfling, Thieves' Cant
+    skills: Acrobatics +5, Insight +3, Investigation +3, Perception +3, Religion +3, Stealth +7
+    languages: Thieves’ Cant, Common, Halfling, Elvish, Dwarvish
     features:
-      - name: Sneak Attack (2d6)
-        text: Once per turn, extra damage with a finesse or ranged weapon when you have advantage, or an ally is next to the target.
-      - name: Cunning Action
-        text: Dash, Disengage, or Hide as a bonus action.
+      - name: Sneak Attack
+        text: Once per turn, you can deal an extra 2d6 damage to one creature you hit with an attack if you have advantage on the attack roll. The attack must use a finesse or a ranged weapon. You don’t need advantage on the attack roll if another enemy of the target is within 5 feet of it, that enemy isn’t incapacitated, and you don’t have disadvantage on the attack roll.
+      - name: Tool Expertise (Thieves’ Tools)
+        text: Your proficiency bonus is doubled for any Thieves’ Tools check you make.
+      - name: Second-Story Work
+        text: Climbing no longer costs you extra movement. When you make a running jump, the distance you cover increases by 3 feet.
+      - name: Lucky
+        text: When you roll a 1 on an attack roll, ability check, or saving throw, you can reroll the die and must use the new roll.
+      - name: Brave
+        text: You have advantage on saving throws against being frightened.
+      - name: Halfling Nimbleness
+        text: You can move through the space of any creature that is of a size larger than yours.
+      - name: Naturally Stealthy
+        text: You can attempt to hide even when you are obscured only by a creature that is at least one size larger than you.
+      - name: Shelter of the Faithful
+        text: As an acolyte, you command the respect of those who share your faith, and you can perform the religious ceremonies of your deity. You and your adventuring companions can expect to receive free healing and care at a temple, shrine, or other established presence of your faith, though you must provide any material components needed for spells. Those who share your religion will support you (but only you) at a modest lifestyle. You might also have ties to a specific temple dedicated to your chosen deity or pantheon, and you have a residence there. This could be the temple where you used to serve, if you remain on good terms with it, or a temple where you have found a new home. While near your temple, you can call upon the priests for assistance, provided the assistance you ask for is not hazardous and you remain in good standing with your temple.
     actions:
       - name: Shortsword
-        text: "*Melee Weapon Attack:* +5 to hit, reach 5 ft. *Hit:* 6 (1d6 + 3) piercing damage."
+        text: '*Attack:* +5 to hit, range 5 ft. *Hit:* 1d6+3 piercing.'
       - name: Shortbow
-        text: "*Ranged Weapon Attack:* +5 to hit, range 80/320 ft. *Hit:* 6 (1d6 + 3) piercing damage."
+        text: '*Attack:* +5 to hit, range 80/320. *Hit:* 1d6+3 piercing.'
+      - name: Dagger
+        text: '*Attack:* +5 to hit, range 20/60. *Hit:* 1d4+3 piercing.'
+    bonus_actions:
+      - name: Cunning Action
+        text: You can take the Dash, Disengage, or Hide action.
+      - name: Fast Hands
+        text: You can make a Sleight of Hand check, use your thieves’ tools to disarm a trap or open a lock, or take the Use an Object action.
     note: Owes Pip Larkin twenty gold, and Pip hasn't forgotten.
-  - {player: Player Two,   character: Oskar Fenn,     race: Dwarf,    class: Cleric}
-  - {player: Player Three, character: Sabine Ashgrove, race: Human,   class: Wizard}
-  - {player: Player Four,  character: Thane Hollin,   race: Half-orc, class: Fighter}
+  - player: Player Two
+    character: Brother Kaelen Ashvale
+    race: Human
+    class: Monk (Way of the Open Hand)
+    level: 3
+    ac: 16
+    hp: 24
+    hp_formula: 3d8
+    speed: 40 ft.
+    initiative: 3
+    passive_perception: 13
+    abilities: {str: 9, dex: 16, con: 15, int: 9, wis: 16, cha: 11}
+    saves: Str +1, Dex +5
+    skills: Acrobatics +5, Insight +5, Religion +1, Stealth +5
+    languages: Common, Elvish, Celestial, Dwarvish
+    features:
+      - name: Unarmored Defense
+        text: While you are wearing no armor and not wielding a shield, your AC equals 16.
+      - name: Martial Arts
+        text: Your unarmed strike does 1d4+3 damage. You can use Strength or Dexterity for these attacks. When you use the Attack action with an unarmed strike or a monk weapon on your turn, you can make one unarmed strike as a bonus action. For example, if you take the Attack action and attack with a quarterstaff, you can also make an unarmed strike as a bonus action, assuming you haven’t already taken a bonus action this turn.
+      - name: Ki
+        text: You have 3 Ki Points and your Ki DC is 13
+      - name: Unarmored Movement
+        text: Your speed increases by 10 feet while you are not wearing armor or wielding a shield.
+      - name: Open Hand Technique
+        text: 'Whenever you hit a creature with one of the attacks granted by your Flurry of Blows, you can impose one of the following effects on that target: knock prone DEX Save, Push 15 feet STR Save, It can’t take reactions until the end of your next turn.'
+      - name: Shelter of the Faithful
+        text: As an acolyte, you command the respect of those who share your faith, and you can perform the religious ceremonies of your deity. You and your adventuring companions can expect to receive free healing and care at a temple, shrine, or other established presence of your faith, though you must provide any material components needed for spells. Those who share your religion will support you (but only you) at a modest lifestyle. You might also have ties to a specific temple dedicated to your chosen deity or pantheon, and you have a residence there. This could be the temple where you used to serve, if you remain on good terms with it, or a temple where you have found a new home. While near your temple, you can call upon the priests for assistance, provided the assistance you ask for is not hazardous and you remain in good standing with your temple.
+    actions:
+      - name: Unarmed Strike
+        text: '*Attack:* +5 to hit, range 5 ft. *Hit:* 1d4+3 bludgeoning.'
+      - name: Shortsword
+        text: '*Attack:* +5 to hit, range 5 ft. *Hit:* 1d6+3 piercing.'
+      - name: Dart
+        text: '*Attack:* +5 to hit, range 20/60. *Hit:* 1d4+3 piercing.'
+    bonus_actions:
+      - name: Flurry of Blows (Ki)
+        text: Immediately after you take the Attack action on your turn, you can spend 1 ki point to make two unarmed strikes.
+      - name: Patient Defense (Ki)
+        text: You can spend 1 ki point to take the Dodge action on your turn.
+      - name: Step of the Wind (Ki)
+        text: You can spend 1 ki point to take the Disengage or Dash action on your turn, and your jump distance is doubled for the turn.
+    reactions:
+      - name: Deflect Missiles
+        text: You can deflect or catch the missile when you are hit by a ranged weapon attack. When you do so, the damage you take from the attack is reduced by 1d10+6. If you reduce the damage to 0, you can catch the missile if it is small enough for you to hold in one hand and you have at least one hand free. If you catch a missile in this way, you can spend 1 ki point to make a ranged attack with the weapon or piece of ammunition you just caught, as part of the same reaction. You make this attack with proficiency, regardless of your weapon proficiencies, and the missile counts as a monk weapon for the attack.
+  - player: Player Three
+    character: Magister Ilvara Sorn
+    race: Tiefling
+    class: Wizard (School of Evocation)
+    level: 3
+    ac: 12
+    hp: 17
+    hp_formula: 3d6
+    speed: 30 ft.
+    initiative: 2
+    passive_perception: 11
+    abilities: {str: 8, dex: 14, con: 13, int: 16, wis: 12, cha: 12}
+    saves: Int +5, Wis +3
+    skills: Arcana +5, History +5, Insight +3, Religion +5
+    resistances: Fire resistance
+    senses: Darkvision 60 ft.
+    languages: Common, Infernal, Draconic, Abyssal
+    features:
+      - name: Arcane Recovery
+        text: Once per day when you finish a short rest, you can choose expended spell slots up to 5th level to recover. The spell slots can have a combined level that is equal to or less than 2.
+      - name: Evocation Savant
+        text: The gold and time you must spend to copy an evocation spell into your spellbook is halved.
+      - name: Sculpt Spells
+        text: When you cast an evocation spell that affects other creatures that you can see, you can choose a number of them equal to 1 + the spell’s level. The chosen creatures automatically succeed on their saving throws against the spell, and they take no damage if they would normally take half damage on a successful save.
+      - name: Hellish Resistance
+        text: You have resistance to fire damage.
+      - name: Infernal Legacy
+        text: You know the thaumaturgy cantrip. You can cast the hellish rebuke spell as a 2nd-level spell once per rest. Charisma is your spellcasting ability for these spells.
+      - name: Shelter of the Faithful
+        text: As an acolyte, you command the respect of those who share your faith, and you can perform the religious ceremonies of your deity. You and your adventuring companions can expect to receive free healing and care at a temple, shrine, or other established presence of your faith, though you must provide any material components needed for spells. Those who share your religion will support you (but only you) at a modest lifestyle. You might also have ties to a specific temple dedicated to your chosen deity or pantheon, and you have a residence there. This could be the temple where you used to serve, if you remain on good terms with it, or a temple where you have found a new home. While near your temple, you can call upon the priests for assistance, provided the assistance you ask for is not hazardous and you remain in good standing with your temple.
+      - name: Spellcasting (Wizard)
+        text: 'Intelligence; spell save DC 13, +5 to hit with spell attacks. Slots: 1st ×4, 2nd ×2. Cantrips: Fire Bolt, Ray of Frost, Shocking Grasp. Spells: Burning Hands*, Detect Magic*, Find Familiar*, Identify, Mage Armor, Magic Missile*, Shield*, Thunderwave*, Misty Step, Scorching Ray. (* prepared)'
+      - name: Innate spellcasting (Infernal Legacy)
+        text: Charisma; spell save DC 11. Thaumaturgy, Hellish Rebuke.
+    actions:
+      - name: Quarterstaff
+        text: '*Attack:* +1 to hit, range 5 ft. *Hit:* 1d6-1 bludgeoning. Versatile (1d8-1 bludgeoning)'
+      - name: Dagger
+        text: '*Attack:* +4 to hit, range 20/60. *Hit:* 1d4+2 piercing.'
+      - name: Fire Bolt
+        text: '*Attack:* +5 to hit, range 120 ft. *Hit:* 1d10 fire. Cantrip'
+      - name: Ray of Frost
+        text: '*Attack:* +5 to hit, range 60 ft. *Hit:* 1d8 cold. Cantrip'
+      - name: Shocking Grasp
+        text: '*Attack:* +5 to hit, range Touch. *Hit:* 1d8 lightning. Cantrip'

@@ -279,6 +279,7 @@ names_ok: []
 ---
 hide:
   - navigation
+  - toc
 ---
 
 # Party

@@ -54,4 +54,4 @@ The lower floor of the [[Bellwether Light]] is flooded knee-deep, and the bell h
 - **If Sloane is exposed**, the town turns on him — but he owns half the boats, and the debts on the rest.
 
 ??? dm "DM only — threads for later"
-    Sabine's missing teacher wrote about the Bellwether Light; his notes are in Sloane's study. The lanterns up and down the coast were all lit for the same reason — Greywater's bell wasn't the only one.
+    Ilvara's old mentor, Deren Holt, wrote about the Bellwether Light; his notes are in Sloane's study. The lanterns up and down the coast were all lit for the same reason — Greywater's bell wasn't the only one.

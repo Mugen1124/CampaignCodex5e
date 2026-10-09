@@ -10,7 +10,7 @@
   cursed: false                  # optional
   sentient: false                # optional
   found: In Pip Larkin's boat, under the nets
-  holder: Kestrel                # who carries it now, once known (a character, or "Party")
+  holder: Tam                    # who carries it now, once known (a character, or "Party")
   flavor: >                      # optional description before the rules
     Sealskin boots, salt-stained and patched, that never seem to get wet inside.
   text: |                        # the complete rules text (Markdown allowed)

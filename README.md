@@ -40,7 +40,7 @@ From then on, **`CampaignCodex5e`** starts the site whenever you want to work on
 | `setup.bat` | `./setup.sh` | install or update (`--with-transcribe` adds session transcription) |
 | `CampaignCodex5e.bat` | `CampaignCodex5e.command` (Mac) · `./CampaignCodex5e.sh` (Linux) | start the site at http://127.0.0.1:8000 |
 | `publish.bat` | `./publish.sh` | put both sites online (optional — see the Guide's *Going online*) |
-| `codex.bat <command>` | `./codex.sh <command>` | `serve`, `new`, `build`, `players`, `check`, `publish`, `add-mentions`, `import-monsters`, `import-rules`, `transcribe`, `backup`, `update`, `version` |
+| `codex.bat <command>` | `./codex.sh <command>` | `serve`, `new`, `build`, `players`, `check`, `publish`, `add-mentions`, `import-monsters`, `import-character`, `import-rules`, `transcribe`, `backup`, `update`, `version` |
 
 ## The guide
 
@@ -91,7 +91,7 @@ What makes it better than a plain transcription:
 
 - **Your names, spelled right.** Before it starts, it's given your campaign's names — the party, the people and places of the town in `focus:` (in `campaign.yml`), factions, items — so it writes *Hester Vane*, not *Hester Bane*. `transcribe --vocab-only` shows the list.
 - **Fights, in order.** If you ran the initiative tracker during the recording, its turn log (rounds, whose turn it was, conditions, who joined or left the fight) is woven into the transcript at the right times, marked ⚔.
-- **Loot, noticed.** Lines where someone seems to take one of your campaign's items ("Kestrel grabs the Tidewalker Boots") are collected; the **Items** page lists them for you to assign or dismiss. Nothing changes hands by itself.
+- **Loot, noticed.** Lines where someone seems to take one of your campaign's items ("Tam grabs the Tidewalker Boots") are collected; the **Items** page lists them for you to assign or dismiss. Nothing changes hands by itself.
 
 Speakers aren't labeled — it's one microphone — so the write-up works out who said what from context.
 
@@ -111,12 +111,12 @@ You get a **draft**, nothing changed yet:
 
 Claude asks where the transcript is unclear (who took the sword? who read the scroll?) instead of guessing. Read the draft, correct it, and approve:
 
-> *"Good — but Kestrel kept the boots, not Oskar. Go ahead."*
+> *"Good — but Tam kept the boots, not Kaelen. Go ahead."*
 
 Other prompts that help:
 
 - *"Make the Previously… recap simpler — short sentences, in order."*
-- *"Write the recap from Sabine's point of view."*
+- *"Write the recap from Ilvara's point of view."*
 - *"Offer me five one-liners from the transcript for the session page."*
 - *"Which names in the transcript aren't in our data yet?"*
 - *"What did the party promise people this session? List the loose threads."*

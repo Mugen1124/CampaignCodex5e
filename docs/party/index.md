@@ -1,16 +1,18 @@
 ---
 hide:
   - navigation
+  - toc
 ---
 
 # Party
 
 | Player | Character | Race | Class | Level |
 |---|---|---|---|:-:|
-| Player One | Kestrel | Halfling | Rogue | 3 |
-| Player Two | Oskar Fenn | Dwarf | Cleric | 3 |
-| Player Three | Sabine Ashgrove | Human | Wizard | 3 |
-| Player Four | Thane Hollin | Half-orc | Fighter | 3 |
+| Player One | Tamsin "Tam" Underbough | Lightfoot Halfling | Rogue (Thief) | 3 |
+| Player Two | Brother Kaelen Ashvale | Human | Monk (Way of the Open Hand) | 3 |
+| Player Three | Magister Ilvara Sorn | Tiefling | Wizard (School of Evocation) | 3 |
+
+The three are CCC5e's sample characters, rebuilt at level 3 - each card was imported from a `.ccc5e` file with `codex import-character`.
 
 ## Character cards
 
@@ -19,26 +21,21 @@ hide:
 <!-- players: hide -->
 ## Personal hooks
 
-- **Kestrel** — owes [[Pip Larkin]] money, and Pip knows things Kestrel would rather he didn't.
-- **Oskar** — his sister drowned off this coast ten years ago. Her name is on the chapel wall.
-- **Sabine** — came to Greywater looking for her teacher, who wrote about the Bellwether Light and then stopped writing.
-- **Thane** — once served with [[Captain Oren Hask]], and left on bad terms.
+- **Tam** — owes [[Pip Larkin]] money, and Pip knows things Tam would rather he didn't.
+- **Kaelen** — the stolen bell was cast by the same founder as the cracked bell he carries from the Ninth Bell monastery.
+- **Ilvara** — came to Greywater looking for her old mentor, Deren Holt, who wrote about the Bellwether Light and then stopped writing.
 <!-- players: end -->
 
 ## Backgrounds
 
-### Kestrel
+### Tamsin "Tam" Underbough
 
-A halfling from the river towns, quick-fingered and quicker to talk. Came down the coast with a debt, a grin, and a pair of boots that don't get wet.
+Grew up on the river barges running dice games and cons for her aunt's crew, until the crew sold a debtor to slavers and she picked his chains. She's worked the other side of the law ever since — mostly.
 
-### Oskar Fenn
+### Brother Kaelen Ashvale
 
-A dwarf cleric of a sea-god he doesn't much like, serving because his sister would have wanted him to.
+A monk of the Ninth Bell, who came home from a silent pilgrimage to find his monastery burned and a single cracked bell still hanging. He carries its clapper, and he's looking for whoever lit the fire.
 
-### Sabine Ashgrove
+### Magister Ilvara Sorn
 
-A wizard with more questions than spells, and a stack of letters from a teacher who's gone quiet.
-
-### Thane Hollin
-
-A half-orc sellsword who'd like, just once, to be paid for a job that doesn't end in a fight.
+A tiefling the Collegium of Ashen Spires took in when no one else would teach her. She corrects everyone's pronunciation of spell names, and believes most problems can be solved with a large enough explosion.

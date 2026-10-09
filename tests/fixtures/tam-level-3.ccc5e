@@ -1,0 +1,937 @@
+{
+  "Id": "724a2a4c-9cad-0083-909a-3bd831d383c6",
+  "LastModified": "2026-10-08T21:18:55.0256908-05:00",
+  "Folder": "",
+  "Name": "Tamsin \u0022Tam\u0022 Underbough",
+  "Alignment": "Chaotic Good",
+  "Deity": "Brandobaris",
+  "Ruleset": 0,
+  "Level": 3,
+  "ExperiencePoints": 900,
+  "RaceId": "ID_RACE_HALFLING",
+  "RaceDisplayName": "Halfling",
+  "SubraceId": "ID_SUB_RACE_LIGHTFOOT_HALFLING",
+  "SubraceDisplayName": "Lightfoot Halfling",
+  "RaceVariantId": null,
+  "RaceVariantDisplayName": null,
+  "ClassId": "ID_WOTC_PHB_CLASS_ROGUE",
+  "ClassDisplayName": "Rogue",
+  "SubclassId": "ID_WOTC_PHB_ARCHETYPE_THIEF",
+  "SubclassDisplayName": "Thief",
+  "MulticlassEntries": [],
+  "LevelHistory": [
+    "ID_WOTC_PHB_CLASS_ROGUE",
+    "ID_WOTC_PHB_CLASS_ROGUE",
+    "ID_WOTC_PHB_CLASS_ROGUE"
+  ],
+  "BackgroundId": "ID_BACKGROUND_ACOLYTE",
+  "BackgroundDisplayName": "Acolyte",
+  "Strength": 8,
+  "Dexterity": 15,
+  "Constitution": 14,
+  "Intelligence": 12,
+  "Wisdom": 12,
+  "Charisma": 11,
+  "AbilityScoreMethod": 1,
+  "RacialAbilityChoiceIds": [],
+  "RaceVariantTraitIds": [],
+  "FlexibleAsiMode": null,
+  "FlexibleAsiStats": [],
+  "SkillProficiencyIds": [
+    "ID_PROFICIENCY_SKILL_STEALTH",
+    "ID_PROFICIENCY_SKILL_ACROBATICS",
+    "ID_PROFICIENCY_SKILL_PERCEPTION",
+    "ID_PROFICIENCY_SKILL_INVESTIGATION"
+  ],
+  "WeaponProficiencyIds": [],
+  "ToolProficiencyIds": [],
+  "LanguageIds": [
+    "ID_LANGUAGE_ELVISH",
+    "ID_LANGUAGE_DWARVISH"
+  ],
+  "AsiChoices": [],
+  "FeatSelections": {
+    "ID_WOTC_PHB_CLASS_FEATURE_ROGUE_EXPERTISE::Expertise (Rogue)::Class Feature::1": [
+      "ID_EXPERTISE_SKILL_STEALTH",
+      "ID_EXPERTISE_TOOL_THIEVES_TOOLS"
+    ]
+  },
+  "KnownSpellIds": [],
+  "PreparedSpellIds": [],
+  "ScribedSpellIds": [],
+  "SpellSwaps": [],
+  "AdditionalSpellIds": {},
+  "RacialSpellIds": [],
+  "ClassKnownSpellIds": {},
+  "ClassPreparedSpellIds": {},
+  "SpellIdsByClass": {},
+  "PersonalityTraits": [
+    "I always have an exit planned \u2014 and a second one, in case the first is on fire.",
+    "I can\u0027t resist a locked box. Not to steal from, just to know."
+  ],
+  "Ideal": "Freedom. Chains are meant to be picked, and so are the people who make them.",
+  "Bond": "My little brother Wim is apprenticed to a locksmith in Greyhaven. Everything I send home is so he never has to do what I do.",
+  "Flaw": "I talk my way into trouble faster than I can sneak out of it.",
+  "PortraitPath": null,
+  "PlayerName": "",
+  "Age": "24",
+  "Height": "2\u002711\u0022",
+  "Weight": "36 lb",
+  "Eyes": "Hazel",
+  "Skin": "Freckled tan",
+  "Hair": "Curly auburn",
+  "Gender": "Female",
+  "Backstory": "Tam grew up on the barges of the Silverflow, running dice games and cons for her aunt\u0027s crew. When the crew sold a debtor to slavers, she picked the lock on his chains, sank the slavers\u0027 skiff, and has been working the other side of the law ever since \u2014 mostly.\n\nLevel 1: Signs on with a caravan heading upriver after a card game goes badly wrong in Greyhaven.\n\nLevel 3: Takes the Boots of Elvenkind off a smuggler who won\u0027t be needing them. Joins the Thieves\u0027 Guild of Rellport on probation \u2014 the guildmaster wants her fast hands for a job in the duke\u0027s vault.",
+  "Allies": "Aunt Morra (estranged, still running the barge crew); Wim Underbough; Old Hobb the fence at the Crooked Kettle",
+  "Treasure": "A marked deck of cards; a signet ring from the smuggler (whose house?); a map of the duke\u0027s cellars, half finished.",
+  "DisabledAutoAttackKeys": [],
+  "ShowUnarmedStrike": null,
+  "AttackOverrides": {},
+  "HpCurrent": null,
+  "HpTemp": null,
+  "LevelHpRolls": {},
+  "UseAverageHp": true,
+  "CustomItems": [
+    {
+      "Id": "CUSTOM_EE441A288A294A6CBBC4C9E09DF0503A",
+      "Type": "Item",
+      "Name": "Holy symbol (a gift to you when you entered the priesthood)",
+      "Description": "From your background (Acolyte).",
+      "Supports": "",
+      "Setters": {},
+      "StatBonuses": []
+    },
+    {
+      "Id": "CUSTOM_4360BA52F6894C4AAAA47F4416D6A6E3",
+      "Type": "Item",
+      "Name": "5 sticks of incense",
+      "Description": "From your background (Acolyte).",
+      "Supports": "",
+      "Setters": {},
+      "StatBonuses": []
+    },
+    {
+      "Id": "CUSTOM_50F6487A06DF4EDF81557991DD4E1004",
+      "Type": "Item",
+      "Name": "Vestments",
+      "Description": "From your background (Acolyte).",
+      "Supports": "",
+      "Setters": {},
+      "StatBonuses": []
+    }
+  ],
+  "EquipmentItems": [
+    {
+      "InstanceId": "4154d340659c468fa81ef201dd8c91e6",
+      "ElementId": "ID_WOTC_PHB_WEAPON_SHORTSWORD",
+      "Name": "Shortsword",
+      "Quantity": 1,
+      "IsEquipped": true,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "5370ae77902143a2bdacc071c466e91c",
+      "ElementId": "ID_WOTC_PHB_WEAPON_SHORTBOW",
+      "Name": "Shortbow",
+      "Quantity": 1,
+      "IsEquipped": true,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "5ff1ed91b53346c78a3f361ca5ae7ce7",
+      "ElementId": "ID_WOTC_PHB_ITEM_QUIVER",
+      "Name": "Quiver",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "f56d2fa1ae9e47f3b704db04d0cbe90c",
+      "ElementId": "ID_WOTC_PHB_ITEM_ARROW",
+      "Name": "Arrow",
+      "Quantity": 20,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "1e1a1a41d66b47248b3f003e0d3c1fc2",
+      "ElementId": "ID_WOTC_PHB_ITEM_BACKPACK",
+      "Name": "Backpack",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "827a0fe1fdf6406d8fd3e5192036444a",
+      "ElementId": "ID_WOTC_PHB_ITEM_BALLBEARINGS",
+      "Name": "Ball Bearings (bag of 1,000)",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "1e5cabb5b06f4f2f810c0559e6434be2",
+      "ElementId": "ID_WOTC_PHB_ITEM_STRING_10FEET",
+      "Name": "String (10 feet)",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "2083913ea38e4b689a32bad30205ed16",
+      "ElementId": "ID_WOTC_PHB_ITEM_BELL",
+      "Name": "Bell",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "3dfcd2780a4a48a5bc75aa83a879f6cc",
+      "ElementId": "ID_WOTC_PHB_ITEM_CANDLE",
+      "Name": "Candle",
+      "Quantity": 5,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "179cb0444b9f4c8199d13c69a0abbbb6",
+      "ElementId": "ID_WOTC_PHB_ITEM_CROWBAR",
+      "Name": "Crowbar",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "a6789d69c6c944ac82524ee6e14fa644",
+      "ElementId": "ID_WOTC_PHB_ITEM_HAMMER",
+      "Name": "Hammer",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "3e9f5c6224664c219326474de330ceff",
+      "ElementId": "ID_WOTC_PHB_ITEM_PITON",
+      "Name": "Piton",
+      "Quantity": 10,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "38333574989f417599da54fb2ad7a418",
+      "ElementId": "ID_WOTC_PHB_ITEM_LANTERN_HOODED",
+      "Name": "Lantern, Hooded",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "31ae49aa633f4882afbc05d96a1a909e",
+      "ElementId": "ID_WOTC_PHB_ITEM_OIL_FLASK",
+      "Name": "Oil (flask)",
+      "Quantity": 2,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "b402bc344c2145a48303b0ce96edfa3d",
+      "ElementId": "ID_WOTC_PHB_ITEM_RATIONS_1DAY",
+      "Name": "Rations (1 day)",
+      "Quantity": 5,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "9f4a47d82904497b81a3d6995a6e98e9",
+      "ElementId": "ID_WOTC_PHB_ITEM_TINDERBOX",
+      "Name": "Tinderbox",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "4020a54c081746a2b74c14430d68229c",
+      "ElementId": "ID_WOTC_PHB_ITEM_WATERSKIN",
+      "Name": "Waterskin",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "d2ae4e5e3ad6418e9a999d7ddf55e71e",
+      "ElementId": "ID_WOTC_PHB_ITEM_ROPE_HEMPEN_50FEET",
+      "Name": "Rope, Hempen (50 feet)",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "b1a061cc99154eacba22c9093db313c0",
+      "ElementId": "ID_WOTC_ARMOR_LIGHT_LEATHER",
+      "Name": "Leather",
+      "Quantity": 1,
+      "IsEquipped": true,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "6ff6bfe63ba54840a90d564a2a3aa661",
+      "ElementId": "ID_WOTC_PHB_WEAPON_DAGGER",
+      "Name": "Dagger",
+      "Quantity": 2,
+      "IsEquipped": true,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "707c2f7bf63a4dd08e2f129d30b0ab2c",
+      "ElementId": "ID_WOTC_PHB_ITEM_TOOL_THIEVES_TOOLS",
+      "Name": "Thieves\u2019 Tools",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "f8e6e8a27e064c4faecc8f8697e269e2",
+      "ElementId": "CUSTOM_EE441A288A294A6CBBC4C9E09DF0503A",
+      "Name": "Holy symbol (a gift to you when you entered the priesthood)",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "984867aa09c54c789d4728af49aaa859",
+      "ElementId": "ID_WOTC_PHB_ITEM_BOOK",
+      "Name": "Book",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "296a5280149049529bac51a72df50b71",
+      "ElementId": "CUSTOM_4360BA52F6894C4AAAA47F4416D6A6E3",
+      "Name": "5 sticks of incense",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "74e348ba33474c8ba5aafc05cc734157",
+      "ElementId": "CUSTOM_50F6487A06DF4EDF81557991DD4E1004",
+      "Name": "Vestments",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "9fc9e7324359461c8c39aca8d4bcee3b",
+      "ElementId": "ID_WOTC_PHB_ITEM_CLOTHES_COMMON",
+      "Name": "Clothes, Common",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "fddd2e84597e4d2c8e8e9489bdadf03f",
+      "ElementId": "ID_WOTC_PHB_ITEM_POUCH",
+      "Name": "Pouch",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "cb11e325706b427ea129a9fea543806e",
+      "ElementId": "ID_WOTC_DMG_MAGIC_ITEM_BOOTS_OF_ELVENKIND",
+      "Name": "Boots of Elvenkind",
+      "Quantity": 1,
+      "IsEquipped": true,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    },
+    {
+      "InstanceId": "9548182cd6b741cc81f553fc95ae9085",
+      "ElementId": "ID_WOTC_DMG_MAGIC_ITEM_POTION_OF_HEALING",
+      "Name": "Potion of Healing",
+      "Quantity": 1,
+      "IsEquipped": false,
+      "BaseItemName": null,
+      "IsPactWeapon": false
+    }
+  ],
+  "Weapons": [],
+  "InventoryNotes": "Potion of Healing is for emergencies \u2014 Wim made her promise. The boots squeak on stone after rain; keep them oiled.",
+  "CopperPieces": 27,
+  "SilverPieces": 14,
+  "ElectrumPieces": 0,
+  "GoldPieces": 38,
+  "PlatinumPieces": 0,
+  "Sheet": {
+    "version": 1,
+    "generated": "2026-10-09T02:18:55Z",
+    "name": "Tamsin \u0022Tam\u0022 Underbough",
+    "player": "",
+    "alignment": "Chaotic Good",
+    "buildLine": "Level 3 Lightfoot Halfling Rogue (Thief)",
+    "race": "Halfling",
+    "subrace": "Lightfoot Halfling",
+    "class": "Rogue",
+    "subclass": "Thief",
+    "classes": [
+      {
+        "name": "Rogue",
+        "subclass": "Thief",
+        "level": 3
+      }
+    ],
+    "background": "Acolyte",
+    "level": 3,
+    "xp": 900,
+    "proficiencyBonus": 2,
+    "abilities": {
+      "str": {
+        "score": 8,
+        "mod": -1,
+        "save": -1,
+        "saveProf": false
+      },
+      "dex": {
+        "score": 17,
+        "mod": 3,
+        "save": 5,
+        "saveProf": true
+      },
+      "con": {
+        "score": 14,
+        "mod": 2,
+        "save": 2,
+        "saveProf": false
+      },
+      "int": {
+        "score": 12,
+        "mod": 1,
+        "save": 3,
+        "saveProf": true
+      },
+      "wis": {
+        "score": 12,
+        "mod": 1,
+        "save": 1,
+        "saveProf": false
+      },
+      "cha": {
+        "score": 12,
+        "mod": 1,
+        "save": 1,
+        "saveProf": false
+      }
+    },
+    "skills": [
+      {
+        "name": "Acrobatics",
+        "ability": "dex",
+        "total": 5,
+        "prof": true,
+        "expert": false
+      },
+      {
+        "name": "Animal Handling",
+        "ability": "wis",
+        "total": 1,
+        "prof": false,
+        "expert": false
+      },
+      {
+        "name": "Arcana",
+        "ability": "int",
+        "total": 1,
+        "prof": false,
+        "expert": false
+      },
+      {
+        "name": "Athletics",
+        "ability": "str",
+        "total": -1,
+        "prof": false,
+        "expert": false
+      },
+      {
+        "name": "Deception",
+        "ability": "cha",
+        "total": 1,
+        "prof": false,
+        "expert": false
+      },
+      {
+        "name": "History",
+        "ability": "int",
+        "total": 1,
+        "prof": false,
+        "expert": false
+      },
+      {
+        "name": "Insight",
+        "ability": "wis",
+        "total": 3,
+        "prof": true,
+        "expert": false
+      },
+      {
+        "name": "Intimidation",
+        "ability": "cha",
+        "total": 1,
+        "prof": false,
+        "expert": false
+      },
+      {
+        "name": "Investigation",
+        "ability": "int",
+        "total": 3,
+        "prof": true,
+        "expert": false
+      },
+      {
+        "name": "Medicine",
+        "ability": "wis",
+        "total": 1,
+        "prof": false,
+        "expert": false
+      },
+      {
+        "name": "Nature",
+        "ability": "int",
+        "total": 1,
+        "prof": false,
+        "expert": false
+      },
+      {
+        "name": "Perception",
+        "ability": "wis",
+        "total": 3,
+        "prof": true,
+        "expert": false
+      },
+      {
+        "name": "Performance",
+        "ability": "cha",
+        "total": 1,
+        "prof": false,
+        "expert": false
+      },
+      {
+        "name": "Persuasion",
+        "ability": "cha",
+        "total": 1,
+        "prof": false,
+        "expert": false
+      },
+      {
+        "name": "Religion",
+        "ability": "int",
+        "total": 3,
+        "prof": true,
+        "expert": false
+      },
+      {
+        "name": "Sleight of Hand",
+        "ability": "dex",
+        "total": 3,
+        "prof": false,
+        "expert": false
+      },
+      {
+        "name": "Stealth",
+        "ability": "dex",
+        "total": 7,
+        "prof": true,
+        "expert": true
+      },
+      {
+        "name": "Survival",
+        "ability": "wis",
+        "total": 1,
+        "prof": false,
+        "expert": false
+      }
+    ],
+    "passivePerception": 13,
+    "passiveInvestigation": 13,
+    "ac": 14,
+    "armor": "Leather",
+    "shield": "",
+    "stealthDisadvantage": false,
+    "initiative": 3,
+    "speed": {
+      "walk": "25ft.",
+      "fly": "",
+      "swim": "",
+      "climb": ""
+    },
+    "hp": {
+      "max": 24,
+      "current": 24,
+      "temp": 0,
+      "hitDice": "3d8"
+    },
+    "senses": "",
+    "resistances": "",
+    "proficiencies": {
+      "armor": "Light Armor",
+      "weapons": "Simple Weapons, Unarmed Strike, Hand Crossbow, Longsword, Rapier, Shortsword",
+      "tools": "Tool Proficiency (Thieves\u2019 tools)",
+      "languages": "Thieves\u2019 Cant, Common, Halfling, Elvish, Dwarvish"
+    },
+    "attackActionText": "1 Attack / Attack Action",
+    "attacks": [
+      {
+        "name": "Shortsword",
+        "toHit": "\u002B5",
+        "damage": "1d6\u002B3 piercing",
+        "range": "5 ft",
+        "notes": ""
+      },
+      {
+        "name": "Shortbow",
+        "toHit": "\u002B5",
+        "damage": "1d6\u002B3 piercing",
+        "range": "80/320",
+        "notes": ""
+      },
+      {
+        "name": "Dagger",
+        "toHit": "\u002B5",
+        "damage": "1d4\u002B3 piercing",
+        "range": "20/60",
+        "notes": ""
+      }
+    ],
+    "features": [
+      {
+        "name": "Sneak Attack",
+        "action": "",
+        "usage": "",
+        "text": "Once per turn, you can deal an extra 2d6 damage to one creature you hit with an attack if you have advantage on the attack roll. The attack must use a finesse or a ranged weapon. You don\u2019t need advantage on the attack roll if another enemy of the target is within 5 feet of it, that enemy isn\u2019t incapacitated, and you don\u2019t have disadvantage on the attack roll.",
+        "source": "Class Feature"
+      },
+      {
+        "name": "Cunning Action",
+        "action": "Bonus Action",
+        "usage": "",
+        "text": "You can take the Dash, Disengage, or Hide action.",
+        "source": "Class Feature"
+      },
+      {
+        "name": "Tool Expertise (Thieves\u2019 Tools)",
+        "action": "",
+        "usage": "",
+        "text": "Your proficiency bonus is doubled for any Thieves\u2019 Tools check you make.",
+        "source": "Class Feature"
+      },
+      {
+        "name": "Fast Hands",
+        "action": "Bonus Action",
+        "usage": "",
+        "text": "You can make a Sleight of Hand check, use your thieves\u2019 tools to disarm a trap or open a lock, or take the Use an Object action.",
+        "source": "Archetype Feature"
+      },
+      {
+        "name": "Second-Story Work",
+        "action": "",
+        "usage": "",
+        "text": "Climbing no longer costs you extra movement. When you make a running jump, the distance you cover increases by 3 feet.",
+        "source": "Archetype Feature"
+      },
+      {
+        "name": "Lucky",
+        "action": "",
+        "usage": "",
+        "text": "When you roll a 1 on an attack roll, ability check, or saving throw, you can reroll the die and must use the new roll.",
+        "source": "Racial Trait"
+      },
+      {
+        "name": "Brave",
+        "action": "",
+        "usage": "",
+        "text": "You have advantage on saving throws against being frightened.",
+        "source": "Racial Trait"
+      },
+      {
+        "name": "Halfling Nimbleness",
+        "action": "",
+        "usage": "",
+        "text": "You can move through the space of any creature that is of a size larger than yours.",
+        "source": "Racial Trait"
+      },
+      {
+        "name": "Naturally Stealthy",
+        "action": "",
+        "usage": "",
+        "text": "You can attempt to hide even when you are obscured only by a creature that is at least one size larger than you.",
+        "source": "Racial Trait"
+      }
+    ],
+    "backgroundFeature": "Shelter of the Faithful",
+    "backgroundFeatureText": "As an acolyte, you command the respect of those who share your faith, and you can perform the religious ceremonies of your deity. You and your adventuring companions can expect to receive free healing and care at a temple, shrine, or other established presence of your faith, though you must provide any material components needed for spells. Those who share your religion will support you (but only you) at a modest lifestyle. You might also have ties to a specific temple dedicated to your chosen deity or pantheon, and you have a residence there. This could be the temple where you used to serve, if you remain on good terms with it, or a temple where you have found a new home. While near your temple, you can call upon the priests for assistance, provided the assistance you ask for is not hazardous and you remain in good standing with your temple.",
+    "additionalFeatures": "",
+    "spellcasting": [],
+    "spells": [],
+    "innateSpells": [],
+    "equipment": [
+      {
+        "name": "Shortsword",
+        "quantity": 1,
+        "equipped": true,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Shortbow",
+        "quantity": 1,
+        "equipped": true,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Quiver",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Arrow",
+        "quantity": 20,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Backpack",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Ball Bearings (bag of 1,000)",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "String (10 feet)",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Bell",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Candle",
+        "quantity": 5,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Crowbar",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Hammer",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Piton",
+        "quantity": 10,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Lantern, Hooded",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Oil (flask)",
+        "quantity": 2,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Rations (1 day)",
+        "quantity": 5,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Tinderbox",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Waterskin",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Rope, Hempen (50 feet)",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Leather",
+        "quantity": 1,
+        "equipped": true,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Dagger",
+        "quantity": 2,
+        "equipped": true,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Thieves\u2019 Tools",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Holy symbol (a gift to you when you entered the priesthood)",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Book",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "5 sticks of incense",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Vestments",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Clothes, Common",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Pouch",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": false
+      },
+      {
+        "name": "Boots of Elvenkind",
+        "quantity": 1,
+        "equipped": true,
+        "attuned": false,
+        "magic": true
+      },
+      {
+        "name": "Potion of Healing",
+        "quantity": 1,
+        "equipped": false,
+        "attuned": false,
+        "magic": true
+      }
+    ],
+    "currency": {
+      "cp": 27,
+      "sp": 14,
+      "ep": 0,
+      "gp": 38,
+      "pp": 0
+    },
+    "persona": {
+      "traits": [
+        "I always have an exit planned \u2014 and a second one, in case the first is on fire.",
+        "I can\u0027t resist a locked box. Not to steal from, just to know."
+      ],
+      "ideal": "Freedom. Chains are meant to be picked, and so are the people who make them.",
+      "bond": "My little brother Wim is apprenticed to a locksmith in Greyhaven. Everything I send home is so he never has to do what I do.",
+      "flaw": "I talk my way into trouble faster than I can sneak out of it.",
+      "backstory": "Tam grew up on the barges of the Silverflow, running dice games and cons for her aunt\u0027s crew. When the crew sold a debtor to slavers, she picked the lock on his chains, sank the slavers\u0027 skiff, and has been working the other side of the law ever since \u2014 mostly.\n\nLevel 1: Signs on with a caravan heading upriver after a card game goes badly wrong in Greyhaven.\n\nLevel 3: Takes the Boots of Elvenkind off a smuggler who won\u0027t be needing them. Joins the Thieves\u0027 Guild of Rellport on probation \u2014 the guildmaster wants her fast hands for a job in the duke\u0027s vault.",
+      "allies": "Aunt Morra (estranged, still running the barge crew); Wim Underbough; Old Hobb the fence at the Crooked Kettle",
+      "treasure": "A marked deck of cards; a signet ring from the smuggler (whose house?); a map of the duke\u0027s cellars, half finished.",
+      "age": "24",
+      "height": "2\u002711\u0022",
+      "weight": "36 lb",
+      "eyes": "Hazel",
+      "skin": "Freckled tan",
+      "hair": "Curly auburn",
+      "gender": "Female",
+      "deity": "Brandobaris"
+    },
+    "portrait": null
+  }
+}

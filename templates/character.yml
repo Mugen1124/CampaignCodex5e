@@ -4,7 +4,7 @@
 # left out shows as a dash. AC, HP, and initiative are also what the tracker starts from.
 #
 # A member written on one line, like
-#   - {player: Sam, character: Kestrel, race: Halfling, class: Rogue}
+#   - {player: Sam, character: Tam, race: Halfling, class: Rogue}
 # can take more fields in the same braces, or be written out in full like this
 # (an example character - the numbers are made up):
 

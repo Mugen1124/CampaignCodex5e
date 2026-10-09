@@ -10,6 +10,7 @@ The one command behind every script:  python -m codex <command>
     transcribe [file] turn a session recording into a transcript
     import-monsters   add monsters from the SRD, Kobold Press's open books, or your own sheet
     import-rules      refresh the Rules tab's SRD text from Open5e (it comes with the site)
+    import-character FILE.ccc5e [--player NAME]   add or update a character from CCC5e on the Party page
     add-mentions      wrap known names in [[mentions]] on your story pages
     backup            a dated zip of everything that's yours
     update            bring the engine up to the latest release - your campaign isn't touched
@@ -137,6 +138,10 @@ def cmd_import_monsters(args):
     run(ROOT / "tools" / "import_monsters.py", *args)
 
 
+def cmd_import_character(args):
+    run(ROOT / "tools" / "import_ccc5e.py", *args)
+
+
 def cmd_import_rules(args):
     run(ROOT / "tools" / "import_rules.py", *args)
 
@@ -170,7 +175,7 @@ def cmd_publish(args):
 
 COMMANDS = {
     "serve": cmd_serve, "build": cmd_build, "players": cmd_players, "check": cmd_check, "publish": cmd_publish, "new": cmd_new,
-    "transcribe": cmd_transcribe, "import-monsters": cmd_import_monsters, "import-rules": cmd_import_rules, "add-mentions": cmd_add_mentions,
+    "transcribe": cmd_transcribe, "import-monsters": cmd_import_monsters, "import-rules": cmd_import_rules, "import-character": cmd_import_character, "add-mentions": cmd_add_mentions,
     "backup": cmd_backup, "roster": cmd_roster, "update": cmd_update, "version": cmd_version,
     "--version": cmd_version,
 }

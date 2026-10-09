@@ -9,6 +9,7 @@ End-to-end checks, on a throwaway copy of this folder (your files are never touc
     python tests/smoke.py
 """
 
+import json
 import os
 import re
 import shutil
@@ -206,6 +207,30 @@ def main() -> int:
         after = build_both(proj, "after the wizard")
         about = (after / "players" / "index.html").read_text(encoding="utf-8")
         check("after the wizard: with no sessions yet, the players' site opens on About", bool(re.search(r"<h1[^>]*>About this site", about)))
+
+        print("Importing a character from CCC5e:")
+        tam = ROOT / "tests" / "fixtures" / "tam-level-3.ccc5e"
+        r = run(proj, "-m", "codex", "import-character", tam, "--player", "Sam", "--yes")
+        party = yaml.safe_load((proj / "data" / "party.yml").read_text(encoding="utf-8"))
+        card = next((m for m in party["members"] if m.get("character") == 'Tamsin "Tam" Underbough'), {})
+        check("import-character adds the character with the sheet's numbers",
+              r.returncode == 0 and card.get("player") == "Sam" and card.get("ac") == 14 and card.get("hp") == 24
+              and card.get("race") == "Lightfoot Halfling" and card.get("abilities", {}).get("dex") == 17
+              and "Stealth +7" in card.get("skills", "") and any(f["name"] == "Sneak Attack" for f in card.get("features", []))
+              and party.get("size") == len(party["members"]), r.stdout + r.stderr + str(card)[:600])
+        r = run(proj, "-m", "codex", "import-character", tam, "--yes")
+        check("...importing it again changes nothing", "no changes" in r.stdout, r.stdout)
+        old = json.loads(tam.read_text(encoding="utf-8"))
+        old.pop("Sheet")
+        old["Name"] = "Old Export"
+        (Path(tmp) / "old.ccc5e").write_text(json.dumps(old), encoding="utf-8")
+        r = run(proj, "-m", "codex", "import-character", Path(tmp) / "old.ccc5e", "--yes")
+        party = yaml.safe_load((proj / "data" / "party.yml").read_text(encoding="utf-8"))
+        card = next((m for m in party["members"] if m.get("character") == "Old Export"), {})
+        check("...and a file from before the Sheet brings in the basics", r.returncode == 0 and card.get("level") == 3
+              and card.get("class") == "Rogue (Thief)" and "ac" not in card and "no computed sheet" in r.stdout, r.stdout)
+        warn = build(proj, "mkdocs.yml", Path(tmp) / "imported-dm")
+        check("...and the Party page builds with them", not warn, "\n".join(warn))
 
         print("Builds outside the folder (output: local):")
         local = Path(tmp) / "local-cache"

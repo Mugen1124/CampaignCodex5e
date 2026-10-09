@@ -12,7 +12,7 @@ The party is in **Greywater**, level 3, two nights after arriving on the Lantern
 
 - **The missing bell** — taken from the [[Chapel of the Tides]] on the night of the spring tide.
 - **The Tidecallers** — a name people whisper around the harbor, and won't say twice.
-- **Kestrel's debt** — twenty gold owed to [[Pip Larkin]], who mentioned it again.
+- **Tam's debt** — twenty gold owed to [[Pip Larkin]], who mentioned it again.
 
 ??? dm "DM only — what's really going on"
     [[Magistrate Corvin Sloane]] funds the [[The Tidecallers|Tidecallers]]. The next spring tide is in four days; if the bell is rung then, everyone in Greywater who has ever drowned and been brought back walks into the sea - starting with Sloane himself, who wants exactly that.

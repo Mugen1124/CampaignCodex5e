@@ -54,4 +54,8 @@ The encounter builder shows every creature's id; use it in `{{ statblock <id> }}
 
 ## The party
 
-`data/party.yml` has the party's level and each member. Fill in character cards with **Edit** on the [Party](../party/index.md) page while `CampaignCodex5e` runs — it writes the file for you, and keeps a backup. A player's `email:` is only needed if you put the players' site online (it's how a player's sign-in is matched to their character); emails never appear on any page.
+`data/party.yml` has the party's level and each member. Fill in character cards with **Edit** on the [Party](../party/index.md) page while `CampaignCodex5e` runs — it writes the file for you, and keeps a backup.
+
+**From CCC5e** (Custom Character Creator 5e): export the character there (a `.ccc5e` file), then run `codex.bat import-character "the file.ccc5e" --player Sam` (`./codex.sh import-character ...` on Mac and Linux). It shows what will change and fills in the whole card - AC, HP, abilities, saves, skills, attacks, features with their text, spellcasting. Import it again after a level-up to update it; the player, email and your note are kept. A file from CCC5e before 1.0.21 brings in only the name, race, class and level.
+
+A player's `email:` is only needed if you put the players' site online (it's how a player's sign-in is matched to their character); emails never appear on any page.

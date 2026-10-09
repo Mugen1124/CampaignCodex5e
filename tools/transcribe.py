@@ -8,7 +8,7 @@ Session recordings -> transcripts, on this computer (nothing is uploaded anywher
 Recordings live in the campaign's recordings/ folder (recording: in campaign.yml), which is never
 built, published, or committed. The transcript is written next to the recording as <name>.transcript.txt,
 one line per stretch of speech with its time: "[01:23:45] ...". Lines where someone seems to take
-one of the campaign's items ("Kestrel grabs the Tidewalker Boots") are listed in <name>.items.json;
+one of the campaign's items ("Tam grabs the Tidewalker Boots") are listed in <name>.items.json;
 the Items page shows them for you to assign or dismiss - nothing is assigned by itself.
 
 Speech-to-text is faster-whisper (an open-source Whisper) running on the CPU. It's given the
