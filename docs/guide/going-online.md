@@ -85,7 +85,7 @@ To show the initiative order on your players' phones, and to bring the changes p
 
 Players see names, initiative, whose turn it is, the round, and conditions — never hit points, AC, or notes. **hide** on a row keeps someone off their list (an ambusher, someone invisible).
 
-With the key in place, **Get players' changes** and **History** appear on your Party page.
+With the key in place, **Get players' changes** and **History** appear on your Party page, along with each card's live HP and conditions, the party treasury, and the switch for whether players see each other's current HP — and the tracker starts fights from the party's current HP and keeps the cards up to date. See [the Party page](players-site.md#the-party-page).
 
 ## Afterward
 

@@ -16,6 +16,10 @@
 //   POST /api/party/import       -> {"file": a .ccc5e's text, "save": false} the preview; with "save": true and
 //                                   "rev", onto your own card (portrait shrunk by the page first)
 //   POST /api/party/save         -> {"card": {...fields}, "rev"} your own card, edited on the page
+//   POST /api/party/status       -> {"hp" | "hp_delta" | "temp" | "conds" | "insp" | "slots" | "hd" | "death"} your card's
+//                                   live status (see party.applyStatus); the DM's helper: {"cards": [{"id", ...}]}
+//   POST /api/party/treasury     -> {"coins": {gp: +10}, "add" | "take": {name, qty}, "note"} the party's shared pool
+//   POST /api/party/settings     -> the DM's helper: {"show_hp": true} whether players see each other's current HP
 //   POST /api/party/private      -> {"private": [fields], "hidden": [item names], "rev"} what only you (and the DM) see
 //   GET  /api/party/portrait/ID  -> an uploaded portrait
 //   GET  /api/party/all          -> the DM's helper: every card in full, with its rev (to bring into party.yml)
@@ -215,7 +219,8 @@ export class Party extends DurableObject {
       return new Response(null, { status: 101, webSocket: client });
     }
     if (path === "/api/party" && request.method === "GET") {
-      const cards = [];
+      const cards = [], status = {};
+      const settings = (await this.ctx.storage.get("settings")) || {};
       for (const m of ROSTER.members || []) {
         const id = m.id || party.cardId(m.character);
         const s = await this.ctx.storage.get("card:" + id);
@@ -223,8 +228,13 @@ export class Party extends DurableObject {
         const who = viewer.dm ? "dm" : viewer.id === id ? "owner" : "other";
         cards.push(Object.assign(party.view(s.card, who), { id, index: m.index, rev: s.rev, by: viewer.dm ? s.by : undefined,
                                                              updated: s.at || null }));
+        // From the whole card (its private marks), not the view of it.
+        status[id] = party.statusView(s.card, await this.ctx.storage.get("status:" + id), who, !!settings.show_hp);
       }
-      return json({ me: viewer.id || null, dm: !!viewer.dm, level: ROSTER.level || null, cards });
+      const log = [...(await this.ctx.storage.list({ prefix: "tlog:", reverse: true, limit: 20 })).values()];
+      return json({ me: viewer.id || null, dm: !!viewer.dm, level: ROSTER.level || null, cards, status,
+                    show_hp: !!settings.show_hp, treasury: (await this.ctx.storage.get("treasury")) || party.blankTreasury(),
+                    treasury_log: log });
     }
     if (path.startsWith("/api/party/portrait/") && request.method === "GET") {
       const id = decodeURIComponent(path.slice("/api/party/portrait/".length));
@@ -238,6 +248,8 @@ export class Party extends DurableObject {
     if (path === "/api/party/import" && request.method === "POST") return this.importFile(request, viewer);
     if (path === "/api/party/private" && request.method === "POST") return this.setPrivate(request, viewer);
     if (path === "/api/party/save" && request.method === "POST") return this.saveCard(request, viewer);
+    if (path === "/api/party/status" && request.method === "POST") return this.setStatus(request, viewer);
+    if (path === "/api/party/treasury" && request.method === "POST") return this.changeTreasury(request, viewer);
     if (!viewer.dm) return json({ error: path.startsWith("/api/party/") ? "Only the DM can do that." : "Not found." }, viewer.dm ? 404 : 403);
 
     // ---- the DM's helper
@@ -250,6 +262,14 @@ export class Party extends DurableObject {
                           portrait: !!(await this.ctx.storage.get("portrait:" + id)) });
       }
       return json({ cards: out });
+    }
+    if (path === "/api/party/settings" && request.method === "POST") {
+      let body;
+      try { body = await request.json(); } catch (e) { return json({ error: "Couldn't read that." }, 400); }
+      const settings = Object.assign((await this.ctx.storage.get("settings")) || {}, { show_hp: !!body.show_hp });
+      await this.ctx.storage.put("settings", settings);
+      this.announce();
+      return json({ ok: true, show_hp: settings.show_hp });
     }
     if (path === "/api/party/history") {
       const id = url.searchParams.get("id") || "";
@@ -314,6 +334,47 @@ export class Party extends DurableObject {
     }
     await this.save(viewer.id, s, next, viewer.email, "imported from CCC5e: " + party.summary(s.card, next));
     return json({ ok: true, rev: s.rev + 1 });
+  }
+
+  // Live status: a player changes their own; the DM (the tracker, the Party page at home) any - one, or
+  // several at once ({"cards": [{id, ...}]}).
+  async setStatus(request, viewer) {
+    let body;
+    try { body = await request.json(); } catch (e) { return json({ error: "Couldn't read that." }, 400); }
+    const changes = viewer.dm && Array.isArray(body.cards) ? body.cards : [Object.assign({}, body, { id: viewer.dm ? body.id : viewer.id })];
+    if (!viewer.dm && !viewer.id) return json({ error: "Your email isn't linked to a character yet - ask the DM." }, 403);
+    const out = {};
+    for (const ch of changes.slice(0, 20)) {
+      const id = String((ch && ch.id) || "");
+      const stored = await this.ctx.storage.get("card:" + id);
+      if (!stored) return json({ error: "No such character." }, 404);
+      const patch = Object.assign({}, ch);
+      delete patch.id;
+      let next;
+      try {
+        next = party.applyStatus(stored.card, await this.ctx.storage.get("status:" + id), patch, viewer.dm ? "dm" : "owner");
+      } catch (e) { return json({ error: e.message }, 400); }
+      await this.ctx.storage.put("status:" + id, Object.assign(next, { at: Date.now() }));
+      out[id] = next;
+    }
+    this.announce();
+    return json({ ok: true, status: out });
+  }
+
+  // The party's shared pool: anyone in the party, or the DM, adds to it or takes from it; each change is logged.
+  async changeTreasury(request, viewer) {
+    if (!viewer.dm && !viewer.id) return json({ error: "Your email isn't linked to a character yet - ask the DM." }, 403);
+    let body;
+    try { body = await request.json(); } catch (e) { return json({ error: "Couldn't read that." }, 400); }
+    let r;
+    try { r = party.applyTreasury(await this.ctx.storage.get("treasury"), body); } catch (e) { return json({ error: e.message }, 400); }
+    const at = Date.now();
+    await this.ctx.storage.put("treasury", r.treasury);
+    await this.ctx.storage.put("tlog:" + String(at).padStart(15, "0"), { at, by: viewer.dm ? "DM" : viewer.name, text: r.text });
+    const old = [...(await this.ctx.storage.list({ prefix: "tlog:" })).keys()];
+    if (old.length > 200) await this.ctx.storage.delete(old.slice(0, old.length - 200));
+    this.announce();
+    return json({ ok: true, treasury: r.treasury });
   }
 
   // A player's own card, edited on the page: the fields they sent replace those on the card; the rest

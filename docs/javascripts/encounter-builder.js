@@ -728,6 +728,63 @@
       rollFoes(state.combat);
       flash("");
       setView("initiative");
+      partyFromLive(state.combat);
+    }
+
+    // ------------------------------------------------------------ the live Party page (the players' site)
+    // With the players' site online, a fight starts from the party's current HP and conditions there,
+    // and every change to them here goes back (through the save helper) - so the Party page shows them
+    // live, and players who heal or rest between fights start the next one where they left off.
+    var partyOnline = null, partySent = {}, partyTimer = null, partyLoading = null;   // the fight whose start is being fetched
+    function pcId(name) {   // the card's id, as tools/players_roster.py makes it
+      return "pc-" + String(name || "").toLowerCase().replace(/'/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    }
+    function pcSnap(x) {
+      var m = (D.party.members || [])[x.pi];
+      if (!m) return null;
+      var snap = { id: pcId(m.character), conds: (x.conds || []).map(function (cd) { return { n: cd.n, r: cd.r == null ? null : cd.r }; }) };
+      if (x.hp != null) snap.hp = x.hp;
+      return snap;
+    }
+    function partyFromLive(c) {
+      if (ONLINE || partyOnline === false) return;
+      partyLoading = c;   // until it's here, nothing goes back (it would put everyone at full HP)
+      helperFetch(HELPER + "/party/live").then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+        .then(function (res) {
+          if (partyLoading === c) partyLoading = null;
+          if (res.status !== 200 || !res.body.status) { if (res.body && res.body.online === false) partyOnline = false; return; }
+          partyOnline = true;
+          if (state.combat !== c) return;   // another fight started meanwhile
+          c.list.forEach(function (x) {
+            if (x.kind !== "pc") return;
+            var snap = pcSnap(x), st = snap && res.body.status[snap.id];
+            if (!st) return;
+            if (st.hp !== undefined && x.max != null) x.hp = st.hp == null ? x.max : st.hp;
+            x.conds = (st.conds || []).map(function (cd) { return { n: cd.n, r: cd.r }; });
+            partySent[snap.id] = JSON.stringify(pcSnap(x));   // already there: nothing to send back
+          });
+          renderInit();
+        }).catch(function () { if (partyLoading === c) partyLoading = null; });
+    }
+    function partyToLive() {
+      var c = state.combat;
+      if (ONLINE || partyOnline === false || !c || partyLoading === c) return;
+      clearTimeout(partyTimer);
+      partyTimer = setTimeout(function () {
+        var cards = [];
+        c.list.forEach(function (x) {
+          if (x.kind !== "pc") return;
+          var snap = pcSnap(x), key = snap && JSON.stringify(snap);
+          if (!snap || partySent[snap.id] === key) return;
+          partySent[snap.id] = key;
+          cards.push(snap);
+        });
+        if (!cards.length) return;
+        helperPost("/party/status", { cards: cards }).then(function (res) {
+          if (res.status === 502 && res.body.online === false) partyOnline = false;
+          else if (res.status !== 200) cards.forEach(function (s) { delete partySent[s.id]; });   // try again with the next change
+        }).catch(function () { cards.forEach(function (s) { delete partySent[s.id]; }); });
+      }, 400);
     }
 
     function order() {
@@ -888,6 +945,7 @@
       persist();
       shareStatus();
       share();
+      partyToLive();
     }
     function signedPlain(n) { return n >= 0 ? "+" + n : String(n); }
 

@@ -128,3 +128,69 @@ test("sanitize keeps the card's own order for money and persona", () => {
   assert.deepEqual(Object.keys(c.currency), ["cp", "gp"]);
   assert.deepEqual(Object.keys(c.persona), ["traits", "ideal", "backstory", "alignment"]);
 });
+
+// ---------------------------------------------------------------- live status and the treasury
+import { applyStatus, statusView, hitDie, slotTotals, applyTreasury, blankStatus } from "../publish/players/party.mjs";
+
+const wiz = { character: "Ilvara", class: "Wizard", level: 3, hp: 17, spellcasting: [{ name: "Wizard", slots: { 1: 4, 2: 2 } }], private: [] };
+
+test("damage comes off temporary HP first, healing stops at the card's HP", () => {
+  let s = applyStatus(wiz, null, { temp: 5 }, "owner");
+  s = applyStatus(wiz, s, { hp_delta: -8 }, "dm");
+  assert.equal(s.temp, 0);
+  assert.equal(s.hp, 14);
+  s = applyStatus(wiz, s, { hp_delta: -40 }, "dm");
+  assert.equal(s.hp, 0);
+  s = applyStatus(wiz, s, { death: { s: 1, f: 2 } }, "owner");
+  assert.deepEqual(s.death, { s: 1, f: 2 });
+  s = applyStatus(wiz, s, { hp_delta: 50 }, "owner");
+  assert.equal(s.hp, null, "back at full: follows the card");
+  assert.deepEqual(s.death, { s: 0, f: 0 }, "up again: death saves start over");
+  assert.equal(applyStatus(wiz, null, { hp: 99 }, "dm").hp, null, "set above the maximum: full");
+  assert.equal(applyStatus(wiz, null, { hp: 9 }, "dm").hp, 9);
+});
+
+test("slots used only up to what the card has; hit dice up to the level", () => {
+  assert.deepEqual(slotTotals(wiz), { "0:1": 4, "0:2": 2 });
+  const s = applyStatus(wiz, null, { slots: { "0:1": 9, "0:2": 1, "0:3": 1, "1:1": 1 }, hd: 7, insp: true }, "owner");
+  assert.deepEqual(s.slots, { "0:1": 4, "0:2": 1 });
+  assert.equal(s.hd, 3);
+  assert.equal(s.insp, true);
+  assert.equal(hitDie(wiz), 6);
+  assert.equal(hitDie({ hp_formula: "3d8 + 6", class: "Wizard" }), 8);
+  assert.equal(hitDie({ class: "Monk (Way of the Open Hand)" }), 8);
+});
+
+test("conditions are kept tidy", () => {
+  const s = applyStatus(wiz, null, { conds: [{ n: "Prone" }, { n: "Poisoned", r: 3 }, { n: "" }, "junk"] }, "dm");
+  assert.deepEqual(s.conds, [{ n: "Prone", r: null }, { n: "Poisoned", r: 3 }]);
+  assert.throws(() => applyStatus(wiz, null, { conds: "Prone" }, "dm"));
+});
+
+test("other players see current HP only when the DM shows it, and no private slots", () => {
+  const s = applyStatus(wiz, null, { hp: 9, temp: 2, slots: { "0:1": 1 } }, "dm");
+  assert.equal(statusView(wiz, s, "other", false).hp, undefined);
+  assert.equal(statusView(wiz, s, "other", false).temp, undefined);
+  assert.equal(statusView(wiz, s, "other", true).hp, 9);
+  assert.equal(statusView(wiz, s, "owner", false).hp, 9);
+  assert.equal(statusView(wiz, s, "dm", false).hp, 9);
+  const shy = Object.assign({}, wiz, { private: ["spellcasting"] });
+  assert.equal(statusView(shy, s, "other", true).slots, undefined);
+  assert.deepEqual(statusView(shy, s, "owner", true).slots, { "0:1": 1 });
+  assert.deepEqual(statusView(wiz, null, "other", true), Object.assign(blankStatus(), {}));
+});
+
+test("the treasury: coins in and out, never below zero; items added up and taken", () => {
+  let r = applyTreasury(null, { coins: { gp: 50, sp: 12 }, note: "sold the bell" });
+  assert.deepEqual(r.treasury.coins, { gp: 50, sp: 12 });
+  assert.equal(r.text, "+50 gp, +12 sp — sold the bell");
+  r = applyTreasury(r.treasury, { coins: { gp: -20 }, add: { name: "Potion of Healing", qty: 2 } });
+  assert.equal(r.treasury.coins.gp, 30);
+  r = applyTreasury(r.treasury, { add: { name: "potion of healing" } });
+  assert.deepEqual(r.treasury.items, [{ name: "Potion of Healing", qty: 3 }]);
+  r = applyTreasury(r.treasury, { take: { name: "Potion of Healing", qty: 3 } });
+  assert.deepEqual(r.treasury.items, []);
+  assert.throws(() => applyTreasury(r.treasury, { coins: { gp: -31 } }), /only has 30 gp/);
+  assert.throws(() => applyTreasury(r.treasury, { take: { name: "Wand" } }), /no Wand/);
+  assert.throws(() => applyTreasury(r.treasury, {}), /Nothing/);
+});

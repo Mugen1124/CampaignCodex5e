@@ -6,11 +6,35 @@
    runs after this and finds the cards by .pc-card[data-pc].
    On the players' site online, docs/players/party-live.js swaps in the live cards from the players'
    worker and calls window.codexParty.draw(data) again whenever one changes; each draw ends with a
-   "codex:party-drawn" event on the cards' container. */
+   "codex:party-drawn" event on the cards' container.
+   Live status (data.status, by card id): current HP, temporary HP, conditions, inspiration, spell slots
+   and hit dice used, death saves - shown under each card's numbers; with the treasury (data.treasury)
+   at the top. Whoever may change them (a player on their own card, the DM at home: data.dm_live) gets
+   the controls, and each change goes to window.codexParty.send(kind, change), which the page sets:
+   party-live.js (the players' site) or party-editor.js (the DM's site, through the save helper). */
 (function () {
   var ABIL = ["str", "dex", "con", "int", "wis", "cha"];
   var ABIL_NAME = { str: "Str", dex: "Dex", con: "Con", int: "Int", wis: "Wis", cha: "Cha" };
   var drawCard = null;   // the last render's card(), for previews (codexParty.preview)
+  var CONDITIONS = ["Blinded", "Charmed", "Deafened", "Frightened", "Grappled", "Incapacitated", "Invisible", "Paralyzed",
+    "Petrified", "Poisoned", "Prone", "Restrained", "Stunned", "Unconscious", "Exhaustion", "Concentrating"];
+  var HIT_DIE = { barbarian: 12, fighter: 10, paladin: 10, ranger: 10, sorcerer: 6, wizard: 6 };
+  var ORD = ["", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"];
+  var COINS = ["pp", "gp", "ep", "sp", "cp"];
+
+  // As publish/players/party.mjs works them out.
+  function hitDie(c) {
+    var m = String(c.hp_formula || "").match(/d(\d+)/);
+    if (m) return +m[1];
+    return HIT_DIE[String(c["class"] || "").toLowerCase().split(/[\s(]/)[0]] || 8;
+  }
+  function slotTotals(c) {
+    var out = {};
+    (c.spellcasting || []).forEach(function (sc, i) {
+      Object.keys(sc.slots || {}).forEach(function (l) { if (+sc.slots[l] > 0) out[i + ":" + l] = +sc.slots[l]; });
+    });
+    return out;
+  }
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
@@ -50,13 +74,18 @@
     function pill(k, v, title) {
       return '<span class="pcx-pill" title="' + esc(title) + '"><i>' + k + "</i>" + esc(v != null && v !== "" ? v : "\u2014") + "</span>";
     }
+    // "17/24" when the current HP is known to this viewer and not full; the card's HP otherwise.
+    function hpText(c, st) {
+      if (!st || st.hp === undefined || st.hp === null || c.hp == null) return c.hp;
+      return st.hp + "/" + c.hp;
+    }
     var table = '<div class="pcx-roster">' + cards.map(function (c) {
       var what = [c.race, c["class"]].filter(Boolean).join(" ");
       return '<a class="pcx-tile" href="#' + esc(c.id) + '" data-go="' + esc(c.id) + '">' + avatar(c, "pcx-av") +
         '<span class="pcx-tile-who"><b>' + esc(c.character) + "</b>" +
         '<span class="pcx-dim">' + esc(what) + (c.level ? " \u00b7 level " + esc(c.level) : "") + "</span>" +
         (c.player ? '<span class="pcx-dim">' + esc(c.player) + "</span>" : "") + "</span>" +
-        '<span class="pcx-pills">' + pill("AC", c.ac, "Armor Class") + pill("HP", c.hp, "Hit points") + pill("Perc.", c.passive_perception, "Passive Perception") + "</span></a>";
+        '<span class="pcx-pills">' + pill("AC", c.ac, "Armor Class") + pill("HP", hpText(c, (data.status || {})[c.id]), "Hit points") + pill("Perc.", c.passive_perception, "Passive Perception") + "</span></a>";
     }).join("") + "</div>";
 
     // ------------------------------------------------------------ a card
@@ -71,6 +100,65 @@
       return (list || []).map(function (e) {
         return '<div class="pcx-feat"><b>' + esc(e.name) + ".</b> " + md(e.text) + "</div>";
       }).join("");
+    }
+
+    // ------------------------------------------------------------ live status (see the comment at the top)
+    function canChange(c) { return !!(data.dm_live || (data.live && data.me && c.id === data.me)); }
+    function pips(n, used, attrs, title) {
+      var out = "";
+      for (var i = 0; i < n; i++) {
+        var spent = i >= n - used;
+        out += '<button type="button" class="pcx-pip' + (spent ? " used" : "") + '"' + attrs + ' data-n="' + i + '" title="' + esc(title) +
+          (spent ? " (used)" : "") + '"' + (attrs ? "" : " disabled") + "></button>";
+      }
+      return out;
+    }
+    function live(c) {
+      var st = (data.status || {})[c.id];
+      if (!st) return "";
+      var edit = canChange(c), at = edit ? ' data-st-id="' + esc(c.id) + '"' : "";
+      var bits = [];
+      if (st.hp !== undefined && c.hp != null) {
+        var cur = st.hp == null ? c.hp : st.hp, pct = Math.max(0, Math.min(100, Math.round(100 * cur / (c.hp || 1))));
+        var state = cur === 0 ? " down" : cur <= c.hp / 2 ? " bloodied" : "";
+        bits.push('<div class="pcx-hp' + state + '"><div class="pcx-hp-text"><b>' + cur + "</b> / " + c.hp + " HP" +
+          (st.temp ? ' <span class="pcx-temp">+' + st.temp + " temp</span>" : "") + (cur === 0 ? ' <span class="pcx-down">down</span>' : "") +
+          '</div><div class="pcx-hp-bar"><span style="width: ' + pct + '%"></span></div></div>');
+        if (cur === 0) {
+          bits.push('<div class="pcx-death"><span>Death saves</span> <span class="pcx-dlbl">✓</span>' +
+            pips(3, (st.death || {}).s || 0, edit ? at + ' data-st="death" data-kind="s"' : "", "success") +
+            ' <span class="pcx-dlbl">✗</span>' + pips(3, (st.death || {}).f || 0, edit ? at + ' data-st="death" data-kind="f"' : "", "failure") + "</div>");
+        }
+      }
+      var conds = (st.conds || []).map(function (cd, i) {
+        return '<span class="pcx-cond">' + esc(cd.n) + (cd.r ? " · " + cd.r + " rd" : "") +
+          (edit ? '<button type="button" class="pcx-x"' + at + ' data-st="cond-rm" data-i="' + i + '" title="Remove">×</button>' : "") + "</span>";
+      }).join("");
+      var insp = st.insp || edit ? '<button type="button" class="pcx-insp' + (st.insp ? " on" : "") + '"' + (edit ? at + ' data-st="insp"' : " disabled") +
+        ' title="' + (st.insp ? "Has inspiration" : "No inspiration") + '">★ Inspiration</button>' : "";
+      if (conds || insp) bits.push('<div class="pcx-conds">' + insp + conds + "</div>");
+      var totals = st.slots ? slotTotals(c) : {};
+      var slots = Object.keys(totals).sort().map(function (k) {
+        var l = +k.split(":")[1];
+        return '<span class="pcx-slot"><i>' + ORD[l] + (((c.spellcasting || [])[+k.split(":")[0]] || {}).pact ? " (pact)" : "") + "</i>" +
+          pips(totals[k], (st.slots || {})[k] || 0, edit ? at + ' data-st="slot" data-key="' + k + '"' : "", "spell slot") + "</span>";
+      }).join("");
+      var hd = c.level ? '<span class="pcx-slot"><i>Hit dice d' + hitDie(c) + "</i>" +
+        pips(+c.level, st.hd || 0, edit ? at + ' data-st="hd"' : "", "hit die") + "</span>" : "";
+      if (slots || (edit && hd)) bits.push('<div class="pcx-slots">' + (slots ? "<b>Spell slots</b> " + slots : "") + (edit ? hd : "") + "</div>");
+      if (edit) {
+        bits.push('<div class="pcx-ctl">' +
+          '<input type="number" min="0" class="pcx-amt" placeholder="HP" aria-label="Amount"' + at + ">" +
+          '<button type="button" class="eb-act"' + at + ' data-st="dmg">Damage</button>' +
+          '<button type="button" class="eb-act"' + at + ' data-st="heal">Heal</button>' +
+          '<button type="button" class="eb-act"' + at + ' data-st="temp" title="Set temporary HP to the amount">Temp HP</button>' +
+          '<select class="pcx-addcond"' + at + ' aria-label="Add a condition"><option value="">+ Condition</option>' +
+          CONDITIONS.map(function (n) { return "<option>" + n + "</option>"; }).join("") + "</select>" +
+          '<span class="pcx-rests"><button type="button" class="eb-act"' + at + ' data-st="short" title="Spend hit dice to heal (rolled for you)">Short rest</button>' +
+          '<button type="button" class="eb-act"' + at + ' data-st="long" title="Full HP, spell slots back, half your hit dice back">Long rest</button></span>' +
+          "</div>");
+      }
+      return bits.length ? '<div class="pcx-live eb">' + bits.join("") + "</div>" : "";
     }
 
     function card(c) {
@@ -175,8 +263,8 @@
         '<div class="pcx-empty">' + (dm ? "No card details yet — import a CCC5e character, or fill it in with Edit." :
           "This card hasn't been filled in yet.") + "</div>" : "";
 
-      return head + strip + body + empty +
-        section("Actions", nActs, acts, true) +
+      return head + strip + live(c) + body + empty +
+        section("Actions", nActs, acts) +
         section("Features &amp; traits", (c.features || []).length, entries(c.features)) +
         section("Spellcasting", nSpells ? nSpells + " spells" : "", spells) +
         section("Inventory", nInv ? nInv + " items" : "", invBody) +
@@ -184,14 +272,46 @@
     }
 
     drawCard = card;
+
+    function treasury() {
+      var t = data.treasury;
+      if (!t) return "";
+      var edit = !!(data.dm_live || (data.live && data.me));
+      var coins = COINS.filter(function (k) { return (t.coins || {})[k]; }).map(function (k) {
+        return '<span class="pcx-coin"><b>' + esc(t.coins[k]) + "</b> " + k + "</span>";
+      }).join("") || '<span class="pcx-dim">No coin yet.</span>';
+      var items = (t.items || []).map(function (i) {
+        return "<li><span>" + esc(i.name) + "</span><span>" + (i.qty > 1 ? "×" + esc(i.qty) : "") +
+          (edit ? ' <button type="button" class="pcx-x" data-tr="take" data-name="' + esc(i.name) + '" title="Take one out">−</button>' : "") + "</span></li>";
+      }).join("");
+      var log = (data.treasury_log || []).map(function (l) {
+        return "<li>" + esc(new Date(l.at).toLocaleDateString()) + " · <b>" + esc(l.by) + "</b> " + esc(l.text) + "</li>";
+      }).join("");
+      var form = edit ? '<div class="pcx-tr-form eb">' + COINS.map(function (k) {
+          return '<label>' + k + ' <input type="number" min="0" data-coin="' + k + '"></label>';
+        }).join("") + '<input class="pcx-tr-note" placeholder="What for (optional)">' +
+        '<button type="button" class="eb-act" data-tr="in">Put in</button><button type="button" class="eb-act" data-tr="out">Take out</button>' +
+        '<span class="pcx-tr-item"><input class="pcx-tr-name" placeholder="Add an item"><input type="number" min="1" value="1" class="pcx-tr-qty" aria-label="How many">' +
+        '<button type="button" class="eb-act" data-tr="add">Add</button></span></div>' : "";
+      var showHp = data.dm_live ? '<label class="pcx-showhp eb"><input type="checkbox" data-st="show-hp"' + (data.show_hp ? " checked" : "") +
+        "> Players see each other's current HP</label>" : "";
+      return showHp + '<details class="pcx-sec pcx-treasury" data-sec="treasury"' + (treasuryOpen ? " open" : "") + '><summary>Party treasury' +
+        ' <span class="pcx-count">· ' + COINS.filter(function (k) { return (t.coins || {})[k]; }).map(function (k) { return t.coins[k] + " " + k; }).join(", ") +
+        "</span></summary>" + '<div class="pcx-sec-body"><div class="pcx-coins">' + coins + "</div>" +
+        (items ? '<ul class="pcx-inv">' + items + "</ul>" : "") + form +
+        (log ? '<details class="pcx-more"><summary>What changed</summary><ul class="pcx-log">' + log + "</ul></details>" : "") +
+        "</div></details>";
+    }
     var shared = carried.party ? '<div class="pcx-shared"><b>Shared by the party:</b> <span class="pcx-shared-items"></span></div>' : "";
     var top = root.querySelector(".pcx-top");
+    var wasOpen = top && top.querySelector(".pcx-treasury");
+    var treasuryOpen = wasOpen ? wasOpen.open : false;
     if (!top) {
       top = document.createElement("div");
       top.className = "pcx-top";
       root.insertBefore(top, root.firstChild);
     }
-    top.innerHTML = table + shared;
+    top.innerHTML = table + shared + treasury();
     // Each card into its placeholder (hooks/campaign.py writes one per character, with its anchor),
     // keeping which sections were open when it's drawn again.
     cards.forEach(function (c) {
@@ -267,7 +387,112 @@
         return drawCard ? '<section class="pc-card pcx">' + drawCard(Object.assign({ index: "preview", id: "pcx-preview" }, c)) + "</section>" : "";
       },
     };
+    // ------------------------------------------------------------ the live controls -> codexParty.send
+    function send(kind, change) {
+      var to = window.codexParty.send;
+      if (!to) return;
+      root.classList.add("pcx-busy");
+      Promise.resolve(to(kind, change)).catch(function () {}).then(function () { root.classList.remove("pcx-busy"); });
+    }
+    function cardOf(id) { return (window.codexParty.data.cards || []).filter(function (c) { return c.id === id; })[0]; }
+    function statusOf(id) { return ((window.codexParty.data.status || {})[id]) || {}; }
+    function amount(el) {
+      var box = el.closest(".pcx-live"), n = parseInt((box && box.querySelector(".pcx-amt") || {}).value, 10);
+      return isNaN(n) || n < 0 ? null : n;
+    }
+    function statusAction(el) {
+      var id = el.getAttribute("data-st-id"), what = el.getAttribute("data-st"), c = cardOf(id), st = statusOf(id), n;
+      if (!c && what !== "show-hp") return;
+      if (what === "show-hp") return send("settings", { show_hp: el.checked });
+      if (what === "dmg" || what === "heal") {
+        n = amount(el);
+        if (n == null) return el.closest(".pcx-live").querySelector(".pcx-amt").focus();
+        return send("status", { id: id, change: { hp_delta: what === "dmg" ? -n : n } });
+      }
+      if (what === "temp") { n = amount(el); return send("status", { id: id, change: { temp: n || 0 } }); }
+      if (what === "insp") return send("status", { id: id, change: { insp: !st.insp } });
+      if (what === "cond-rm") {
+        return send("status", { id: id, change: { conds: (st.conds || []).filter(function (x, i) { return i !== +el.getAttribute("data-i"); }) } });
+      }
+      // A pip: tap a full one to spend it, a spent one to get it back.
+      if (what === "slot" || what === "hd") {
+        var key = el.getAttribute("data-key"), used = what === "hd" ? st.hd || 0 : (st.slots || {})[key] || 0;
+        used += el.classList.contains("used") ? -1 : 1;
+        if (what === "hd") return send("status", { id: id, change: { hd: used } });
+        var slots = Object.assign({}, st.slots);
+        slots[key] = used;
+        return send("status", { id: id, change: { slots: slots } });
+      }
+      if (what === "death") {
+        var kind = el.getAttribute("data-kind"), d = Object.assign({ s: 0, f: 0 }, st.death);
+        d[kind] += el.classList.contains("used") ? -1 : 1;
+        return send("status", { id: id, change: { death: d } });
+      }
+      if (what === "short") {
+        var die = hitDie(c), left = (+c.level || 0) - (st.hd || 0);
+        if (left <= 0) return window.alert("No hit dice left - they come back with a long rest.");
+        var spend = parseInt(window.prompt("How many hit dice (d" + die + ") to spend? " + left + " left.", "1"), 10);
+        if (!(spend > 0)) return;
+        spend = Math.min(spend, left);
+        var con = Math.floor((((c.abilities || {}).con || 10) - 10) / 2), rolls = [], healed = 0;
+        for (var i = 0; i < spend; i++) {
+          var r = 1 + Math.floor(Math.random() * die);
+          rolls.push(r);
+          healed += Math.max(0, r + con);
+        }
+        var change = { hd: (st.hd || 0) + spend, hp_delta: healed };
+        // Pact magic comes back on a short rest.
+        var pact = {};
+        Object.keys(st.slots || {}).forEach(function (k) { if (!((c.spellcasting || [])[+k.split(":")[0]] || {}).pact) pact[k] = st.slots[k]; });
+        if (Object.keys(pact).length !== Object.keys(st.slots || {}).length) change.slots = pact;
+        window.alert("Rolled " + rolls.join(" + ") + (con ? " with " + (con > 0 ? "+" : "") + con + " Con each" : "") + ": +" + healed + " HP.");
+        return send("status", { id: id, change: change });
+      }
+      if (what === "long") {
+        if (!window.confirm("Long rest for " + c.character + "? Full HP, spell slots back, and half their hit dice back.")) return;
+        return send("status", { id: id, change: { hp: null, temp: 0, slots: {}, hd: Math.max(0, (st.hd || 0) - Math.max(1, Math.floor((+c.level || 1) / 2))),
+                                                  death: { s: 0, f: 0 } } });
+      }
+    }
+    function treasuryAction(el) {
+      var box = el.closest(".pcx-sec-body"), what = el.getAttribute("data-tr");
+      var note = (box.querySelector(".pcx-tr-note") || {}).value || "";
+      if (what === "in" || what === "out") {
+        var coins = {}, any = false;
+        box.querySelectorAll("[data-coin]").forEach(function (x) {
+          var n = parseInt(x.value, 10);
+          if (n > 0) { coins[x.getAttribute("data-coin")] = what === "in" ? n : -n; any = true; }
+        });
+        if (!any) return box.querySelector("[data-coin]").focus();
+        return send("treasury", { coins: coins, note: note });
+      }
+      if (what === "add") {
+        var name = box.querySelector(".pcx-tr-name").value.trim();
+        if (!name) return box.querySelector(".pcx-tr-name").focus();
+        return send("treasury", { add: { name: name, qty: parseInt(box.querySelector(".pcx-tr-qty").value, 10) || 1 }, note: note });
+      }
+      if (what === "take") return send("treasury", { take: { name: el.getAttribute("data-name"), qty: 1 }, note: note });
+    }
+    root.addEventListener("change", function (ev) {
+      var el = ev.target;
+      if (el.matches("[data-st=show-hp]")) return statusAction(el);
+      if (el.classList.contains("pcx-addcond") && el.value) {
+        var id = el.getAttribute("data-st-id"), st = statusOf(id);
+        var conds = (st.conds || []).filter(function (x) { return x.n !== el.value; }).concat([{ n: el.value, r: null }]);
+        send("status", { id: id, change: { conds: conds } });
+      }
+    });
+    root.addEventListener("keydown", function (ev) {   // Enter in the amount: damage (the likelier one at the table)
+      if (ev.key === "Enter" && ev.target.classList.contains("pcx-amt")) {
+        ev.preventDefault();
+        statusAction(ev.target.closest(".pcx-live").querySelector('[data-st="dmg"]'));
+      }
+    });
     root.addEventListener("click", function (ev) {
+      var st = ev.target.closest("button[data-st]");
+      if (st) return statusAction(st);
+      var tr = ev.target.closest("[data-tr]");
+      if (tr) return treasuryAction(tr);
       var row = ev.target.closest("[data-go]");
       if (!row) return;
       ev.preventDefault();

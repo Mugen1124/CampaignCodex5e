@@ -46,6 +46,21 @@ Their changes go live at once. You keep the say: on your Party page at home, **H
 
 Getting players' changes needs the same key as the live initiative page (step 7 of [Going online](going-online.md)). The DM note and emails never go online.
 
+**At the table.** Under each card's numbers is its live status, and each player keeps their own:
+
+- **Current HP** — Damage, Heal and Temp HP (damage comes off temporary HP first). Down at 0, the card shows **death saves** to tick.
+- **Conditions** — added from the list, removed with ×.
+- **★ Inspiration**, **spell slots** and **hit dice** — tap a dot to spend it, tap it again to get it back.
+- **Short rest** spends hit dice and rolls them for you (with your Con); **Long rest** brings back full HP, spell slots, and half your hit dice.
+
+Your initiative tracker and the cards share HP and conditions: a fight starts from the party's current HP, and damage and conditions in the tracker show on the cards as you go. On your Party page at home you see the same, and can change any of it.
+
+**Current HP is the players' own business unless you say so:** they see their own, and the others' only when you tick **Players see each other's current HP** at the top of your Party page. Conditions and inspiration always show.
+
+**The party treasury** at the top of the Party page is one shared pool of coins and items: anyone in the party (and you) can put in or take out, with a note, and **What changed** lists who did what. It can't go below zero.
+
+This live status and the treasury are kept on the players' site only — not in `data/party.yml`.
+
 ## My Notes
 
 Once the players' site is [online](going-online.md), each player gets a **My Notes** tab: one notepad of their own that saves as they type, on any phone or computer they sign in from. It's **private** — only the player who wrote it can read it; not the other players, and not you. Notes are kept by Cloudflare under their sign-in, never in your campaign's files, so they never pass through the build or the leak check.

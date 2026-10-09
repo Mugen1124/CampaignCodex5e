@@ -42,6 +42,11 @@ and new session recordings, in the folder chosen on the Record & Transcribe page
                                 -> {"changed": [names], "conflicts": [{"id", "character", "by", "at"}]}
     GET  /party/history?id=  -> that card's changes on the players' site, newest first
     POST /party/undo         -> {"id", "key"} puts the card back as it was before that change (then pulls it)
+    GET  /party/live         -> the live Party page as the DM sees it: cards, each one's status (current HP,
+                                conditions, trackers), the treasury and its log, and whether players see current HP
+    POST /party/status       -> {"cards": [{"id", "hp" | "hp_delta" | "conds" | ...}]} (the tracker, the Party page)
+    POST /party/settings     -> {"show_hp": bool} whether players see each other's current HP
+    POST /party/treasury     -> {"coins": {gp: 10}, "add" | "take": {name, qty}, "note"} the party's shared pool
     GET  /tracker/share      -> {"last": how the last send went, "token": bool}
     POST /tracker/share      -> {"view": {...}} -> sends the fight, as the players may see it, to the players'
                                 site's live tracker (in the background; the reply says how the last send went).
@@ -741,7 +746,15 @@ def players_api(method: str, path: str, body=None, raw=False):
                 return r.status, r.read(), r.headers.get_content_type()
             return r.status, json.loads(r.read() or b"{}")
     except HTTPError as err:
-        if err.code in (301, 302, 303, 401, 403):
+        if err.code in (301, 302, 303, 401):
+            raise ValueError("The players' site didn't accept the token - check tools/tracker-token.txt.")
+        try:   # the worker's own answer (a change it refused, and why) goes back as it is
+            body = json.loads(err.read() or b"{}")
+        except ValueError:
+            body = None
+        if isinstance(body, dict) and body.get("error") and err.code in (400, 403, 404, 409):
+            return err.code, body
+        if err.code == 403:
             raise ValueError("The players' site didn't accept the token - check tools/tracker-token.txt.")
         raise ValueError(f"The players' site answered {err.code}.")
     except (URLError, OSError) as err:
@@ -951,6 +964,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._reply(200, {"job": job_status()})
         if url.path == "/tracker/share":
             return self._reply(200, {"last": SHARE["last"], "token": TRACKER_TOKEN.is_file()})
+        if url.path == "/party/live":
+            return self.party_live()
         if url.path == "/party/history":
             return self.party_history((parse_qs(url.query).get("id") or [""])[0])
         if url.path == "/item/claims":
@@ -989,6 +1004,9 @@ class Handler(BaseHTTPRequestHandler):
                   "/party/member/delete": self.delete_member, "/family": self.family,
                   "/item/holder": self.item_holder, "/item/suggestion": self.item_suggestion,
                   "/party/pull": self.party_pull, "/party/undo": self.party_undo, "/item/claim": self.item_claim,
+                  "/party/status": lambda d: self.party_pass("/api/party/status", d),
+                  "/party/settings": lambda d: self.party_pass("/api/party/settings", d),
+                  "/party/treasury": lambda d: self.party_pass("/api/party/treasury", d),
                   "/party/import": self.party_import,
                   "/item/reveal": self.item_reveal}
         if self.path not in routes:
@@ -1009,6 +1027,21 @@ class Handler(BaseHTTPRequestHandler):
         except ValueError as err:
             return self._reply(502, {"error": str(err), "online": bool(TRACKER_URL and tracker_token())})
         self._reply(200, out)
+
+    def party_live(self):
+        try:
+            status, body = players_api("GET", "/api/party")
+        except ValueError as err:
+            return self._reply(502, {"error": str(err), "online": bool(TRACKER_URL and tracker_token())})
+        self._reply(status, body)
+
+    def party_pass(self, path, data):
+        """A change on the live Party page, sent on as it is; the worker checks it."""
+        try:
+            status, body = players_api("POST", path, data)
+        except ValueError as err:
+            return self._reply(502, {"error": str(err), "online": bool(TRACKER_URL and tracker_token())})
+        self._reply(status, body)
 
     def party_history(self, cid):
         try:

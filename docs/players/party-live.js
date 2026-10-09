@@ -1,6 +1,8 @@
 /* Players' site, Party page: the cards live from the players' worker (publish/players/worker.js).
  * Everyone sees the party's latest cards - other players' without what they marked private - and the
- * page redraws by itself when any card changes (a WebSocket that says "changed").
+ * page redraws by itself when any card changes (a WebSocket that says "changed"). Each card shows its live
+ * status - current HP (if the DM shows it), conditions, inspiration, spell slots, hit dice - and the top of
+ * the page the party treasury; players change their own and the treasury (party-cards.js draws them).
  * On your own card: Edit (javascripts/card-form.js - all of it but the name), Import .ccc5e (an export from the CCC5e character builder; a preview of what
  * changes first, the portrait shrunk to 320 px here before it's sent) and Privacy (what only you and
  * the DM see). Changes go live at once; the DM keeps a history of them and can undo any.
@@ -45,7 +47,8 @@
   function draw() {
     stale = false;
     var cards = live.cards.slice().sort(function (a, b) { return a.index - b.index; });
-    window.codexParty.draw(Object.assign({}, base, { cards: cards, me: live.me, live: true }));
+    window.codexParty.draw(Object.assign({}, base, { cards: cards, me: live.me, live: true, status: live.status || {},
+      show_hp: !!live.show_hp, treasury: live.treasury, treasury_log: live.treasury_log || [] }));
   }
   function soon() {   // several changes at once fetch once
     clearTimeout(timer);
@@ -267,6 +270,15 @@
     root = document.querySelector(".pc-cards.party");
     if (!root || !window.codexParty || window.codexParty.data.audience !== "players") return;
     base = window.codexParty.data;
+    // The cards' live controls (HP, conditions, slots, rests, the treasury: party-cards.js) send here.
+    window.codexParty.send = function (kind, change) {
+      var to = kind === "status" ? "/api/party/status" : kind === "treasury" ? "/api/party/treasury" : null;
+      if (!to) return;
+      return post(to, kind === "status" ? change.change : change).then(function (res) {
+        if (res.status !== 200) { window.alert(res.body.error || "Couldn't save that."); return; }
+        return load();
+      }).catch(function () { window.alert("Couldn't reach the site - check your connection and try again."); });
+    };
     root.addEventListener("codex:party-drawn", tools);
     root.addEventListener("click", function (ev) {
       var act = ev.target.getAttribute && ev.target.getAttribute("data-pl");

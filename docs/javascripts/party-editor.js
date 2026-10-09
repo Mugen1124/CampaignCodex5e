@@ -8,7 +8,10 @@
    what's private there (docs/players/party-live.js). "Get players' changes" brings those into
    data/party.yml (the helper also does it when it starts, and publish before it builds); a card changed
    in both places is shown here to settle. History on each card lists its changes on the players' site,
-   with Undo. */
+   with Undo. With the players' site online, each card also shows its live status - current HP,
+   conditions, the players' trackers - and the top of the page the party treasury and the switch for
+   whether players see each other's current HP; all of it yours to change (party-cards.js draws them,
+   this sends your changes through the helper), refreshed every few seconds. */
 (function () {
   "use strict";
   var HELPER = "http://127.0.0.1:8765";
@@ -32,7 +35,6 @@
   }
 
   function setup(grid) {
-    var cards = Array.from(grid.querySelectorAll(".pc-card[data-pc]"));
     var partyLevel = null;
 
     // ------------------------------------------------------------ buttons
@@ -46,14 +48,22 @@
     var sugBox = document.createElement("div");
     sugBox.className = "eb pe-sugs";
     grid.parentNode.insertBefore(sugBox, grid);
-    cards.forEach(function (card) {
-      var tools = document.createElement("div");
-      tools.className = "eb eb-sbbar";
-      tools.innerHTML = '<button class="eb-act pe-hist-btn" data-pe="history" style="display: none" title="Changes made on the players\' site, with Undo">History</button>' +
-        '<button class="eb-act" data-pe="import" title="Update this card from a CCC5e export">Import .ccc5e</button>' +
-        '<button class="eb-act" data-pe="edit">Edit</button><button class="eb-act eb-danger" data-pe="remove">Remove</button>';
-      card.insertBefore(tools, card.firstChild);
-    });
+    var online = false;   // the players' site answers (Get players' changes worked)
+    // Each card's buttons - again whenever party-cards.js draws the cards afresh (live status).
+    function addTools() {
+      grid.querySelectorAll(".pc-card[data-pc]").forEach(function (card) {
+        if (card.querySelector(".pe-tools")) return;
+        var tools = document.createElement("div");
+        tools.className = "eb eb-sbbar pe-tools";
+        tools.innerHTML = '<button class="eb-act pe-hist-btn" data-pe="history"' + (online ? "" : ' style="display: none"') +
+          ' title="Changes made on the players\' site, with Undo">History</button>' +
+          '<button class="eb-act" data-pe="import" title="Update this card from a CCC5e export">Import .ccc5e</button>' +
+          '<button class="eb-act" data-pe="edit">Edit</button><button class="eb-act eb-danger" data-pe="remove">Remove</button>';
+        card.insertBefore(tools, card.firstChild);
+      });
+    }
+    addTools();
+    grid.addEventListener("codex:party-drawn", addTools);
     var box = document.createElement("div");
     box.className = "eb pe-form";
     grid.parentNode.insertBefore(box, grid.nextSibling);
@@ -210,7 +220,9 @@
           return;
         }
         btn.style.display = "";
+        online = true;
         grid.querySelectorAll(".pe-hist-btn").forEach(function (b) { b.style.display = ""; });
+        if (!liveTimer) { loadLive(); liveTimer = setInterval(function () { if (document.visibilityState === "visible") loadLive(); }, 8000); }
         var out = res.body, bits = [];
         if (out.changed && out.changed.length) bits.push('<span class="eb-msg eb-ok">Brought into <code>data/party.yml</code>: ' +
           out.changed.map(esc).join(", ") + ". The page refreshes when the site rebuilds.</span>");
@@ -238,6 +250,33 @@
       settle[how] = [id];
       pull(settle);
     });
+
+    // ------------------------------------------------------------ live status, the treasury, the HP switch
+    var liveSeen = null, liveTimer = null;
+    function loadLive(force) {
+      // Not while something's open in a card (a History list, an import preview): a redraw would close it.
+      if (!force && (box.style.display !== "none" || grid.querySelector(".pe-hist, .pe-import-box"))) return Promise.resolve();
+      return call("/party/live").then(function (res) {
+        if (res.status !== 200 || !res.body.status) return;
+        var seen = JSON.stringify([res.body.status, res.body.show_hp, res.body.treasury, res.body.treasury_log]);
+        if (seen === liveSeen && !force) return;
+        liveSeen = seen;
+        var p = res.body;
+        window.codexParty.draw(Object.assign({}, window.codexParty.data, { status: p.status, show_hp: !!p.show_hp,
+          treasury: p.treasury, treasury_log: p.treasury_log || [], dm_live: true }));
+      }).catch(function () {});
+    }
+    if (window.codexParty) {
+      window.codexParty.send = function (kind, change) {
+        var path = { status: "/party/status", settings: "/party/settings", treasury: "/party/treasury" }[kind];
+        if (!path) return;
+        var body = kind === "status" ? { cards: [Object.assign({ id: change.id }, change.change)] } : change;
+        return call(path, body).then(function (res) {
+          if (res.status !== 200) { window.alert(res.body.error || "Couldn't save that."); return; }
+          return loadLive(true);
+        }).catch(function () { window.alert(OFFLINE.replace(/<[^>]+>/g, "")); });
+      };
+    }
 
     function history(card) {
       var old = card.querySelector(".pe-hist");

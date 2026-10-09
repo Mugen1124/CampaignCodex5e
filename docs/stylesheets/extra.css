@@ -826,6 +826,50 @@ html.rec-popout .rec-level-note { min-width: 0; }
 .md-typeset .pe-import-box { border: 1px solid var(--md-accent-fg-color); border-radius: 4px; padding: 0.6rem 0.8rem; margin: 0.6rem 0 1rem; font-size: 0.7rem; }
 .md-typeset .pe-import-box .pe-old { color: var(--md-default-fg-color--lighter); }
 .md-typeset .pe-import-box .pe-new { color: var(--cx-easy); }
+/* Party page: live status under each card's numbers, the treasury, the DM's HP switch (party-cards.js) */
+.md-typeset .pcx-live { padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--cx-line-soft); display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.68rem; }
+.pcx-hp-text b { font-size: 0.9rem; }
+.pcx-hp-bar { height: 0.35rem; border-radius: 0.2rem; background: var(--cx-line-soft); overflow: hidden; margin-top: 0.2rem; }
+.pcx-hp-bar span { display: block; height: 100%; background: var(--cx-easy); transition: width 0.3s; }
+.pcx-hp.bloodied .pcx-hp-bar span { background: var(--cx-hard); }
+.pcx-hp.down .pcx-hp-bar span { background: var(--cx-deadly); }
+.pcx-temp { color: var(--cx-title); }
+.pcx-down { color: var(--cx-deadly); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.pcx-conds, .pcx-slots, .pcx-death, .pcx-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.6rem; }
+.pcx-cond { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.05rem 0.45rem; border-radius: 1rem; border: 1px solid var(--cx-hard); color: var(--cx-hard); }
+.pcx-x { background: none; border: 0; color: inherit; cursor: pointer; padding: 0 0.1rem; font-size: 0.8rem; line-height: 1; }
+.pcx-insp { background: none; border: 1px solid var(--cx-line); border-radius: 1rem; padding: 0.05rem 0.5rem; color: var(--md-default-fg-color--lighter); cursor: pointer; font-size: 0.66rem; }
+.pcx-insp.on { border-color: var(--md-accent-fg-color); color: var(--md-accent-fg-color); font-weight: 700; }
+.pcx-insp:disabled { cursor: default; }
+.pcx-slot { display: inline-flex; align-items: center; gap: 0.2rem; }
+.pcx-slot i { font-style: normal; opacity: 0.75; margin-right: 0.15rem; }
+.pcx-pip { width: 0.7rem; height: 0.7rem; border-radius: 50%; border: 1px solid var(--md-accent-fg-color); background: var(--md-accent-fg-color); padding: 0; cursor: pointer; }
+.pcx-pip.used { background: none; }
+.pcx-pip:disabled { cursor: default; }
+.pcx-death .pcx-pip { border-radius: 0.15rem; }
+.pcx-dlbl { opacity: 0.7; }
+.pcx-ctl .pcx-amt { width: 4.5rem; }
+.pcx-ctl select { font-size: 0.65rem; }
+.pcx-rests { margin-left: auto; display: inline-flex; gap: 0.3rem; }
+.pcx-busy .pcx-live, .pcx-busy .pcx-treasury { opacity: 0.7; }
+/* Above the general .eb button (a small square): these keep their own shapes */
+.eb button.pcx-insp { width: auto; height: auto; line-height: 1.4; border-radius: 1rem; border-color: var(--cx-line); padding: 0.05rem 0.55rem; font: inherit; font-size: 0.66rem; }
+.eb button.pcx-insp.on { border-color: var(--md-accent-fg-color); }
+.eb button.pcx-pip { width: 0.75rem; height: 0.75rem; border-radius: 50%; border-color: var(--md-accent-fg-color); background: var(--md-accent-fg-color); }
+.eb button.pcx-pip.used, .eb button.pcx-pip.used:hover { background: none; }
+.pcx-death .eb button.pcx-pip, .eb .pcx-death button.pcx-pip { border-radius: 0.15rem; }
+.eb button.pcx-x { width: auto; height: auto; border: 0; padding: 0 0.1rem; background: none; }
+.md-typeset .pcx-treasury { margin: 0.8rem 0; border: 1px solid var(--cx-line); border-radius: 4px; }
+.pcx-tr-form { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.5rem; margin: 0.5rem 0; font-size: 0.66rem; }
+.pcx-tr-form label { display: inline-flex; align-items: center; gap: 0.2rem; text-transform: uppercase; }
+.pcx-tr-form input[data-coin] { width: 4rem; }
+.pcx-tr-note { flex: 1 1 10rem; }
+.pcx-tr-item { display: inline-flex; gap: 0.3rem; flex: 1 1 100%; }
+.pcx-tr-item .pcx-tr-name { flex: 1; }
+.pcx-tr-item .pcx-tr-qty { width: 3.5rem; }
+.md-typeset .pcx-log { font-size: 0.62rem; margin: 0.3rem 0 0; }
+.pcx-showhp { display: flex; align-items: center; gap: 0.4rem; font-size: 0.68rem; margin: 0.6rem 0 0; }
+@media print { .pcx-ctl, .pcx-tr-form, .pcx-showhp { display: none !important; } }
 /* Players' site, your own card: Import .ccc5e and Privacy (docs/players/party-live.js) */
 .pl-tools { align-items: center; flex-wrap: wrap; }
 .pl-tools .pl-msg { margin-right: auto; }

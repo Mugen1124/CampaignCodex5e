@@ -209,3 +209,137 @@ export function summary(before, after) {
   if (!bits.length) bits.push(canonical(before) === canonical(after) ? "no change" : "details changed");
   return bits.join("; ");
 }
+
+// ---------------------------------------------------------------- live status: HP, conditions, the players' trackers
+// Kept beside each card, not in it: it changes all through a session, never goes into party.yml, and
+// isn't in the card's change history. hp null means "at full" (the card's HP); slots counts the slots
+// *used*, keyed "<spellcasting entry>:<level>"; hd counts the hit dice used.
+export const CONDITIONS = ["Blinded", "Charmed", "Deafened", "Frightened", "Grappled", "Incapacitated", "Invisible", "Paralyzed",
+  "Petrified", "Poisoned", "Prone", "Restrained", "Stunned", "Unconscious", "Exhaustion", "Concentrating"];
+const HIT_DIE = { barbarian: 12, fighter: 10, paladin: 10, ranger: 10, sorcerer: 6, wizard: 6 };
+
+// A whole number held to lo..hi (undefined if it isn't a number at all).
+const clamp = (v, lo, hi) => { const n = parseInt(v, 10); return Number.isFinite(n) ? Math.max(lo, Math.min(hi, n)) : undefined; };
+
+export function blankStatus() {
+  return { hp: null, temp: 0, conds: [], insp: false, slots: {}, hd: 0, death: { s: 0, f: 0 } };
+}
+
+// The card's hit die: from its HP formula (3d8 + 6) or else its class.
+export function hitDie(card) {
+  const m = String((card && card.hp_formula) || "").match(/d(\d+)/);
+  if (m) return +m[1];
+  const cls = String((card && card.class) || "").toLowerCase().split(/[\s(]/)[0];
+  return HIT_DIE[cls] || 8;
+}
+
+// Every spell slot the card has: {"0:1": 4, "0:2": 2, "1:1": 1} (entry:level -> how many).
+export function slotTotals(card) {
+  const out = {};
+  ((card && card.spellcasting) || []).forEach((sc, i) => {
+    for (const [lvl, n] of Object.entries((sc && sc.slots) || {})) if (+n > 0) out[`${i}:${lvl}`] = +n;
+  });
+  return out;
+}
+
+// A change to a card's status - from its player ("owner") or the DM ("dm": the tracker, the Party page at
+// home). Fields not in the patch stay. hp_delta is damage (negative, taken from temporary HP first) or
+// healing (positive, up to the card's HP). Throws for a change that can't be kept.
+export function applyStatus(card, old, patch, who) {
+  if (!obj(patch)) throw new Error("That isn't a change.");
+  const s = Object.assign(blankStatus(), clone(old || {}));
+  const max = int(card && card.hp, 0, 2000);
+  const has = (k) => Object.prototype.hasOwnProperty.call(patch, k);
+  if (has("hp")) s.hp = patch.hp === null || patch.hp === "" ? null : clamp(patch.hp, 0, max != null ? max : 2000) ?? s.hp;
+  if (has("temp")) s.temp = clamp(patch.temp, 0, 999) ?? s.temp;
+  if (has("hp_delta")) {
+    let d = int(patch.hp_delta, -5000, 5000) || 0;
+    let cur = s.hp == null ? (max || 0) : s.hp;
+    if (d < 0) { const t = Math.min(s.temp || 0, -d); s.temp -= t; d += t; }
+    cur = Math.max(0, cur + d);
+    if (max != null) cur = Math.min(cur, max);
+    s.hp = cur;
+  }
+  if (has("conds")) {
+    if (!Array.isArray(patch.conds)) throw new Error("Conditions should be a list.");
+    s.conds = patch.conds.slice(0, 15).filter(obj).map((c) => {
+      const out = { n: line(c.n, 30) };
+      const r = int(c.r, 0, 99);
+      out.r = r === undefined || c.r === null ? null : r;
+      return out;
+    }).filter((c) => c.n);
+  }
+  if (has("insp")) s.insp = !!patch.insp;
+  if (has("slots")) {
+    if (!obj(patch.slots)) throw new Error("Spell slots should be a map.");
+    const totals = slotTotals(card), next = {};
+    for (const [k, v] of Object.entries(patch.slots)) {
+      if (!totals[k]) continue;
+      const n = clamp(v, 0, totals[k]);
+      if (n) next[k] = n;
+    }
+    s.slots = next;
+  }
+  if (has("hd")) s.hd = clamp(patch.hd, 0, int(card && card.level, 1, 30) || 1) ?? s.hd;
+  if (has("death")) {
+    if (!obj(patch.death)) throw new Error("Death saves should be {s, f}.");
+    s.death = { s: clamp(patch.death.s, 0, 3) || 0, f: clamp(patch.death.f, 0, 3) || 0 };
+  }
+  // Back on their feet: the death saves start over.
+  if ((has("hp") || has("hp_delta")) && s.hp != null && s.hp > 0) s.death = { s: 0, f: 0 };
+  if (max != null && s.hp != null && s.hp >= max) s.hp = null;   // at full: follows the card's HP if it changes
+  return s;
+}
+
+// What one viewer gets of a card's status: the other players don't see current HP unless the DM shows
+// it (showHp), nor the slots of a player who keeps their spellcasting private.
+export function statusView(card, status, who, showHp) {
+  const s = Object.assign(blankStatus(), clone(status || {}));
+  if (who === "other") {
+    if (!showHp) { delete s.hp; delete s.temp; }
+    if (((card && card.private) || []).includes("spellcasting")) delete s.slots;
+  }
+  return s;
+}
+
+// ---------------------------------------------------------------- the party treasury
+// One shared pool: coins and items anyone in the party (or the DM) adds to or takes from. A change is
+// {coins: {gp: +10, sp: -5}, add: {name, qty}, take: {name, qty}, note}; coins can't go below zero.
+export const COINS = ["pp", "gp", "ep", "sp", "cp"];
+export function blankTreasury() { return { coins: {}, items: [] }; }
+
+export function applyTreasury(old, patch) {
+  if (!obj(patch)) throw new Error("That isn't a change.");
+  const t = Object.assign(blankTreasury(), clone(old || {}));
+  const bits = [];
+  if (obj(patch.coins)) {
+    for (const k of COINS) {
+      const d = int(patch.coins[k], -100000000, 100000000);
+      if (!d) continue;
+      const now = (t.coins[k] || 0) + d;
+      if (now < 0) throw new Error(`The party only has ${t.coins[k] || 0} ${k}.`);
+      if (now) t.coins[k] = now; else delete t.coins[k];
+      bits.push((d > 0 ? "+" : "−") + Math.abs(d) + " " + k);
+    }
+  }
+  if (obj(patch.add)) {
+    const name = line(patch.add.name, 200), q = int(patch.add.qty, 1, 100000) || 1;
+    if (!name) throw new Error("Name the item.");
+    const it = t.items.find((i) => i.name.toLowerCase() === name.toLowerCase());
+    if (it) it.qty = (it.qty || 1) + q; else t.items.push({ name, qty: q });
+    if (t.items.length > 200) throw new Error("The treasury is full - 200 kinds of item at most.");
+    bits.push("+ " + (q > 1 ? q + "× " : "") + name);
+  }
+  if (obj(patch.take)) {
+    const name = line(patch.take.name, 200), q = int(patch.take.qty, 1, 100000) || 1;
+    const it = t.items.find((i) => i.name.toLowerCase() === name.toLowerCase());
+    if (!it) throw new Error(`The treasury has no ${name}.`);
+    if ((it.qty || 1) < q) throw new Error(`The treasury has only ${it.qty || 1} ${it.name}.`);
+    it.qty = (it.qty || 1) - q;
+    if (!it.qty) t.items = t.items.filter((i) => i !== it);
+    bits.push("− " + (q > 1 ? q + "× " : "") + it.name);
+  }
+  if (!bits.length) throw new Error("Nothing to change.");
+  const note = line(patch.note, 200);
+  return { treasury: t, text: bits.join(", ") + (note ? " — " + note : "") };
+}
