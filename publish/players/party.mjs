@@ -210,6 +210,13 @@ export function summary(before, after) {
   return bits.join("; ");
 }
 
+// A card that gives no level of its own is at the party's (data/party.yml level:) - shown, and counted for
+// hit dice, as such; the card itself is left as it is.
+export function withLevel(card, partyLevel) {
+  const lvl = parseInt(partyLevel, 10);
+  return card && card.level == null && lvl > 0 ? Object.assign({}, card, { level: lvl }) : card;
+}
+
 // ---------------------------------------------------------------- live status: HP, conditions, the players' trackers
 // Kept beside each card, not in it: it changes all through a session, never goes into party.yml, and
 // isn't in the card's change history. hp null means "at full" (the card's HP); slots counts the slots

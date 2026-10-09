@@ -226,7 +226,7 @@ export class Party extends DurableObject {
         const s = await this.ctx.storage.get("card:" + id);
         if (!s) continue;
         const who = viewer.dm ? "dm" : viewer.id === id ? "owner" : "other";
-        cards.push(Object.assign(party.view(s.card, who), { id, index: m.index, rev: s.rev, by: viewer.dm ? s.by : undefined,
+        cards.push(Object.assign(party.view(party.withLevel(s.card, ROSTER.level), who), { id, index: m.index, rev: s.rev, by: viewer.dm ? s.by : undefined,
                                                              updated: s.at || null }));
         // From the whole card (its private marks), not the view of it.
         status[id] = party.statusView(s.card, await this.ctx.storage.get("status:" + id), who, !!settings.show_hp);
@@ -352,7 +352,7 @@ export class Party extends DurableObject {
       delete patch.id;
       let next;
       try {
-        next = party.applyStatus(stored.card, await this.ctx.storage.get("status:" + id), patch, viewer.dm ? "dm" : "owner");
+        next = party.applyStatus(party.withLevel(stored.card, ROSTER.level), await this.ctx.storage.get("status:" + id), patch, viewer.dm ? "dm" : "owner");
       } catch (e) { return json({ error: e.message }, 400); }
       await this.ctx.storage.put("status:" + id, Object.assign(next, { at: Date.now() }));
       out[id] = next;

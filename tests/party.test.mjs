@@ -194,3 +194,14 @@ test("the treasury: coins in and out, never below zero; items added up and taken
   assert.throws(() => applyTreasury(r.treasury, { take: { name: "Wand" } }), /no Wand/);
   assert.throws(() => applyTreasury(r.treasury, {}), /Nothing/);
 });
+
+import { withLevel } from "../publish/players/party.mjs";
+
+test("a card with no level of its own is at the party's level, without changing the card", () => {
+  const bare = { character: "Aisling", class: "Druid" };
+  assert.equal(withLevel(bare, 5).level, 5);
+  assert.equal(bare.level, undefined);
+  assert.equal(withLevel({ character: "X", level: 2 }, 5).level, 2);
+  assert.equal(withLevel(bare, null), bare);
+  assert.equal(applyStatus(withLevel(bare, 5), null, { hd: 9 }, "owner").hd, 5);
+});
