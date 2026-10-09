@@ -7,6 +7,7 @@ level: 3
 size: 3
 members:
   - player: Player One
+    email: player@example.com   # the demo player: sign in with this to be Tam
     character: Tamsin "Tam" Underbough
     race: Lightfoot Halfling
     class: Rogue (Thief)
@@ -223,128 +224,12 @@ members:
   - player: Player Three
     character: Magister Ilvara Sorn
     race: Tiefling
-    class: Wizard (School of Evocation)
-    background: Acolyte
+    class: Wizard
     level: 3
     ac: 12
     hp: 17
-    hp_formula: 3d6
     speed: 30 ft.
-    initiative: 2
-    passive_perception: 11
-    abilities: {str: 8, dex: 14, con: 13, int: 16, wis: 12, cha: 12}
-    saves: Int +5, Wis +3
-    skills: Arcana +5, History +5, Insight +3, Religion +5
-    resistances: Fire resistance
-    senses: Darkvision 60 ft.
-    languages: Common, Infernal, Draconic, Abyssal
-    proficiencies:
-      weapons: Dagger, Dart, Sling, Quarterstaff, Light Crossbow
-    features:
-      - name: Arcane Recovery
-        text: Once per day when you finish a short rest, you can choose expended spell slots up to 5th level to recover. The spell slots can have a combined level that is equal to or less than 2.
-      - name: Evocation Savant
-        text: The gold and time you must spend to copy an evocation spell into your spellbook is halved.
-      - name: Sculpt Spells
-        text: When you cast an evocation spell that affects other creatures that you can see, you can choose a number of them equal to 1 + the spell’s level. The chosen creatures automatically succeed on their saving throws against the spell, and they take no damage if they would normally take half damage on a successful save.
-      - name: Hellish Resistance
-        text: You have resistance to fire damage.
-      - name: Infernal Legacy
-        text: You know the thaumaturgy cantrip. You can cast the hellish rebuke spell as a 2nd-level spell once per rest. Charisma is your spellcasting ability for these spells.
-      - name: Shelter of the Faithful
-        text: As an acolyte, you command the respect of those who share your faith, and you can perform the religious ceremonies of your deity. You and your adventuring companions can expect to receive free healing and care at a temple, shrine, or other established presence of your faith, though you must provide any material components needed for spells. Those who share your religion will support you (but only you) at a modest lifestyle. You might also have ties to a specific temple dedicated to your chosen deity or pantheon, and you have a residence there. This could be the temple where you used to serve, if you remain on good terms with it, or a temple where you have found a new home. While near your temple, you can call upon the priests for assistance, provided the assistance you ask for is not hazardous and you remain in good standing with your temple.
+    languages: Common, Infernal
     actions:
-      - name: Quarterstaff
-        text: '*Attack:* +1 to hit, range 5 ft. *Hit:* 1d6-1 bludgeoning. Versatile (1d8-1 bludgeoning)'
-      - name: Dagger
-        text: '*Attack:* +4 to hit, range 20/60. *Hit:* 1d4+2 piercing.'
       - name: Fire Bolt
-        text: '*Attack:* +5 to hit, range 120 ft. *Hit:* 1d10 fire. Cantrip'
-      - name: Ray of Frost
-        text: '*Attack:* +5 to hit, range 60 ft. *Hit:* 1d8 cold. Cantrip'
-      - name: Shocking Grasp
-        text: '*Attack:* +5 to hit, range Touch. *Hit:* 1d8 lightning. Cantrip'
-    spellcasting:
-    - name: Wizard
-      ability: Intelligence
-      save_dc: 13
-      attack: 5
-      slots:
-        1: 4
-        2: 2
-      cantrips:
-      - Fire Bolt
-      - Ray of Frost
-      - Shocking Grasp
-      spells:
-      - name: Burning Hands
-        level: 1
-        prepared: true
-      - name: Detect Magic
-        level: 1
-        prepared: true
-      - name: Find Familiar
-        level: 1
-        prepared: true
-      - name: Identify
-        level: 1
-      - name: Mage Armor
-        level: 1
-      - name: Magic Missile
-        level: 1
-        prepared: true
-      - name: Shield
-        level: 1
-        prepared: true
-      - name: Thunderwave
-        level: 1
-        prepared: true
-      - name: Misty Step
-        level: 2
-      - name: Scorching Ray
-        level: 2
-    - name: Innate (Infernal Legacy)
-      ability: Charisma
-      save_dc: 11
-      attack: 3
-      spells:
-      - name: Thaumaturgy
-        level: 0
-      - name: Hellish Rebuke
-        level: 1
-    inventory:
-    - name: Quarterstaff
-      equipped: true
-    - name: Component Pouch
-    - name: Backpack
-    - name: Book
-      qty: 2
-    - name: Ink (1 ounce bottle)
-    - name: Ink Pen
-    - name: Parchment (one sheet)
-      qty: 10
-    - name: Spellbook
-    - name: Dagger
-      equipped: true
-    - name: Holy symbol (a gift to you when you entered the priesthood)
-    - name: 5 sticks of incense
-    - name: Vestments
-    - name: Clothes, Common
-    - name: Pouch
-    currency:
-      sp: 30
-      gp: 64
-    persona:
-      traits:
-      - I correct people's pronunciation of spell names. I cannot stop myself.
-      - 'Every argument ends the same way with me: a book, open to the right page.'
-      ideal: Knowledge. Fire destroys; understanding is what you build with the light.
-      bond: The Collegium of Ashen Spires took me in when no one else would teach a tiefling. I defend it and its students.
-      flaw: I believe every problem can be solved with a sufficiently large explosion. I am usually right, which is the problem.
-      appearance: 58 years, Female, 5'9", 140 lb, Molten gold eyes, Deep crimson skin, Silver-white hair
-      backstory: Ilvara was born in the slums of Tarsakh to parents who feared her horns. She taught herself to read from stolen almanacs and set her first fire at nine — by accident, reading aloud. The Collegium of Ashen Spires found her through the scorch marks and made her their first tiefling student. Forty years later she runs its war college.
-      allies: The Collegium of Ashen Spires; Archmage Deren Holt (mentor, retired); her former students across three kingdoms
-      alignment: Neutral Good
-    source:
-      from: CCC5e
-      imported: '2026-10-08'
+        text: '*Attack:* +5 to hit, range 120 ft. *Hit:* 1d10 fire.'

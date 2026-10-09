@@ -3,10 +3,14 @@
    site that data has already lost the DM's notes and anything a player marked private.
    Items a character carries (data/items, holder:) are written into the page as [[mentions]] so they
    keep their hover cards; this moves them into the cards. party-editor.js (Edit, on the site at home)
-   runs after this and finds the cards by .pc-card[data-pc]. */
+   runs after this and finds the cards by .pc-card[data-pc].
+   On the players' site online, docs/players/party-live.js swaps in the live cards from the players'
+   worker and calls window.codexParty.draw(data) again whenever one changes; each draw ends with a
+   "codex:party-drawn" event on the cards' container. */
 (function () {
   var ABIL = ["str", "dex", "con", "int", "wis", "cha"];
   var ABIL_NAME = { str: "Str", dex: "Dex", con: "Con", int: "Int", wis: "Wis", cha: "Cha" };
+  var drawCard = null;   // the last render's card(), for previews (codexParty.preview)
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
@@ -29,14 +33,13 @@
       .map(function (w) { return w[0]; }).slice(0, 2).join("").toUpperCase();
   }
 
-  function render(root, data) {
+  // carried: the campaign's items for each card, by index ("party" for what the party shares) - see init.
+  function render(root, data, carried) {
     var dm = data.audience !== "players";
     var cards = data.cards || [];
-    var carried = {};
-    var held = root.querySelector(".party-carried");
-    if (held) held.querySelectorAll("[data-carried]").forEach(function (el) { carried[el.getAttribute("data-carried")] = el; });
 
-    function isPrivate(c, path) { return dm && (c.private || []).indexOf(path) >= 0; }
+    // Locks show to those who see the private parts: the DM, and the card's own player (live, data.me).
+    function isPrivate(c, path) { return (dm || c.id === data.me) && (c.private || []).indexOf(path) >= 0; }
     function lock(c, path) { return isPrivate(c, path) ? ' <span class="pcx-lock" title="Private: only the player and the DM see this">🔒</span>' : ""; }
 
     // ------------------------------------------------------------ the roster: a tile per character
@@ -44,8 +47,8 @@
       return c.portrait ? '<img class="' + cls + '" src="' + esc(c.portrait) + '" alt="">' :
         '<span class="' + cls + ' pcx-initials">' + esc(initials(c.character)) + "</span>";
     }
-    function pill(k, v) {
-      return '<span class="pcx-pill"><i>' + k + "</i>" + esc(v != null && v !== "" ? v : "\u2014") + "</span>";
+    function pill(k, v, title) {
+      return '<span class="pcx-pill" title="' + esc(title) + '"><i>' + k + "</i>" + esc(v != null && v !== "" ? v : "\u2014") + "</span>";
     }
     var table = '<div class="pcx-roster">' + cards.map(function (c) {
       var what = [c.race, c["class"]].filter(Boolean).join(" ");
@@ -53,7 +56,7 @@
         '<span class="pcx-tile-who"><b>' + esc(c.character) + "</b>" +
         '<span class="pcx-dim">' + esc(what) + (c.level ? " \u00b7 level " + esc(c.level) : "") + "</span>" +
         (c.player ? '<span class="pcx-dim">' + esc(c.player) + "</span>" : "") + "</span>" +
-        '<span class="pcx-pills">' + pill("AC", c.ac) + pill("HP", c.hp) + pill("PP", c.passive_perception) + "</span></a>";
+        '<span class="pcx-pills">' + pill("AC", c.ac, "Armor Class") + pill("HP", c.hp, "Hit points") + pill("Perc.", c.passive_perception, "Passive Perception") + "</span></a>";
     }).join("") + "</div>";
 
     // ------------------------------------------------------------ a card
@@ -61,7 +64,7 @@
       return '<div class="pcx-stat"><div class="k">' + k + '</div><div class="v">' + esc(v) + '</div><div class="s">' + (s ? esc(s) : "&nbsp;") + "</div></div>";
     }
     function section(title, count, body, open) {
-      return body ? '<details class="pcx-sec"' + (open ? " open" : "") + "><summary>" + title +
+      return body ? '<details class="pcx-sec" data-sec="' + esc(title) + '"' + (open ? " open" : "") + "><summary>" + title +
         (count ? ' <span class="pcx-count">· ' + count + "</span>" : "") + '</summary><div class="pcx-sec-body">' + body + "</div></details>" : "";
     }
     function entries(list) {
@@ -146,13 +149,13 @@
         return "<li><span>" + esc(i.name) +
           (i.attuned ? ' <span class="pcx-tag gold">attuned</span>' : i.magic ? ' <span class="pcx-tag gold">magic</span>' : "") +
           (i.equipped ? ' <span class="pcx-tag">equipped</span>' : "") +
-          (dm && i.private ? ' <span class="pcx-lock" title="Private: only the player and the DM see this">🔒</span>' : "") +
+          ((dm || c.id === data.me) && i.private ? ' <span class="pcx-lock" title="Private: only the player and the DM see this">🔒</span>' : "") +
           "</span><span>" + (i.qty && i.qty !== 1 ? "×" + esc(i.qty) : "") + "</span></li>";
       }
       var money = c.currency ? ["pp", "gp", "ep", "sp", "cp"].filter(function (k) { return c.currency[k]; })
         .map(function (k) { return '<span class="pcx-coin"><b>' + esc(c.currency[k]) + "</b> " + k + "</span>"; }).join("") : "";
       var campaign = carried[String(c.index)];
-      var invBody = (campaign ? '<div class="pcx-lbl">From the campaign</div><div class="pcx-campaign"></div>' : "") +
+      var invBody = (campaign ? '<div class="pcx-lbl">From the campaign</div><div class="pcx-campaign" data-from="' + esc(c.index) + '"></div>' : "") +
         (money ? '<div class="pcx-coins">' + money + lock(c, "currency") + "</div>" : "") +
         (key.length ? '<ul class="pcx-inv">' + key.map(item).join("") + "</ul>" : "") +
         (rest.length ? '<details class="pcx-more"><summary>' + rest.length + " more item" + (rest.length === 1 ? "" : "s") +
@@ -180,9 +183,17 @@
         section("Persona &amp; backstory", "", personaBody) + note;
     }
 
+    drawCard = card;
     var shared = carried.party ? '<div class="pcx-shared"><b>Shared by the party:</b> <span class="pcx-shared-items"></span></div>' : "";
-    root.insertAdjacentHTML("afterbegin", table + shared);
-    // Each card into its placeholder (hooks/campaign.py writes one per character, with its anchor).
+    var top = root.querySelector(".pcx-top");
+    if (!top) {
+      top = document.createElement("div");
+      top.className = "pcx-top";
+      root.insertBefore(top, root.firstChild);
+    }
+    top.innerHTML = table + shared;
+    // Each card into its placeholder (hooks/campaign.py writes one per character, with its anchor),
+    // keeping which sections were open when it's drawn again.
     cards.forEach(function (c) {
       var slot = root.querySelector('section.pcx[data-pc="' + c.index + '"]');
       if (!slot) {
@@ -192,7 +203,13 @@
         slot.setAttribute("data-pc", c.index);
         root.appendChild(slot);
       }
+      var open = {}, drawn = slot.querySelector(".pcx-head");
+      slot.querySelectorAll("details[data-sec]").forEach(function (d) { open[d.getAttribute("data-sec")] = d.open; });
       slot.innerHTML = card(c);
+      if (drawn) slot.querySelectorAll("details[data-sec]").forEach(function (d) {
+        var was = open[d.getAttribute("data-sec")];
+        if (was !== undefined) d.open = was;
+      });
     });
     // The campaign's items, with their hover cards, into their cards.
     cards.forEach(function (c) {
@@ -207,6 +224,15 @@
     root.querySelectorAll(".pcx-campaign > p, .pcx-shared-items > p").forEach(function (p) {
       while (p.firstChild) p.parentNode.insertBefore(p.firstChild, p);
       p.remove();
+    });
+    root.dispatchEvent(new CustomEvent("codex:party-drawn", { detail: data }));
+  }
+
+  // Before drawing again: the campaign's items back where they came from, to be moved in afresh.
+  function gather(root, carried) {
+    root.querySelectorAll(".pcx-campaign[data-from], .pcx-shared-items").forEach(function (el) {
+      var home = carried[el.getAttribute("data-from") || "party"];
+      if (home) while (el.firstChild) home.appendChild(el.firstChild);
     });
   }
 
@@ -225,7 +251,22 @@
     if (!blob || !root || root.querySelector(".pcx-head")) return;
     var data;
     try { data = JSON.parse(blob.textContent); } catch (e) { return; }
-    render(root, data);
+    var carried = {};
+    var held = root.querySelector(".party-carried");
+    if (held) held.querySelectorAll("[data-carried]").forEach(function (el) { carried[el.getAttribute("data-carried")] = el; });
+    render(root, data, carried);
+    window.codexParty = {
+      data: data,
+      draw: function (next) {
+        gather(root, carried);
+        window.codexParty.data = next;
+        render(root, next, carried);
+      },
+      // One card's HTML as the page would draw it (the Edit form's preview).
+      preview: function (c) {
+        return drawCard ? '<section class="pc-card pcx">' + drawCard(Object.assign({ index: "preview", id: "pcx-preview" }, c)) + "</section>" : "";
+      },
+    };
     root.addEventListener("click", function (ev) {
       var row = ev.target.closest("[data-go]");
       if (!row) return;
@@ -234,6 +275,7 @@
       go(row.getAttribute("data-go"));
     });
     if (location.hash) setTimeout(function () { go(location.hash.slice(1)); }, 50);
+    document.dispatchEvent(new CustomEvent("codex:party-ready"));
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

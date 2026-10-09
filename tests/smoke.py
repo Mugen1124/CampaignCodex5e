@@ -260,6 +260,32 @@ def main() -> int:
         warn = build(proj, "mkdocs.yml", Path(tmp) / "imported-dm")
         check("...and the Party page builds with them", not warn, "\n".join(warn))
 
+        node = shutil.which("node")
+        if node:
+            print("The live Party page (the players' worker's rules, and its copy of the importer):")
+            r = subprocess.run([node, "--test", str(ROOT / "tests" / "party.test.mjs")], capture_output=True, text=True)
+            check("the live Party page's rules pass their tests (tests/party.test.mjs)", r.returncode == 0, (r.stdout + r.stderr)[-1500:])
+            sys.path.insert(0, str(ROOT / "tools"))
+            import import_ccc5e
+            py_card = import_ccc5e.card(json.loads(tam.read_text(encoding="utf-8")))
+            js = Path(tmp) / "card.mjs"
+            js.write_text("import { readFileSync } from 'node:fs'; import { pathToFileURL } from 'node:url';\n"
+                          "const m = await import(pathToFileURL(process.argv[2]).href);\n"
+                          "process.stdout.write(JSON.stringify(m.card(m.parse(readFileSync(process.argv[3], 'utf8')))));\n",
+                          encoding="utf-8")
+            r = subprocess.run([node, str(js), str(ROOT / "publish" / "players" / "ccc5e.mjs"), str(tam)],
+                               capture_output=True, text=True, encoding="utf-8")
+            try:
+                js_card = json.loads(r.stdout)
+            except ValueError:
+                js_card = {"error": r.stderr[-800:]}
+            for c in (py_card, js_card):
+                (c.get("source") or {}).pop("imported", None)   # today's date, which may differ by time zone
+            check("...and the players' site imports a .ccc5e exactly as import-character does",
+                  json.dumps(py_card, sort_keys=True) == json.dumps(js_card, sort_keys=True), json.dumps(js_card)[:600])
+        else:
+            print("(Node.js isn't installed: the live Party page's checks were skipped.)")
+
         print("Builds outside the folder (output: local):")
         local = Path(tmp) / "local-cache"
         conf = proj / "campaign.yml"

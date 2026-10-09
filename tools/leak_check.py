@@ -160,7 +160,7 @@ def main() -> int:
                                        "javascripts/items-editor.js"}))
     import players
     stray += sorted(p.relative_to(site).as_posix() for p in players.unused_media(site))
-    # Players' emails (party.yml, for the card suggestions) are only ever in the worker's roster.
+    # Players' emails (party.yml, to match sign-ins to cards) are only ever in the worker's roster.
     party = yaml.safe_load((ROOT / "data" / "party.yml").read_text(encoding="utf-8")) or {}
     for m in party.get("members") or []:
         email = str((m or {}).get("email") or "").strip().lower() if isinstance(m, dict) else ""

@@ -31,7 +31,7 @@ ABBR = {"str": "Str", "dex": "Dex", "con": "Con", "int": "Int", "wis": "Wis", "c
 ORDINAL = {1: "1st", 2: "2nd", 3: "3rd"}
 PORTRAITS = ROOT / "docs" / "party" / "portraits"
 PORTRAIT_SIZE = 320            # pixels, the longer side
-KEEP = ("player", "email", "note", "private")   # what an import never replaces
+KEEP = ("player", "email", "note", "private", "rev")   # what an import never replaces
 
 
 def signed(n) -> str:

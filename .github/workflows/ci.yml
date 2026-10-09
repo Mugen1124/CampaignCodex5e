@@ -27,7 +27,7 @@ jobs:
 
       - name: JavaScript syntax
         shell: bash
-        run: for f in docs/javascripts/*.js docs/players/*.js publish/players/worker.js; do node --check "$f"; done
+        run: for f in docs/javascripts/*.js docs/players/*.js publish/players/*.js publish/players/*.mjs; do node --check "$f"; done
 
       - name: Python syntax
         run: python -m compileall -q codex hooks tools tests

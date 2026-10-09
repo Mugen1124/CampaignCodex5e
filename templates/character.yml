@@ -65,3 +65,4 @@
                                               # a whole field (skills) or one part of the persona
   source: {from: CCC5e, imported: 2026-10-08}  # where the card came from (an import sets it)
   note: DM reminders shown at the bottom of the card - never on the players' site.
+  rev: 3   # set by Get players' changes: the card's version on the live players' site - leave it alone

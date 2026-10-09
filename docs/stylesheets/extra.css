@@ -826,3 +826,33 @@ html.rec-popout .rec-level-note { min-width: 0; }
 .md-typeset .pe-import-box { border: 1px solid var(--md-accent-fg-color); border-radius: 4px; padding: 0.6rem 0.8rem; margin: 0.6rem 0 1rem; font-size: 0.7rem; }
 .md-typeset .pe-import-box .pe-old { color: var(--md-default-fg-color--lighter); }
 .md-typeset .pe-import-box .pe-new { color: var(--cx-easy); }
+/* Players' site, your own card: Import .ccc5e and Privacy (docs/players/party-live.js) */
+.pl-tools { align-items: center; flex-wrap: wrap; }
+.pl-tools .pl-msg { margin-right: auto; }
+.pl-tools .pl-msg .eb-msg { margin: 0; }
+.md-typeset .pl-panel { margin: 0.6rem 0.8rem 1rem; }
+.pl-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: 0.2rem 0.8rem; margin: 0.3rem 0 0.8rem; }
+.pl-opt { display: flex; gap: 0.35rem; align-items: baseline; cursor: pointer; }
+.pl-sub { margin-top: 0.4rem; }
+.pl-editing > :not(.pl-panel):not(.pl-tools):not(.pcx-head) { display: none; }
+.md-typeset .pl-edit { font-size: 0.72rem; }
+.pl-edit .eb-cf-form { margin-top: 0.6rem; }
+.pl-edit .pl-edit-foot { justify-content: flex-end; }
+/* The card form (javascripts/card-form.js): money, inventory and spell rows, spell slots */
+.cf-coins { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.5rem; }
+.cf-coins label, .cf-slots label { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; font-weight: 700; }
+.cf-coins label { text-transform: uppercase; }
+.cf-coins input, .cf-slots input { text-align: center; }
+.cf-slots { display: grid; grid-template-columns: auto repeat(9, minmax(0, 1fr)); gap: 0.35rem; align-items: end; margin: 0.6rem 0; }
+.cf-slots > span { font-weight: 700; align-self: center; }
+.cf-slots label { font-weight: 400; font-size: 0.6rem; }
+.cf-row { display: grid; gap: 0.4rem; align-items: center; margin-bottom: 0.3rem; }
+.cf-item { grid-template-columns: minmax(0, 1fr) 4rem auto auto auto auto; }
+.cf-spell { grid-template-columns: minmax(0, 1fr) auto auto auto; }
+.cf-row label { white-space: nowrap; opacity: 0.85; }
+.cf-form select { box-sizing: border-box; }
+@media (max-width: 600px) {
+  .cf-item, .cf-spell { grid-template-columns: minmax(0, 1fr) auto; }
+  .cf-slots { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .cf-slots > span { grid-column: 1 / -1; }
+}

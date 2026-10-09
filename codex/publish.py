@@ -59,11 +59,13 @@ def write_configs(s: dict):
             {"name": "TRACKER", "class_name": "Tracker"},
             {"name": "CARDS", "class_name": "Cards"},
             {"name": "NOTES", "class_name": "Notes"},   # each player's private notes
+            {"name": "PARTY", "class_name": "Party"},   # the live Party page
         ]},
         "migrations": [
             {"tag": "v1", "new_sqlite_classes": ["Tracker"]},
             {"tag": "v2", "new_sqlite_classes": ["Cards"]},
             {"tag": "v3", "new_sqlite_classes": ["Notes"]},
+            {"tag": "v4", "new_sqlite_classes": ["Party"]},
         ],
     }
     note = "// Written by `publish` from campaign.yml each time - edit campaign.yml, not this file.\n"
@@ -72,7 +74,8 @@ def write_configs(s: dict):
     (out / "wrangler.jsonc").write_text(note + json.dumps(dm, indent=2) + "\n", encoding="utf-8")
     (out / "players" / "wrangler.jsonc").write_text(note + json.dumps(players, indent=2) + "\n", encoding="utf-8")
     if out != ROOT / "publish":   # building outside this folder: the worker goes along with the players' site
-        shutil.copyfile(ROOT / "publish" / "players" / "worker.js", out / "players" / "worker.js")
+        for module in (ROOT / "publish" / "players").glob("*.*js"):   # worker.js and the modules it imports
+            shutil.copyfile(module, out / "players" / module.name)
 
 
 class _NoRedirect(HTTPRedirectHandler):
@@ -160,6 +163,10 @@ def main(args=None) -> int:
 
     problems = False
     out = s["publish_dir"]
+    if on.get("players_site", True):
+        # Players' changes on the live Party page into data/party.yml first, so this build has them
+        # and nothing you changed is held back for want of them (tools/site_helper.py pull_party).
+        subprocess.call([PY, str(ROOT / "tools" / "site_helper.py"), "--pull-party"], cwd=ROOT)
     print("Building the DM site...")
     if build(["--site-dir", str(out / "site")]) != 0:
         print("\nThe build failed - nothing was published.")

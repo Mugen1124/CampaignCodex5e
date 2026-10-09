@@ -9,6 +9,7 @@ publish/.signin-confirmed
 
 # Private: never commit
 publish/players/roster.json
+publish/players/party-sync.json
 tools/tracker-token.txt
 recordings/
 *.transcript.txt

@@ -1,17 +1,26 @@
-// The players' site: the built pages (./site), plus the live initiative tracker, card suggestions, and notes.
+// The players' site: the built pages (./site), plus the live initiative tracker, the live Party page, item claims, and notes.
 //
 //   GET  /api/tracker            -> the fight as the players see it (JSON)
 //   GET  /api/tracker/ws         -> the same, live: a WebSocket that gets every change
 //   POST /api/tracker            -> the DM's tracker, via the save helper (tools/site_helper.py)
 //
-//   GET  /api/me                 -> the signed-in player's character, its card, and their latest suggestion
-//   POST /api/cards/suggest      -> {"member": {...}} a suggested change to their own card, for the DM to approve
-//   GET  /api/cards/suggestions  -> the DM's helper: suggestions waiting for a decision
-//   POST /api/cards/resolve      -> the DM's helper: {"id", "status": "approved" | "rejected"}
+//   GET  /api/me                 -> the signed-in player's character: {character, index, id, level}
 //
 //   GET  /api/items/claims       -> who has asked for which up-for-grabs item (the helper also gets ids and emails)
 //   POST /api/items/claim        -> {"item"} claim it for your character; {"item", "withdraw": true} take that back
 //   POST /api/items/resolve      -> the DM's helper: {"id", "status": "approved" | "rejected"}
+//
+//   GET  /api/party              -> the Party page live: {me: your card's id, cards: [...]} - other players'
+//                                   cards without their private parts; the DM's helper gets everything
+//   GET  /api/party/ws           -> a WebSocket that says "changed" whenever a card changes
+//   POST /api/party/import       -> {"file": a .ccc5e's text, "save": false} the preview; with "save": true and
+//                                   "rev", onto your own card (portrait shrunk by the page first)
+//   POST /api/party/save         -> {"card": {...fields}, "rev"} your own card, edited on the page
+//   POST /api/party/private      -> {"private": [fields], "hidden": [item names], "rev"} what only you (and the DM) see
+//   GET  /api/party/portrait/ID  -> an uploaded portrait
+//   GET  /api/party/all          -> the DM's helper: every card in full, with its rev (to bring into party.yml)
+//   GET  /api/party/history?id=  -> the DM's helper: a card's changes, newest first
+//   POST /api/party/undo         -> the DM's helper: {"id", "key"} put a card back as it was before that change
 //
 //   GET  /api/notes              -> the signed-in player's own notes: {"text", "rev", "saved"}
 //   PUT  /api/notes              -> {"text", "rev"} save them; rev is the version they were loaded at, and a
@@ -20,22 +29,18 @@
 // Cloudflare Access sits in front of all of it, so every request here is already signed in; the
 // signed Access token says who (a player's email, or the helper's service token). Which email plays
 // which character comes from roster.json, written by the publish script from data/party.yml - it's part of
-// this script, never one of the site's files. The helper's calls (POST tracker, suggestions, resolve)
+// this script, never one of the site's files. The helper's calls (POST tracker, the DM's Party calls, resolve)
 // are refused for players. Notes are private to the player who wrote them: each email has its own
 // store, nothing else reads it, and the helper's service token can't reach it - not even the DM sees them.
 import { DurableObject } from "cloudflare:workers";
 import ROSTER from "./roster.json";
+import * as ccc5e from "./ccc5e.mjs";
+import * as party from "./party.mjs";
 
 // Your Cloudflare Access team address (https://<team>.cloudflareaccess.com). The publish script writes
 // it into wrangler.jsonc as ACCESS_TEAM from campaign.yml (online: access_team:).
 const team = (env) => String(env.ACCESS_TEAM || "").replace(/\/+$/, "");
 
-// What a player may suggest for their card (not their name, the player field, or the DM's note).
-const TEXT = ["race", "class", "ac_note", "hp_formula", "speed", "saves", "skills", "resistances", "immunities",
-              "condition_immunities", "senses", "languages"];
-const NUMBERS = ["level", "ac", "hp", "initiative", "passive_perception"];
-const LISTS = ["features", "actions", "bonus_actions", "reactions"];
-const ABIL = ["str", "dex", "con", "int", "wis", "cha"];
 const NOTE_MAX = 100000;   // bytes of notes per player (a Durable Object value holds up to 128 KiB)
 
 export default {
@@ -49,37 +54,20 @@ export default {
       if (request.method !== "GET" && request.method !== "POST") return json({ error: "Not allowed." }, 405);
       return env.TRACKER.get(env.TRACKER.idFromName("live")).fetch(request);
     }
-    if (path === "/api/me" || path.startsWith("/api/cards/")) return cards(request, env, path);
+    if (path === "/api/me") return whoAmI(request, env);
     if (path.startsWith("/api/items/")) return claims(request, env, path);
     if (path === "/api/notes") return notes(request, env);
+    if (path === "/api/party" || path.startsWith("/api/party/")) return partyApi(request, env, path);
     return env.ASSETS.fetch(request);
   },
 };
 
-async function cards(request, env, path) {
-  const store = env.CARDS.get(env.CARDS.idFromName("cards"));
+async function whoAmI(request, env) {
   const who = await identity(request, env);
   if (!who) return json({ error: "Not signed in." }, 401);
-  if (path === "/api/cards/suggestions" || path === "/api/cards/resolve") {
-    if (!who.service) return json({ error: "Only the DM can do that." }, 403);
-    return store.fetch(new Request("https://cards/" + path.split("/").pop(), request));
-  }
-  const me = playerFor(who.email);
-  if (path === "/api/me") {
-    if (!me) return json({ character: null });
-    const latest = await (await store.fetch("https://cards/mine?character=" + encodeURIComponent(me.character))).json();
-    return json({ character: me.character, index: me.index, level: ROSTER.level || null, card: me.card || {}, suggestion: latest });
-  }
-  if (path === "/api/cards/suggest" && request.method === "POST") {
-    if (!me) return json({ error: "Your email isn't linked to a character yet - ask the DM." }, 403);
-    let body;
-    try { body = await request.json(); } catch (e) { return json({ error: "Couldn't read the card." }, 400); }
-    const member = cleanMember(body && body.member);
-    return store.fetch("https://cards/suggest", {
-      method: "POST", body: JSON.stringify({ character: me.character, index: me.index, email: who.email, member }),
-    });
-  }
-  return json({ error: "Not found." }, 404);
+  const me = who.service ? null : playerFor(who.email);
+  if (!me) return json({ character: null });
+  return json({ character: me.character, index: me.index, id: me.id || party.cardId(me.character), level: ROSTER.level || null });
 }
 
 async function claims(request, env, path) {
@@ -132,22 +120,11 @@ function playerFor(email) {
   return (ROSTER.members || []).find((m) => m.email && m.email === String(email).toLowerCase()) || null;
 }
 
-// Suggested card changes: one waiting suggestion per character (a new one replaces it), kept
-// with its outcome once the DM decides, so the player can see what happened.
+// Item claims. (It once also held card suggestions, which the live Party page replaced; any left are never read.)
 export class Cards extends DurableObject {
   async fetch(request) {
     const url = new URL(request.url);
     const what = url.pathname.slice(1);
-    if (what === "suggest") {
-      const s = await request.json();
-      const entry = { id: crypto.randomUUID(), character: s.character, index: s.index, email: s.email,
-                      member: s.member, at: Date.now(), status: "pending" };
-      await this.ctx.storage.put("sug:" + s.character, entry);
-      return json({ ok: true, status: "pending" });
-    }
-    if (what === "mine") {
-      return json((await this.ctx.storage.get("sug:" + url.searchParams.get("character"))) || null);
-    }
     if (what === "claim") {   // one claim per item and character
       const c = await request.json();
       const key = "claim:" + c.item + ":" + c.character;
@@ -176,45 +153,8 @@ export class Cards extends DurableObject {
       await this.ctx.storage.put("claim:" + c.item + ":" + c.character, c);
       return json({ ok: true });
     }
-    const all = [...(await this.ctx.storage.list({ prefix: "sug:" })).values()];
-    if (what === "suggestions") return json({ suggestions: all.filter((s) => s.status === "pending") });
-    if (what === "resolve" && request.method === "POST") {
-      const r = await request.json();
-      const s = all.find((x) => x.id === r.id);
-      if (!s || !["approved", "rejected"].includes(r.status)) return json({ error: "No such suggestion." }, 404);
-      s.status = r.status;
-      s.decided = Date.now();
-      await this.ctx.storage.put("sug:" + s.character, s);
-      return json({ ok: true });
-    }
     return json({ error: "Not found." }, 404);
   }
-}
-
-function cleanMember(raw) {
-  const m = {};
-  if (!raw || typeof raw !== "object") return m;
-  const str = (v, n) => String(v).replace(/\s+/g, " ").trim().slice(0, n);
-  for (const k of TEXT) if (raw[k] != null && str(raw[k], 300)) m[k] = str(raw[k], 300);
-  for (const k of NUMBERS) {
-    const n = parseInt(String(raw[k] == null ? "" : raw[k]).replace("+", ""), 10);
-    if (!isNaN(n) && Math.abs(n) < 1000) m[k] = n;
-  }
-  if (raw.abilities && typeof raw.abilities === "object") {
-    const a = {};
-    for (const k of ABIL) {
-      const n = parseInt(raw.abilities[k], 10);
-      if (!isNaN(n) && n >= 1 && n <= 30) a[k] = n;
-    }
-    if (Object.keys(a).length) m.abilities = a;
-  }
-  for (const k of LISTS) {
-    if (!Array.isArray(raw[k])) continue;
-    const rows = raw[k].slice(0, 40).map((e) => ({ name: str((e && e.name) || "", 100), text: str((e && e.text) || "", 2000) }))
-      .filter((e) => e.name || e.text);
-    if (rows.length) m[k] = rows;
-  }
-  return m;
 }
 
 // One player's notes: one of these per email (idFromName), holding a single notepad.
@@ -229,6 +169,209 @@ export class Notes extends DurableObject {
       return json(next);
     }
     return json(cur);
+  }
+}
+
+// ---------------------------------------------------------------- the live Party page
+// One Party store for the campaign. The worker tells it who's asking (a header it sets itself - the
+// store is only reachable through here): the DM's helper, a player and their card's id, or nobody.
+async function partyApi(request, env, path) {
+  const who = await identity(request, env);
+  if (!who) return json({ error: "Not signed in." }, 401);
+  const me = who.service ? null : playerFor(who.email);
+  const viewer = who.service ? { dm: true } : { email: who.email, id: me ? me.id || party.cardId(me.character) : null,
+                                               name: me ? me.character : null };
+  const url = new URL(request.url);
+  // The body read here in full, so a request refused before it's read can't leave the stream hanging.
+  const headers = new Headers(request.headers);
+  headers.set("X-Viewer", JSON.stringify(viewer));
+  const inner = new Request("https://party" + path + url.search, {
+    method: request.method, headers,
+    body: request.method === "POST" ? await request.text() : undefined,
+  });
+  return env.PARTY.get(env.PARTY.idFromName("party")).fetch(inner);
+}
+
+const HISTORY_KEPT = 30;
+const PORTRAIT_MAX = 200000;   // characters of base64 - the page shrinks it to 320 px first
+
+export class Party extends DurableObject {
+  constructor(ctx, env) {
+    super(ctx, env);
+    ctx.setWebSocketAutoResponse(new WebSocketRequestResponsePair("ping", "pong"));
+  }
+
+  async fetch(request) {
+    const url = new URL(request.url);
+    const path = url.pathname;
+    let viewer = {};
+    try { viewer = JSON.parse(request.headers.get("X-Viewer") || "{}"); } catch (e) {}
+    await this.sync();
+
+    if (path === "/api/party/ws") {
+      if (request.headers.get("Upgrade") !== "websocket") return json({ error: "Expected a WebSocket." }, 426);
+      const [client, server] = Object.values(new WebSocketPair());
+      this.ctx.acceptWebSocket(server);
+      return new Response(null, { status: 101, webSocket: client });
+    }
+    if (path === "/api/party" && request.method === "GET") {
+      const cards = [];
+      for (const m of ROSTER.members || []) {
+        const id = m.id || party.cardId(m.character);
+        const s = await this.ctx.storage.get("card:" + id);
+        if (!s) continue;
+        const who = viewer.dm ? "dm" : viewer.id === id ? "owner" : "other";
+        cards.push(Object.assign(party.view(s.card, who), { id, index: m.index, rev: s.rev, by: viewer.dm ? s.by : undefined,
+                                                             updated: s.at || null }));
+      }
+      return json({ me: viewer.id || null, dm: !!viewer.dm, level: ROSTER.level || null, cards });
+    }
+    if (path.startsWith("/api/party/portrait/") && request.method === "GET") {
+      const id = decodeURIComponent(path.slice("/api/party/portrait/".length));
+      const s = await this.ctx.storage.get("card:" + id);
+      const pic = await this.ctx.storage.get("portrait:" + id);
+      const hidden = s && (s.card.private || []).includes("portrait") && !viewer.dm && viewer.id !== id;
+      if (!pic || hidden) return new Response("Not found", { status: 404 });
+      return new Response(Uint8Array.from(atob(pic.b64), (ch) => ch.charCodeAt(0)),
+        { headers: { "Content-Type": pic.mime, "Cache-Control": "private, max-age=31536000" } });
+    }
+    if (path === "/api/party/import" && request.method === "POST") return this.importFile(request, viewer);
+    if (path === "/api/party/private" && request.method === "POST") return this.setPrivate(request, viewer);
+    if (path === "/api/party/save" && request.method === "POST") return this.saveCard(request, viewer);
+    if (!viewer.dm) return json({ error: path.startsWith("/api/party/") ? "Only the DM can do that." : "Not found." }, viewer.dm ? 404 : 403);
+
+    // ---- the DM's helper
+    if (path === "/api/party/all") {
+      const out = [];
+      for (const m of ROSTER.members || []) {
+        const id = m.id || party.cardId(m.character);
+        const s = await this.ctx.storage.get("card:" + id);
+        if (s) out.push({ id, index: m.index, rev: s.rev, by: s.by, at: s.at, card: s.card,
+                          portrait: !!(await this.ctx.storage.get("portrait:" + id)) });
+      }
+      return json({ cards: out });
+    }
+    if (path === "/api/party/history") {
+      const id = url.searchParams.get("id") || "";
+      const list = [...(await this.ctx.storage.list({ prefix: `hist:${id}:`, reverse: true, limit: HISTORY_KEPT })).entries()]
+        .map(([key, h]) => ({ key, at: h.at, by: h.by, summary: h.summary, undo: !!h.before }));
+      return json({ id, history: list });
+    }
+    if (path === "/api/party/undo" && request.method === "POST") {
+      let body;
+      try { body = await request.json(); } catch (e) { return json({ error: "Couldn't read that." }, 400); }
+      const s = await this.ctx.storage.get("card:" + body.id);
+      const h = await this.ctx.storage.get(String(body.key || ""));
+      if (!s || !h || !h.before || !String(body.key).startsWith(`hist:${body.id}:`)) return json({ error: "No such change." }, 404);
+      // "undo", not "dm": party.yml doesn't have it yet - the helper pulls it in straight after.
+      await this.save(body.id, s, party.sanitize(h.before), "undo", "undid: " + h.summary);
+      return json({ ok: true });
+    }
+    return json({ error: "Not found." }, 404);
+  }
+
+  // party.yml as last published (roster.json) into the store - see party.reconcile.
+  async sync() {
+    if (!ROSTER.version || (await this.ctx.storage.get("roster")) === ROSTER.version) return;
+    let changed = false;
+    for (const m of ROSTER.members || []) {
+      const id = m.id || party.cardId(m.character);
+      const before = await this.ctx.storage.get("card:" + id);
+      let out;
+      try { out = party.reconcile(before, { card: m.card || {}, base: m.base || 0, hash: m.hash }); } catch (e) { continue; }
+      if (out.stored !== before) { await this.ctx.storage.put("card:" + id, out.stored); changed = true; }
+      if (out.history) await this.remember(id, out.history);
+    }
+    await this.ctx.storage.put("roster", ROSTER.version);
+    if (changed) this.announce();
+  }
+
+  async importFile(request, viewer) {
+    if (!viewer.id) return json({ error: "Your email isn't linked to a character yet - ask the DM." }, 403);
+    let body;
+    try { body = await request.json(); } catch (e) { return json({ error: "Couldn't read that." }, 400); }
+    const s = await this.ctx.storage.get("card:" + viewer.id);
+    if (!s) return json({ error: "Your character isn't on the Party page yet - ask the DM to publish." }, 404);
+    // The player's own date (the page sends it): the worker's clock is UTC.
+    const today = /^\d{4}-\d{2}-\d{2}$/.test(String(body.today)) ? body.today : new Date().toISOString().slice(0, 10);
+    let data, next;
+    try {
+      if (String(body.file || "").length > 400000) throw new Error("That file is too big for a character.");
+      data = ccc5e.parse(body.file, String(body.name || "That file"));
+      next = party.fromPlayer(s.card, ccc5e.merge(s.card, ccc5e.card(data, today)));
+    } catch (e) { return json({ error: e.message }, 400); }
+    const portrait = String((data.Sheet || {}).portrait || "");
+    const pic = portrait.match(/^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/);
+    const named = String((data.Sheet || {}).name || data.Name || "");
+    if (!body.save) {
+      return json({ character: s.card.character, file: named, has_sheet: !!(data.Sheet && typeof data.Sheet === "object"),
+                    portrait: !!pic, changes: ccc5e.changes(s.card, next) });
+    }
+    if (body.rev !== s.rev) return json({ error: "Your card changed since you opened this - reload and import again.", rev: s.rev }, 409);
+    if (pic && pic[2].length <= PORTRAIT_MAX) {
+      await this.ctx.storage.put("portrait:" + viewer.id, { mime: pic[1], b64: pic[2] });
+      next.portrait = `/api/party/portrait/${encodeURIComponent(viewer.id)}?v=${s.rev + 1}`;
+    }
+    await this.save(viewer.id, s, next, viewer.email, "imported from CCC5e: " + party.summary(s.card, next));
+    return json({ ok: true, rev: s.rev + 1 });
+  }
+
+  // A player's own card, edited on the page: the fields they sent replace those on the card; the rest
+  // (spells, portrait, where it came from) stay. The name and the player stay as the DM has them.
+  async saveCard(request, viewer) {
+    if (!viewer.id) return json({ error: "Your email isn't linked to a character yet - ask the DM." }, 403);
+    let body;
+    try { body = await request.json(); } catch (e) { return json({ error: "Couldn't read that." }, 400); }
+    const s = await this.ctx.storage.get("card:" + viewer.id);
+    if (!s) return json({ error: "Your character isn't on the Party page yet." }, 404);
+    if (body.rev !== s.rev) return json({ error: "Your card changed since you opened this (another device, or the DM) - your edits are still here; copy anything you need, then reload.", rev: s.rev }, 409);
+    if (!body.card || typeof body.card !== "object" || Array.isArray(body.card)) return json({ error: "That isn't a character card." }, 400);
+    let next;
+    try { next = party.fromPlayer(s.card, Object.assign({}, s.card, body.card)); } catch (e) { return json({ error: e.message }, 400); }
+    if (party.canonical(next) === party.canonical(s.card)) return json({ ok: true, rev: s.rev, unchanged: true });
+    await this.save(viewer.id, s, next, viewer.email, "edited: " + party.summary(s.card, next));
+    return json({ ok: true, rev: s.rev + 1 });
+  }
+
+  async setPrivate(request, viewer) {
+    if (!viewer.id) return json({ error: "Your email isn't linked to a character yet - ask the DM." }, 403);
+    let body;
+    try { body = await request.json(); } catch (e) { return json({ error: "Couldn't read that." }, 400); }
+    const s = await this.ctx.storage.get("card:" + viewer.id);
+    if (!s) return json({ error: "Your character isn't on the Party page yet." }, 404);
+    if (body.rev !== s.rev) return json({ error: "Your card changed since you opened this - reload and try again.", rev: s.rev }, 409);
+    const next = JSON.parse(JSON.stringify(s.card));
+    next.private = Array.isArray(body.private) ? body.private : [];
+    const hidden = new Set((Array.isArray(body.hidden) ? body.hidden : []).map(String));
+    (next.inventory || []).forEach((i) => { if (hidden.has(i.name)) i.private = true; else delete i.private; });
+    let clean;
+    try { clean = party.fromPlayer(s.card, next); } catch (e) { return json({ error: e.message }, 400); }
+    await this.save(viewer.id, s, clean, viewer.email, party.summary(s.card, clean));
+    return json({ ok: true, rev: s.rev + 1 });
+  }
+
+  async save(id, stored, card, by, summary) {
+    await this.ctx.storage.put("card:" + id, Object.assign({}, stored, { card, rev: stored.rev + 1, by, at: Date.now() }));
+    await this.remember(id, { by, summary, before: stored.card });
+    this.announce();
+  }
+
+  async remember(id, entry) {
+    const at = Date.now();
+    await this.ctx.storage.put(`hist:${id}:${String(at).padStart(15, "0")}`, Object.assign({ at }, entry));
+    const old = [...(await this.ctx.storage.list({ prefix: `hist:${id}:` })).keys()];
+    if (old.length > HISTORY_KEPT) await this.ctx.storage.delete(old.slice(0, old.length - HISTORY_KEPT));
+  }
+
+  announce() {
+    for (const ws of this.ctx.getWebSockets()) {
+      try { ws.send('{"changed":true}'); } catch (e) { /* gone - it reconnects */ }
+    }
+  }
+
+  webSocketMessage() {}
+  webSocketClose(ws, code) {
+    try { ws.close(code === 1005 ? 1000 : code); } catch (e) {}
   }
 }
 

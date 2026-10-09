@@ -1,6 +1,6 @@
 # Going online
 
-**Optional.** Everything works on your own computer without this. Go online when you want to read your site from another device (a laptop at the table, your phone), or give your players their site — and the live initiative page, card suggestions, and each player's private notes that come with it.
+**Optional.** Everything works on your own computer without this. Go online when you want to read your site from another device (a laptop at the table, your phone), or give your players their site — and the live initiative page, the live Party page (each player imports their own character), and each player's private notes that come with it.
 
 The sites go on **Cloudflare**: each is a *Worker* on a free `workers.dev` address, behind **Cloudflare Access**, which asks visitors to sign in with their email (a one-time code is sent to it). Only the emails you allow get in. Cloudflare's free plans cover a typical table — check their current limits if your group is large.
 
@@ -74,9 +74,9 @@ The players' site gets **its own** sign-in list, separate from yours:
 
 Emails stay in `party.yml` and in the players' worker; they're never on any page, and the leak check blocks the upload if one ever turns up there.
 
-## 7. The live initiative page (optional)
+## 7. Your key to the players' site: live initiative and players' changes
 
-To show the initiative order on your players' phones, the tracker on your computer needs a key to the players' site:
+To show the initiative order on your players' phones, and to bring the changes players make to their cards on the [Party page](players-site.md#the-party-page) into `data/party.yml`, CampaignCodex5e on your computer needs a key to the players' site:
 
 1. **Zero Trust → Access → Service Auth**: create a **service token**. Copy its **Client ID** and **Client Secret** (the secret is shown once).
 2. Save them in `tools/tracker-token.txt`, one per line (labels like `CF-Access-Client-Id:` are fine). This file is never published or committed.
@@ -84,6 +84,8 @@ To show the initiative order on your players' phones, the tracker on your comput
 4. In the initiative tracker (with `CampaignCodex5e` running), tick **Share with players**.
 
 Players see names, initiative, whose turn it is, the round, and conditions — never hit points, AC, or notes. **hide** on a row keeps someone off their list (an ambusher, someone invisible).
+
+With the key in place, **Get players' changes** and **History** appear on your Party page.
 
 ## Afterward
 

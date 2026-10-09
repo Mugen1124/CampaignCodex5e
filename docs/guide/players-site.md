@@ -34,6 +34,18 @@ So the players' site **fills in by itself as you write up each session**. Their 
 
 The players' site has its own `nav:` in `mkdocs-players.yml`. When you add a town, add its pages there too (without Events & Hooks).
 
+## The Party page
+
+Once the players' site is [online](going-online.md), its Party page is **live**: every player sees the party's latest cards, and the page redraws by itself when one changes — no publish needed. On their own card each player gets:
+
+- **Edit** — the same card form you get at home: everything an import fills in (spells, inventory, money, persona and backstory included) can be typed in, except the character's name (yours to change). It keeps what they've typed if the page reloads.
+- **Import .ccc5e** — an export from CCC5e. They see what will change first; the portrait is shrunk to 320 px before it's sent. Their character's name stays as you wrote it.
+- **Privacy** — tick what only they (and you) see: bond, flaw, backstory, skills, money, the whole inventory or single items, and so on. The other players get the card without those parts; the owner sees them marked 🔒.
+
+Their changes go live at once. You keep the say: on your Party page at home, **History** on each card lists every change made online, with **Undo**, and **Get players' changes** brings them into `data/party.yml` (CampaignCodex5e also does that when it starts, and `publish` before it builds). If you edited a card in `party.yml` that its player also changed online since, you're asked which to keep: **Take theirs** (make your edit again after), or **Keep mine** (it replaces theirs when you publish). Your own edits to a card nobody changed online go up with the next `publish` as usual.
+
+Getting players' changes needs the same key as the live initiative page (step 7 of [Going online](going-online.md)). The DM note and emails never go online.
+
 ## My Notes
 
 Once the players' site is [online](going-online.md), each player gets a **My Notes** tab: one notepad of their own that saves as they type, on any phone or computer they sign in from. It's **private** — only the player who wrote it can read it; not the other players, and not you. Notes are kept by Cloudflare under their sign-in, never in your campaign's files, so they never pass through the build or the leak check.

@@ -62,6 +62,7 @@ extra_javascript:
   - javascripts/refs.js                 # hover cards for [[mentions]]
   - javascripts/encounter-builder.js    # encounter builder and initiative tracker
   - javascripts/party-cards.js          # Party page: the party table and the cards
+  - javascripts/card-form.js            # Party page: the card form
   - javascripts/party-editor.js         # Party page: edit character cards
   - javascripts/recorder.js             # Record & Transcribe
   - javascripts/items-editor.js         # Items page: who carries what

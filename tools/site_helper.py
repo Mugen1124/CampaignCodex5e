@@ -37,14 +37,19 @@ and new session recordings, in the folder chosen on the Record & Transcribe page
     POST /item/suggestion    -> {"file": <recording>.items.json, "n": entry, "action": "assign"|"dismiss", "holder"}
     GET  /item/claims        -> items players claimed on the players' site (up-for-grabs items), waiting for you
     POST /item/claim         -> {"id", "action": "approve"|"reject"} (approve gives them the item; other claims on it are declined)
-    GET  /party/suggestions  -> changes players suggested for their cards on the players' site, waiting for you
-    POST /party/suggestion   -> {"id", "action": "approve"|"reject"} (approve writes it into data\party.yml)
+    POST /party/pull         -> players' changes on the live Party page (the players' site) into data\party.yml:
+                                {"take": [ids], "keep": [ids]} settles cards changed in both places
+                                -> {"changed": [names], "conflicts": [{"id", "character", "by", "at"}]}
+    GET  /party/history?id=  -> that card's changes on the players' site, newest first
+    POST /party/undo         -> {"id", "key"} puts the card back as it was before that change (then pulls it)
     GET  /tracker/share      -> {"last": how the last send went, "token": bool}
     POST /tracker/share      -> {"view": {...}} -> sends the fight, as the players may see it, to the players'
                                 site's live tracker (in the background; the reply says how the last send went).
                                 Needs tools\tracker-token.txt (the Cloudflare service token); writes no files.
 
-CampaignCodex5e starts it automatically; closing the CampaignCodex5e window stops it.
+CampaignCodex5e starts it automatically; closing the CampaignCodex5e window stops it. On start it
+gets players' changes once (see pull_party); `python tools\site_helper.py --pull-party` does just that
+(publish runs it before building).
 """
 
 import json
@@ -60,7 +65,7 @@ from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, quote, urlparse
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 import yaml
@@ -108,12 +113,12 @@ CHARACTER_ORDER = ("player", "email", "character", "race", "class", "background"
                    "hp_formula", "speed", "initiative", "passive_perception", "abilities", "saves", "skills",
                    "resistances", "immunities", "condition_immunities", "senses", "languages", "proficiencies",
                    "features", "actions", "bonus_actions", "reactions", "spellcasting", "inventory", "currency",
-                   "persona", "portrait", "private", "source", "note")
+                   "persona", "portrait", "private", "source", "note", "rev")
 # Kept as given (lists and maps the Party page's importer writes; see templates\character.yml).
 CHARACTER_STRUCTURED = {"proficiencies": dict, "spellcasting": list, "inventory": list, "currency": dict,
                         "persona": dict, "private": list, "source": dict}
 CHARACTER_LISTS = ("features", "actions", "bonus_actions", "reactions")
-CHARACTER_NUMBERS = ("level", "ac", "hp", "initiative", "passive_perception")
+CHARACTER_NUMBERS = ("level", "ac", "hp", "initiative", "passive_perception", "rev")
 IDENTITY = ("player", "email", "character", "race", "class", "level")   # members with only these stay on one line
 CUSTOM_HEADER = ("# Custom creatures, made with the encounter builder's New creature form (Encounters -> Builder).\n"
                  "# The save helper rewrites this file when you save or delete one there; this header is kept,\n"
@@ -383,6 +388,9 @@ def clean_member(raw: dict, keep: dict = None):
                 return None, f"Every entry under {key.replace('_', ' ')} needs a name."
         elif key in CHARACTER_STRUCTURED:
             value = value if isinstance(value, CHARACTER_STRUCTURED[key]) and value else None
+            if key == "spellcasting" and value:   # slot levels as numbers (1: 4), as an import writes them - a page sends "1"
+                value = [dict(e, slots={int(k) if str(k).isdigit() else k: n for k, n in e["slots"].items()})
+                         if isinstance(e, dict) and isinstance(e.get("slots"), dict) else e for e in value]
         elif key == "abilities":
             scores = {}
             for a in ABILITIES:
@@ -715,19 +723,9 @@ def clean_share(raw) -> dict:
     return {"active": True, "started": bool(raw.get("started")), "round": whole(raw.get("round")) or 1, "list": rows}
 
 
-# ---------------------------------------------------------------- card suggestions
-# Players suggest changes to their own card on the players' site; the worker keeps them until you
-# decide. These fields are all a suggestion can change (not the name, player, email, or DM note).
-PLAYER_FIELDS = ("race", "class", "level", "ac", "ac_note", "hp", "hp_formula", "speed", "initiative",
-                 "passive_perception", "abilities", "saves", "skills", "resistances", "immunities",
-                 "condition_immunities", "senses", "languages", "features", "actions", "bonus_actions", "reactions")
-FIELD_LABELS = {"ac": "AC", "ac_note": "AC note", "hp": "HP", "hp_formula": "HP formula",
-                "passive_perception": "Passive Perception", "condition_immunities": "Condition immunities",
-                "bonus_actions": "Bonus actions"}
-
-
-def players_api(method: str, path: str, body=None):
-    """A call to the players' site's worker with the service token: (status, json)."""
+def players_api(method: str, path: str, body=None, raw=False):
+    """A call to the players' site's worker with the service token: (status, json), or with raw=True
+    (status, bytes, content type)."""
     if not TRACKER_URL:
         raise ValueError(NOT_ONLINE)
     token = tracker_token()
@@ -739,6 +737,8 @@ def players_api(method: str, path: str, body=None):
                            "CF-Access-Client-Id": token[0], "CF-Access-Client-Secret": token[1]})
     try:
         with SHARE_OPENER.open(req, timeout=15) as r:
+            if raw:
+                return r.status, r.read(), r.headers.get_content_type()
             return r.status, json.loads(r.read() or b"{}")
     except HTTPError as err:
         if err.code in (301, 302, 303, 401, 403):
@@ -748,25 +748,138 @@ def players_api(method: str, path: str, body=None):
         raise ValueError(f"Couldn't reach the players' site ({getattr(err, 'reason', err)}).")
 
 
-def _shown(key, value) -> str:
-    if value in (None, "", [], {}):
-        return "—"
-    if key == "abilities":
-        return ", ".join(f"{a.upper()} {value[a]}" for a in ABILITIES if a in value)
-    if isinstance(value, list):
-        return "; ".join(f"{e.get('name', '')}: {e.get('text', '')}" for e in value)
-    return str(value)
+# ---------------------------------------------------------------- the live Party page
+# On the players' site each player imports their own character and chooses what's private; the cards
+# live in the players' worker (publish/players/worker.js), which keeps a version number (rev) for each.
+# pull_party brings players' changes into data/party.yml, with the rev it got. A card changed both
+# here (by you) and there (by its player) since the last pull is left alone and reported: take theirs
+# (your edit is dropped - make it again) or keep yours (it replaces theirs when you next publish).
+# PARTY_SYNC remembers each card as it was after the last pull, to tell whether you've changed it since.
+PARTY_SYNC = CAMPAIGN["publish_dir"] / "players" / "party-sync.json"
+PARTY_OWN = ("player", "email", "note")   # party.yml's own: never taken from the players' site
 
 
-def card_changes(current: dict, proposed: dict) -> list:
-    out = []
-    for key in PLAYER_FIELDS:
-        old, new = current.get(key), proposed.get(key)
-        if (old in (None, "", [], {}) and new in (None, "", [], {})) or old == new:
+def _card_id(name) -> str:   # tools/players_roster.py card_id
+    return "pc-" + re.sub(r"[^a-z0-9]+", "-", str(name).lower().replace("'", "")).strip("-")
+
+
+def _card_hash(m: dict) -> str:
+    import hashlib
+    card = {k: v for k, v in m.items() if k != "rev"}
+    return hashlib.sha256(json.dumps(card, sort_keys=True, ensure_ascii=False, default=str).encode()).hexdigest()[:16]
+
+
+def _read_sync() -> dict:
+    try:
+        return json.loads(PARTY_SYNC.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def _published() -> dict:
+    """Each card's hash as last published (roster.json, tools/players_roster.py)."""
+    import players_roster
+    try:
+        roster = json.loads(players_roster.OUT.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return {m.get("id"): m.get("hash") for m in roster.get("members") or []}
+
+
+def _published_hash(m: dict) -> str:
+    import hashlib
+    import players_roster
+    card = players_roster.online_card(m)
+    return hashlib.sha256(json.dumps(card, sort_keys=True, ensure_ascii=False, default=str).encode()).hexdigest()[:16]
+
+
+def _portrait_from_site(url: str, name: str):
+    """An uploaded portrait from the players' site into docs/party/portraits/; its path for the card, or None."""
+    import import_ccc5e as ccc
+    try:
+        status, data, kind = players_api("GET", url.split("?")[0], raw=True)
+    except ValueError:
+        return None
+    ext = {"image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp"}.get(kind)
+    if status != 200 or not ext or not data:
+        return None
+    ccc.PORTRAITS.mkdir(parents=True, exist_ok=True)
+    path = ccc.PORTRAITS / (ccc.slug(name) + ext)
+    for other in ccc.PORTRAITS.glob(ccc.slug(name) + ".*"):
+        if other != path:
+            other.unlink()
+    path.write_bytes(data)
+    return f"party/portraits/{path.name}"
+
+
+def pull_party(take=(), keep=()) -> dict:
+    """Players' changes from the live Party page into data/party.yml - see above. take / keep: card ids
+    changed in both places, settled one way or the other. Raises ValueError if the site can't be reached."""
+    _, body = players_api("GET", "/api/party/all")
+    data = yaml.safe_load(PARTY.read_text(encoding="utf-8")) or {}
+    members = [m for m in data.get("members") or [] if isinstance(m, dict)]
+    sync = _read_sync()
+    published = _published()
+    at = {_card_id(m.get("character", "")): i for i, m in enumerate(members)}
+    changed, conflicts, problems, wrote = [], [], [], False
+    for entry in body.get("cards") or []:
+        cid, rev = entry.get("id"), entry.get("rev")
+        i = at.get(cid)
+        if i is None or not isinstance(rev, int):
             continue
-        out.append({"field": FIELD_LABELS.get(key, key.replace("_", " ").capitalize()),
-                    "old": _shown(key, old), "new": _shown(key, new)})
-    return out
+        old, online = members[i], entry.get("card") or {}
+        if old.get("rev") == rev:
+            continue                                   # already has this version
+        if entry.get("by") == "dm":
+            continue                                   # nobody changed it there since your last publish
+        # Have you changed it here since the players' site last had it - the last pull, or the last publish?
+        mine = not ((sync.get(cid) or {}).get("hash") == _card_hash(old) or
+                    (published.get(cid) and published[cid] == _published_hash(old)))
+        raw = {k: online.get(k) for k in CHARACTER_ORDER if k not in PARTY_OWN and k not in ("portrait", "rev")}
+        raw.update({k: old.get(k) for k in PARTY_OWN})
+        raw["character"] = old.get("character")
+        pic = str(online.get("portrait") or "")
+        raw["portrait"] = (_portrait_from_site(pic, old["character"]) if pic.startswith("/api/party/portrait/") else None) \
+            or old.get("portrait")
+        raw["rev"] = rev
+        new, error = clean_member(raw)
+        if error:
+            problems.append(f"{old.get('character')}: {error}")
+            continue
+        same = _card_hash(new) == _card_hash(old)
+        if cid in keep:
+            new = dict(old, rev=rev)                   # yours stands: it goes up with the next publish
+        elif not same and cid not in take and mine:
+            conflicts.append({"id": cid, "character": old.get("character"), "by": entry.get("by"), "at": entry.get("at")})
+            continue
+        if not same and cid not in keep:
+            changed.append(old.get("character"))
+        members[i] = new
+        if cid not in keep:   # a kept edit stays yours (not in step with the site) until it's published
+            sync[cid] = {"rev": rev, "hash": _card_hash(new)}
+        wrote = True
+    if wrote:
+        backup_party()
+        write_party(members)
+        PARTY_SYNC.parent.mkdir(parents=True, exist_ok=True)
+        PARTY_SYNC.write_text(json.dumps(sync, indent=1) + "\n", encoding="utf-8")
+    return {"changed": changed, "conflicts": conflicts, "problems": problems}
+
+
+def pull_party_quietly() -> None:
+    """On start: get players' changes if the players' site is online; a line in the window either way."""
+    if not TRACKER_URL or not tracker_token():
+        return
+    try:
+        out = pull_party()
+    except ValueError as err:
+        print(f"Party page: couldn't get players' changes - {err}")
+        return
+    if out["changed"]:
+        print("Party page: players' changes brought into data/party.yml - " + ", ".join(out["changed"]) + ".")
+    for c in out["conflicts"]:
+        print(f"Party page: {c['character']} changed both in data/party.yml and on the players' site - "
+              "settle it on the Party page.")
 
 
 def share_sender():
@@ -838,8 +951,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._reply(200, {"job": job_status()})
         if url.path == "/tracker/share":
             return self._reply(200, {"last": SHARE["last"], "token": TRACKER_TOKEN.is_file()})
-        if url.path == "/party/suggestions":
-            return self.party_suggestions()
+        if url.path == "/party/history":
+            return self.party_history((parse_qs(url.query).get("id") or [""])[0])
         if url.path == "/item/claims":
             return self.item_claims()
         if url.path == "/items":
@@ -875,7 +988,7 @@ class Handler(BaseHTTPRequestHandler):
                   "/creature/delete": self.delete_creature, "/party/member": self.save_member,
                   "/party/member/delete": self.delete_member, "/family": self.family,
                   "/item/holder": self.item_holder, "/item/suggestion": self.item_suggestion,
-                  "/party/suggestion": self.party_suggestion, "/item/claim": self.item_claim,
+                  "/party/pull": self.party_pull, "/party/undo": self.party_undo, "/item/claim": self.item_claim,
                   "/party/import": self.party_import,
                   "/item/reveal": self.item_reveal}
         if self.path not in routes:
@@ -890,47 +1003,29 @@ class Handler(BaseHTTPRequestHandler):
 
     # -------------------------------------------------------------- actions
 
-    def party_suggestions(self):
+    def party_pull(self, data):
         try:
-            _, body = players_api("GET", "/api/cards/suggestions")
+            out = pull_party(take=list(data.get("take") or []), keep=list(data.get("keep") or []))
         except ValueError as err:
-            return self._reply(502, {"error": str(err)})
-        _, members = self._party()
-        out = []
-        for s in body.get("suggestions") or []:
-            current = next((m for m in members if str(m.get("character", "")).lower() == str(s.get("character", "")).lower()), None)
-            out.append({"id": s.get("id"), "character": s.get("character"), "email": s.get("email"), "at": s.get("at"),
-                        "missing": current is None, "changes": card_changes(current or {}, s.get("member") or {})})
-        self._reply(200, {"suggestions": out})
+            return self._reply(502, {"error": str(err), "online": bool(TRACKER_URL and tracker_token())})
+        self._reply(200, out)
 
-    def party_suggestion(self, data):
-        action = data.get("action")
-        if action not in ("approve", "reject"):
-            return self._reply(400, {"error": "Approve or reject?"})
+    def party_history(self, cid):
         try:
-            _, body = players_api("GET", "/api/cards/suggestions")
-            s = next((x for x in body.get("suggestions") or [] if x.get("id") == data.get("id")), None)
-            if not s:
-                return self._reply(404, {"error": "That suggestion isn't waiting any more - reload the page."})
-            if action == "approve":
-                party, members = self._party()
-                index = next((i for i, m in enumerate(members)
-                              if str(m.get("character", "")).lower() == str(s.get("character", "")).lower()), None)
-                if index is None:
-                    return self._reply(404, {"error": f"{s.get('character')} isn't in data/party.yml any more."})
-                current, proposed = members[index], s.get("member") or {}
-                merged = {k: v for k, v in current.items() if k not in PLAYER_FIELDS}
-                merged.update({k: proposed[k] for k in PLAYER_FIELDS if k in proposed})
-                member, error = clean_member(merged, current)
-                if error:
-                    return self._reply(400, {"error": error})
-                members[index] = member
-                backup_party()
-                write_party(members)
-            players_api("POST", "/api/cards/resolve", {"id": s["id"], "status": "approved" if action == "approve" else "rejected"})
+            _, body = players_api("GET", "/api/party/history?id=" + quote(cid))
         except ValueError as err:
             return self._reply(502, {"error": str(err)})
-        self._reply(200, {"ok": True, "character": s.get("character"), "action": action})
+        self._reply(200, body)
+
+    def party_undo(self, data):
+        try:
+            status, body = players_api("POST", "/api/party/undo", {"id": data.get("id"), "key": data.get("key")})
+            if status != 200:
+                return self._reply(status, body)
+            out = pull_party()   # an edit of yours not yet published shows as a clash rather than being lost
+        except ValueError as err:
+            return self._reply(502, {"error": str(err)})
+        self._reply(200, dict(out, ok=True))
 
     def item_claims(self):
         try:
@@ -1341,6 +1436,22 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main() -> int:
+    if "--pull-party" in sys.argv:   # publish, before it builds
+        if not TRACKER_URL or not tracker_token():
+            return 0
+        try:
+            out = pull_party()
+        except ValueError as err:
+            print(f"Couldn't get players' changes from the Party page: {err}")
+            return 1
+        print("Players' changes from the Party page: " + (", ".join(out["changed"]) if out["changed"] else "none new") + ".")
+        for c in out["conflicts"]:
+            print(f"  {c['character']} changed both in data/party.yml and on the players' site since the last pull -")
+            print("  your change is held back until you settle it on the Party page (Get players' changes).")
+        for line in out["problems"]:
+            print("  " + line)
+        return 0
+    threading.Thread(target=pull_party_quietly, daemon=True).start()
     try:
         server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
     except OSError:

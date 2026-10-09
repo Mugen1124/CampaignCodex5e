@@ -29,8 +29,9 @@ hooks:
 extra_javascript:
   - javascripts/refs.js
   - players/tracker-live.js        # the Initiative page's live tracker
-  - javascripts/party-cards.js     # Party page: the party table and the cards
-  - javascripts/party-editor.js    # Party page: players suggest changes to their own card
+  - javascripts/party-cards.js     # Party page: the roster and the cards
+  - javascripts/card-form.js       # Party page: the card form (Edit on your own card)
+  - players/party-live.js          # Party page: the cards live, and Import / Privacy on your own
   - players/items-live.js          # Items page: players claim what's up for grabs
   - players/notes-live.js          # My Notes: each player's private notepad
   - javascripts/rules-filter.js    # Rules: the Spells and Magic Items filters
