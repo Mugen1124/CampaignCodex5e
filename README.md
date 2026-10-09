@@ -6,9 +6,9 @@ A website for running a D&D campaign — your prep, your world, and your table t
 - **Hover cards everywhere**: write `[[Hester Vane]]` and get a link with a quick card — people, places, factions, items, creatures.
 - **Stat blocks, an encounter builder, and an initiative tracker**, with the SRD's creatures built in and your own added as simple data.
 - **A rules encyclopedia**: the whole 5e SRD — conditions, combat, adventuring, spellcasting, every spell and magic item, equipment — searchable, with a one-page DM Screen. `[[Prone]]` or `[[Fireball]]` anywhere gets a hover card, and so do conditions in the initiative tracker.
-- **Character cards** for the party, editable from the browser.
+- **[Character cards](#the-party-page)** for the party: a full card per character — stats, attacks, features, spells, inventory, persona and backstory — imported from the Custom Character Creator 5e (CCC5e) or typed in, with fields players can keep private.
 - **A players' site** built from the same files: no prep, no secrets, no stat blocks, and only the people and places they've met — it fills in as you write up each session. A leak check stands guard before anything goes online.
-- **Optional extras**: private hosting on Cloudflare (free) with a live initiative page for players' phones and a private notepad for each player, and [session recording with on-device transcription](#recording-and-transcribing-sessions) that turns into a ready-to-read recap.
+- **Optional extras**: private hosting on Cloudflare (free) with a live initiative page for players' phones, [a live Party page](#the-party-page) players keep up themselves (their own cards, current HP and conditions, spell slots and hit dice, a shared party treasury), and a private notepad for each player; and [session recording with on-device transcription](#recording-and-transcribing-sessions) that turns into a ready-to-read recap.
 
 Everything is plain text files on your computer: Markdown pages (text with simple formatting, like `**bold**`) and YAML data (simple `name: value` lists), built into a website with [MkDocs](https://www.mkdocs.org/) and [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/). Nothing goes online unless you put it there.
 
@@ -55,6 +55,18 @@ The full guide is part of the site itself — the **Guide** tab, or the Markdown
 [recording sessions](docs/guide/recording.md) ·
 [working with Claude](docs/guide/ai-assistant.md) ·
 [troubleshooting](docs/guide/troubleshooting.md)
+
+## The Party page
+
+One full-width card per character: AC, HP, speed, initiative and Passive Perception across the top, ability scores and saves, skills, then Actions, Features & traits, Spellcasting, Inventory, and Persona & backstory — tiles at the top of the page jump to each one.
+
+- **Import from CCC5e.** Export a character from the Custom Character Creator 5e (CCC5e) and import the `.ccc5e` file — on the Party page, or with `codex import-character`. You see what will change first; import again after a level-up.
+- **Or type it in.** **Edit** is a full form, with a live preview: everything an import fills in, spells and inventory included.
+- **Private fields.** A bond, a backstory, an item in the pack — the other players don't see it; you do.
+
+**With the players' site online, the Party page is live.** Each player edits or imports their own card and chooses what's private; everyone sees the changes as they happen. At the table, each card carries its current HP (with temporary HP, and death saves when it hits 0), conditions, inspiration, spell slots and hit dice, with Damage, Heal, Short rest and Long rest. Your initiative tracker starts fights from the party's current HP and keeps the cards up to date as you go. A shared **party treasury** keeps the coin and loot, with a log of who took what.
+
+You keep the say: **History** on each card shows every change, with **Undo**; current HP stays private unless you let the players see each other's; and **Get players' changes** brings their edits into your files. See [the players' site](docs/guide/players-site.md#the-party-page) in the guide.
 
 ## Recording and transcribing sessions
 
@@ -145,7 +157,8 @@ A campaign here is plain text with clear conventions, so an AI assistant that ca
 | `mkdocs.yml`, `mkdocs-players.yml` | the two sites' names and menus |
 | `docs/stylesheets/campaign.css` | your own colours and styles |
 | `hooks/` | the engine: turns data and markers into pages, and strips the players' site |
-| `tools/` | the save helper, leak check, monster importer, transcriber, and the rest |
+| `tools/` | the save helper, leak check, monster and character importers, transcriber, and the rest |
+| `publish/players/` | the players' site's worker: the live initiative page, the live Party page, item claims, and each player's notes |
 | `codex/` | the commands behind the scripts, and the engine's site settings (`site.yml`, `site-players.yml`) |
 
 Everything that's the engine is listed in `codex/engine-files.txt`, and **`codex update`** keeps it current from new releases without touching anything of yours — see *Keep up to date* in the guide's [Your campaign](docs/guide/your-campaign.md#keep-up-to-date). If your campaign folder is in Google Drive, Dropbox, OneDrive or iCloud, set `output: local` in `campaign.yml` so built sites and caches stay on your computer.
