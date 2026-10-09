@@ -19,6 +19,7 @@ This folder is a D&D campaign site built with CampaignCodex5e: Markdown pages in
 - `docs/cities/<town>/` — overview, locations (`{{ locations <town> }}`), people (`{{ npc-list <town> }}`), factions, events (`dm_only: true`).
 - `docs/rules/` — the SRD rules encyclopedia (from `data/rules/srd.json`); conditions, spells and SRD magic items can be `[[mentioned]]` for hover cards.
 - `data/npcs/`, `data/locations/`, `data/factions.yml`, `data/items/`, `data/monsters/`, `data/encounters/`, `data/party.yml`, `data/maps.yml`, `data/revealed.yml` — every field is documented in `templates/`.
+- `docs/party/index.md` — the Party page: `{{ party-cards }}` draws a card per character in `data/party.yml` (fields in `templates/character.yml`).
 
 ## Session write-ups (from a transcript)
 
@@ -38,6 +39,12 @@ When the DM asks to write up a session from `recordings/<name>.transcript.txt`:
 - **NPCs, factions, items:** follow `templates/npc.yml`, `faction.yml`, `item.yml`; ids are lowercase-with-dashes. Check new names against existing ones and warn the DM about names that are easy to confuse at the table.
 - **Monsters:** SRD creatures are already in (`srd-` ids). `codex import-monsters <source>` adds open books (`--list` shows them); a creature from a book the DM owns goes in `data/monsters/*.yml` (format in `templates/monster.yml`) — only for the DM's own table, never copied into public text.
 - **Encounters:** `data/encounters/<id>.yml`, shown with `{{ encounter <id> }}`; check the difficulty against the party in `data/party.yml`.
+- **The party's cards** (`data/party.yml`, fields in `templates/character.yml`):
+    - **From CCC5e:** `codex import-character "<file>.ccc5e" --player <name>` lists what would change and saves nothing; show the DM, and once they agree run it again with `--yes`. It keeps the player, email, DM note and private marks. Files from before CCC5e 1.0.21 bring in only the name, race, class and level.
+    - **By hand:** any field in the template — spells (`spellcasting`), `inventory`, `currency`, `persona` (backstory paragraphs separated by a blank line) included.
+    - **Private:** `private: [persona.bond, skills, ...]`, or `private: true` on an inventory item, hides it from the other players (never from the DM). `note:` is the DM's and never reaches the players' site; neither does `email:`.
+    - **Once the players' site is online, players edit their own cards there.** Before changing a card in `data/party.yml`, get their changes first (`.venv/Scripts/python tools/site_helper.py --pull-party` on Windows, `.venv/bin/python tools/site_helper.py --pull-party` elsewhere, or **Get players' changes** on the Party page) - otherwise the edit is held back at the next publish. Never change or remove a card's `rev:` line; it's the version the site last had.
+    - Current HP, conditions, spell slots and hit dice used, inspiration, and the party treasury live only on the players' site (the Party page and the initiative tracker show them) - they aren't in any file, so don't look for them there.
 - **Prep:** the next session's material goes on This Session (`docs/index.md`) under its note box. After play, move it back to the arc word for word and leave a pointer.
 - **Changing the site itself:** the DM's own colors and styles go in `docs/stylesheets/campaign.css` (never `extra.css`); menus are `nav:` in both `mkdocs*.yml` (which hold only names and menus - engine settings are in `codex/site.yml` / `site-players.yml`); behavior is in `hooks/`. Files listed in `codex/engine-files.txt` are replaced by `codex update`, so the DM's own changes belong elsewhere when possible; if an engine file must change, tell the DM it'll need redoing after an update (restart the site after editing those). Keep changes small, and run the check.
 

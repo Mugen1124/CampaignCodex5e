@@ -68,6 +68,14 @@ Along the way:
 - *"Add a magic item, the Lantern of the Drowned, held by Kestra."*
 - *"Who's carrying what? List the party's notable items."*
 
+## The party
+
+- *"Import Tam's new level from this file:"* (give the `.ccc5e` file from CCC5e) — Claude shows what changes first, and keeps the player, email, your note and anything marked private.
+- *"Add a character for Sam: Pell, a level 3 gnome wizard, AC 12, 16 HP, with Fire Bolt and Magic Missile."* — no CCC5e needed; any field can be typed in.
+- *"Mark Pell's backstory and his letter from home private."* — the other players won't see them; you still do.
+- *"Add a DM note to Tam's card: she still owes Pip twenty gold."* — never on the players' site.
+- *"Get the players' changes from the Party page."* — brings what players changed on their own cards online into `data/party.yml`. Claude does this before editing a card, so nobody's edit is lost.
+
 ## Monsters and encounters
 
 - *"Import the Tome of Beasts monsters."* — an open book from Kobold Press; `import-monsters --list` shows the others.
