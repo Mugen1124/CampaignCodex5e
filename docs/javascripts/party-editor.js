@@ -355,7 +355,8 @@
     function loadSuggestions() {
       call("/party/suggestions").then(function (res) {
         if (res.status !== 200) {
-          sugBox.innerHTML = res.body && res.body.error && !/missing/.test(res.body.error)
+          // No suggestions to fetch until the players' site is online - not worth a warning here.
+          sugBox.innerHTML = res.body && res.body.error && !/missing|isn't online/.test(res.body.error)
             ? '<span class="eb-msg eb-warn">Players\' suggestions: ' + esc(res.body.error) + "</span>" : "";
           return;
         }

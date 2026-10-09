@@ -39,17 +39,22 @@
     function isPrivate(c, path) { return dm && (c.private || []).indexOf(path) >= 0; }
     function lock(c, path) { return isPrivate(c, path) ? ' <span class="pcx-lock" title="Private: only the player and the DM see this">🔒</span>' : ""; }
 
-    // ------------------------------------------------------------ the party table
-    var table = '<div class="pcx-party"><table class="pcx-table"><thead><tr><th>Character</th><th>Race · class</th>' +
-      '<th class="c">Lvl</th><th class="c">AC</th><th class="c">HP</th><th class="c">PP</th></tr></thead><tbody>' +
-      cards.map(function (c) {
-        return '<tr data-go="' + esc(c.id) + '"><td><a href="#' + esc(c.id) + '"><b>' + esc(c.character) + "</b></a>" +
-          (c.player ? '<div class="pcx-dim">' + esc(c.player) + "</div>" : "") + "</td>" +
-          "<td>" + esc([c.race, c["class"]].filter(Boolean).join(" ")) + "</td>" +
-          '<td class="c">' + esc(c.level || "") + '</td><td class="c">' + esc(c.ac != null ? c.ac : "—") +
-          '</td><td class="c">' + esc(c.hp != null ? c.hp : "—") + '</td><td class="c">' +
-          esc(c.passive_perception != null ? c.passive_perception : "—") + "</td></tr>";
-      }).join("") + "</tbody></table></div>";
+    // ------------------------------------------------------------ the roster: a tile per character
+    function avatar(c, cls) {
+      return c.portrait ? '<img class="' + cls + '" src="' + esc(c.portrait) + '" alt="">' :
+        '<span class="' + cls + ' pcx-initials">' + esc(initials(c.character)) + "</span>";
+    }
+    function pill(k, v) {
+      return '<span class="pcx-pill"><i>' + k + "</i>" + esc(v != null && v !== "" ? v : "\u2014") + "</span>";
+    }
+    var table = '<div class="pcx-roster">' + cards.map(function (c) {
+      var what = [c.race, c["class"]].filter(Boolean).join(" ");
+      return '<a class="pcx-tile" href="#' + esc(c.id) + '" data-go="' + esc(c.id) + '">' + avatar(c, "pcx-av") +
+        '<span class="pcx-tile-who"><b>' + esc(c.character) + "</b>" +
+        '<span class="pcx-dim">' + esc(what) + (c.level ? " \u00b7 level " + esc(c.level) : "") + "</span>" +
+        (c.player ? '<span class="pcx-dim">' + esc(c.player) + "</span>" : "") + "</span>" +
+        '<span class="pcx-pills">' + pill("AC", c.ac) + pill("HP", c.hp) + pill("PP", c.passive_perception) + "</span></a>";
+    }).join("") + "</div>";
 
     // ------------------------------------------------------------ a card
     function stat(k, v, s) {
@@ -222,7 +227,7 @@
     try { data = JSON.parse(blob.textContent); } catch (e) { return; }
     render(root, data);
     root.addEventListener("click", function (ev) {
-      var row = ev.target.closest("tr[data-go]");
+      var row = ev.target.closest("[data-go]");
       if (!row) return;
       ev.preventDefault();
       history.replaceState(null, "", "#" + row.getAttribute("data-go"));

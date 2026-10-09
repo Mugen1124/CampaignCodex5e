@@ -737,13 +737,18 @@ html.rec-popout .rec-level-note { min-width: 0; }
 
 /* ---------- Party page (javascripts/party-cards.js) ---------- */
 .md-typeset .pc-cards.party { display: block; }
-.md-typeset .pcx-party { margin: 0.4rem 0 1.2rem; overflow-x: auto; }
-.md-typeset table.pcx-table { display: table; width: 100%; font-size: 0.72rem; border-collapse: collapse; }
-.md-typeset table.pcx-table th { font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--md-default-fg-color--lighter); text-align: left; }
-.md-typeset table.pcx-table th.c, .md-typeset table.pcx-table td.c { text-align: center; }
-.md-typeset table.pcx-table tr[data-go] { cursor: pointer; }
-.md-typeset table.pcx-table tr[data-go]:hover td { background: var(--cx-hover); }
-.md-typeset table.pcx-table td a { color: var(--cx-title); }
+.md-typeset .pcx-roster { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 0.5rem; margin: 0.4rem 0 1.2rem; }
+.md-typeset a.pcx-tile { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) auto; gap: 0.6rem; align-items: center;
+  padding: 0.45rem 0.6rem; border: 1px solid var(--cx-line); border-radius: 6px; background: var(--cx-panel); color: inherit; font-size: 0.7rem; }
+.md-typeset a.pcx-tile:hover { border-color: var(--md-accent-fg-color); background: var(--cx-hover); }
+.md-typeset .pcx-av { width: 2.4rem; height: 2.4rem; border-radius: 50%; object-fit: cover; border: 1px solid var(--cx-line-strong); display: grid; place-items: center; font-size: 0.75rem; }
+.md-typeset .pcx-tile-who { display: flex; flex-direction: column; min-width: 0; line-height: 1.35; }
+.md-typeset .pcx-tile-who b { color: var(--cx-title); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.md-typeset .pcx-tile-who .pcx-dim { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.md-typeset .pcx-pills { display: flex; flex-direction: column; gap: 0.15rem; align-items: stretch; }
+.md-typeset .pcx-pill { display: flex; justify-content: space-between; gap: 0.4rem; min-width: 3.4rem; font-size: 0.62rem; font-weight: 700; color: var(--cx-title);
+  background: var(--cx-line-soft); border-radius: 3px; padding: 0 0.35rem; }
+.md-typeset .pcx-pill i { font-style: normal; font-weight: 400; color: var(--md-default-fg-color--lighter); }
 .pcx-dim { font-size: 0.62rem; color: var(--md-default-fg-color--lighter); }
 .md-typeset .pcx-shared { font-size: 0.72rem; margin: -0.6rem 0 1.2rem; }
 

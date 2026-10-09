@@ -274,7 +274,6 @@ names_ok: []
 """)
     party_yml(party, level)
 
-    table = "\n".join(f"| {p['player']} | {p['character']} | {p['race']} | {p['class']} | {level} |" for p in party)
     write("docs/party/index.md", f"""
 ---
 hide:
@@ -284,12 +283,6 @@ hide:
 
 # Party
 
-| Player | Character | Race | Class | Level |
-|---|---|---|---|:-:|
-{table}
-
-## Character cards
-
 {{{{ party-cards }}}}
 
 <!-- players: hide -->
@@ -297,10 +290,7 @@ hide:
 
 - One line per character: what ties them to the story.
 <!-- players: end -->
-
-## Backgrounds
-
-""" + "\n".join(f"### {p['character']}\n\nA few lines from {p['player']}.\n" for p in party))
+""")
 
     write("docs/index.md", f"""
 # This Session
