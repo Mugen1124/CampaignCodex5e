@@ -3,3 +3,6 @@
 #   setup --with-transcribe
 # Also needs ffmpeg on the computer for browser recordings (see Recording sessions in the guide).
 faster-whisper>=1.0
+# PyAV 16 and later dropped an option faster-whisper still passes ("open() got an unexpected keyword
+# argument 'metadata_errors'"), so hold it back until faster-whisper catches up.
+av<16
