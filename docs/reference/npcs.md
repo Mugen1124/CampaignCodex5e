@@ -10,13 +10,13 @@ toc_depth: 2
 -->
 
 <!-- players: hide -->
-Every named NPC, with full details. Names anywhere on the site link here, with a hover card for the basics.
+Every named NPC, as cards. **Edit** on a card changes their details and adds notes or a portrait; **Add NPC** adds someone new. Names anywhere on the site link here, with a hover card for the basics.
 <!-- players: end -->
 <!-- players: show
 Everyone the party has met, as far as the party knows them. Names anywhere on the site link here, with a hover card for the basics. New people are added as the session pages record them.
 -->
 
-{{ npc-index }}
+{{ npc-cards }}
 
 <!-- players: hide -->
 Many more minor NPCs appear only within individual session pages — search the site by name.

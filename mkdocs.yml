@@ -5,6 +5,16 @@ INHERIT: codex/site.yml
 site_name: The Lantern Coast — DM
 site_description: Campaign prep and table reference
 
+# The engine's hooks (codex/site.yml), plus the NPC cards (hooks/npc_cards.py), which must come
+# before entities.py. If a `codex update` adds a hook to codex/site.yml, add it here too.
+hooks:
+  - hooks/sessions.py
+  - hooks/campaign.py
+  - hooks/maps.py
+  - hooks/rules.py
+  - hooks/npc_cards.py
+  - hooks/entities.py
+
 # Tab and page order. Top-level entries become the tabs across the header.
 nav:
   - Sessions: []          # filled in by hooks/sessions.py: This Session, then each session, newest first

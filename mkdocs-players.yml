@@ -7,6 +7,18 @@ INHERIT: codex/site-players.yml
 site_name: The Lantern Coast — Players
 site_description: The campaign, for its players
 
+# The engine's hooks (codex/site-players.yml), plus the NPC cards (hooks/npc_cards.py), which here
+# just shows the engine's own People list. If a `codex update` adds a hook to
+# codex/site-players.yml, add it here too.
+hooks:
+  - hooks/sessions.py
+  - hooks/players.py
+  - hooks/campaign.py
+  - hooks/maps.py
+  - hooks/rules.py
+  - hooks/npc_cards.py
+  - hooks/entities.py
+
 nav:
   - Sessions: []          # filled in by hooks/sessions.py: each session, newest first (the home page is the latest)
   - Initiative: players/tracker.md
