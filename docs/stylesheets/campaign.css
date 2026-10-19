@@ -3,3 +3,831 @@
 
    :root { --md-accent-fg-color: #d4a017; }
 */
+
+/* =========================================================
+   Abyss: deep teal-black, Cinzel headings, diamond ornaments.
+   Palette (Sunken Cascades, darkened):
+     #081112 page · #0E1B1D header, icon strip · #122325 panels, menu
+     #667271 outlines · #899291 small labels · #B0B5B4 text · #D6D9DB headings
+   ========================================================= */
+
+/* Fonts live in docs/fonts/ so the site still works offline (both SIL Open Font License). */
+@font-face { font-family: "Cinzel"; font-weight: 600; font-display: swap; src: url("../fonts/cinzel-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Cinzel"; font-weight: 700; font-display: swap; src: url("../fonts/cinzel-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Alegreya Sans"; font-weight: 400; font-display: swap; src: url("../fonts/alegreya-sans-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Alegreya Sans"; font-weight: 400; font-style: italic; font-display: swap; src: url("../fonts/alegreya-sans-latin-400-italic.woff2") format("woff2"); }
+@font-face { font-family: "Alegreya Sans"; font-weight: 500; font-display: swap; src: url("../fonts/alegreya-sans-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Alegreya Sans"; font-weight: 700; font-display: swap; src: url("../fonts/alegreya-sans-latin-700-normal.woff2") format("woff2"); }
+
+[data-md-color-scheme="slate"] {
+  --md-text-font-family:           "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+  --cx-heading-font:               "Cinzel", Georgia, "Times New Roman", serif;
+
+  --md-default-bg-color:           #081112;
+  --md-default-fg-color:           #D6D9DB;
+  --md-default-fg-color--light:    #B0B5B4;
+  --md-default-fg-color--lighter:  #899291;
+  --md-default-fg-color--lightest: #1d2f31;
+  --md-typeset-color:              #C3C8C7;
+  --md-primary-fg-color:           #0E1B1D;   /* header */
+  --md-primary-fg-color--light:    #122325;
+  --md-primary-fg-color--dark:     #081112;
+  --md-primary-bg-color:           #D6D9DB;   /* text on the header */
+  --md-primary-bg-color--light:    #B0B5B4;
+  --md-accent-fg-color:            #EEF1F2;   /* hover */
+  --md-typeset-a-color:            #D6D9DB;
+  --md-code-bg-color:              #0E1B1D;
+  --md-code-fg-color:              #D6D9DB;
+  --md-footer-bg-color:            #0E1B1D;
+  --md-footer-bg-color--dark:      #081112;
+  --md-admonition-bg-color:        #122325;
+
+  --cx-panel:        #122325;
+  --cx-panel-head:   #1A2E30;
+  --cx-line:         rgba(176, 181, 180, 0.22);
+  --cx-line-soft:    rgba(176, 181, 180, 0.12);
+  --cx-line-strong:  #667271;
+  --cx-hover:        rgba(176, 181, 180, 0.09);
+  --cx-title:        #D6D9DB;
+  --cx-highlight:    rgba(176, 181, 180, 0.12);
+  --cx-dm:           #B0B5B4;
+  --cx-dm-bg:        #0E1B1D;
+  --cx-on-accent:    #081112;
+
+  --ab-label:        #899291;
+  --ab-text:         #B0B5B4;
+  --ab-head:         #D6D9DB;
+  --ab-hover:        rgba(176, 181, 180, 0.09);
+  --ab-current:      rgba(176, 181, 180, 0.17);
+  --ab-line:         rgba(176, 181, 180, 0.22);
+}
+
+/* ---------- Text and headings ---------- */
+.md-typeset { font-size: 0.84rem; line-height: 1.7; }
+.md-typeset h1, .md-typeset h2 { text-transform: none; color: var(--ab-head); }
+.md-typeset h1 { font-weight: 600; letter-spacing: 0.05em; }
+.md-typeset h2 { font-weight: 600; letter-spacing: 0.06em; font-size: 1.25em; }
+.md-typeset h2::before {           /* a small diamond before each section heading */
+  content: "";
+  display: inline-block;
+  width: 0.36em;
+  height: 0.36em;
+  margin: 0 0.65em 0.18em 0.1em;
+  border: 1px solid var(--ab-text);
+  transform: rotate(45deg);
+}
+.md-typeset h3 { font-family: var(--cx-heading-font); letter-spacing: 0.03em; color: var(--ab-head); }
+.md-typeset a { text-decoration: underline; text-decoration-color: rgba(176, 181, 180, 0.45); text-underline-offset: 3px; }
+.md-typeset a:hover { color: #fff; text-decoration-color: var(--ab-text); }
+.md-typeset .md-button, .md-typeset a.headerlink { text-decoration: none; }
+.md-typeset hr { border-bottom-color: var(--ab-line); }
+
+/* ---------- Header and search ---------- */
+.md-header { border-bottom: 1px solid var(--ab-line); box-shadow: none; }
+.md-header__topic { text-transform: none; letter-spacing: 0.06em; }
+.md-search__form { background: #081112; border: 1px solid rgba(176, 181, 180, 0.18); border-radius: 0.4rem; }
+.md-search__form:hover { background: #081112; border-color: var(--ab-line); }
+/* Record & Transcribe sits apart from the other tabs, centred under the search bar
+   (same width and right edge as the search box), drawn as an outlined button. */
+.md-tabs__item:has(> a[href$="recording.html"]) {
+  margin-left: auto;
+  margin-right: 0.2rem;
+  width: 11.7rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.md-tabs__item > a[href$="recording.html"] {
+  margin-top: 0;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid #fff;
+  border-radius: 0.2rem;
+  opacity: 1;
+}
+
+.md-tabs__item > a[href$="recording.html"]:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* No "Reference" heading above NPC Index in the Reference tab's side menu. */
+.md-sidebar--primary .md-nav__item--section:has(> .md-nav a[href$="npcs.html"]) > label.md-nav__link {
+  display: none;
+}
+
+/* ---------- "On this page" ---------- */
+.md-nav--secondary > .md-nav__title {
+  font-family: var(--cx-heading-font);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ab-label);
+  background: transparent;
+  box-shadow: none;
+}
+.md-nav--secondary .md-nav__link { color: var(--ab-text); border-radius: 0.4rem; padding: 0.15rem 0.5rem; }
+.md-nav--secondary .md-nav__link:hover { background: var(--ab-hover); color: var(--ab-head); }
+.md-nav--secondary .md-nav__link--active { color: var(--ab-head); font-weight: 700; }
+
+/* ---------- Boxes: At a glance (!!! info), notes, DM boxes ---------- */
+.md-typeset .admonition, .md-typeset details {
+  border: 1px solid var(--ab-line);
+  border-radius: 0.7rem;
+  box-shadow: none;
+  font-size: 0.8rem;
+}
+.md-typeset .admonition.info, .md-typeset details.info {
+  background: #122325;
+  border-color: rgba(176, 181, 180, 0.16);
+  padding: 0.2rem 1rem 0.6rem;
+}
+.md-typeset .admonition.info > .admonition-title {
+  background: transparent;
+  border: 0;
+  padding-left: 0;
+  font-family: var(--cx-heading-font);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ab-head);
+}
+.md-typeset .admonition.info > .admonition-title::before { display: none; }
+.md-typeset details.dm { background: #0E1B1D; border-style: dashed; }
+/* Keep each box's title bar inside its rounded border (the theme gives it its own square-cornered
+   background, which otherwise pokes out past the curve). */
+.md-typeset .admonition, .md-typeset details { overflow: hidden; }
+.md-typeset details.dm > summary, .md-typeset .admonition.dm > .admonition-title { background: transparent; }
+:root {   /* DM boxes hold your private theories: a lock instead of the engine's shield */
+  --icon-dm: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3z"/></svg>');
+}
+
+/* ---------- Lore pages (docs/world/): # Title, *tagline*, !!! info "At a glance", ## sections ---------- */
+.md-typeset h1 + p:has(> em:only-child) {            /* the italic tagline under the title, with a divider */
+  position: relative;
+  margin-top: -0.6em;
+  padding-bottom: 1.3em;
+  font-size: 1.15em;
+  color: var(--ab-text);
+}
+.md-typeset h1 + p:has(> em:only-child)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--ab-line);
+}
+.md-typeset h1 + p:has(> em:only-child)::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.17rem;
+  width: 0.3rem;
+  height: 0.3rem;
+  border: 1px solid var(--ab-text);
+  background: var(--md-default-bg-color);
+  transform: translateX(-50%) rotate(45deg);
+}
+.md-typeset .admonition.info ul { list-style: none; margin: 0.4em 0 0; padding: 0; }
+.md-typeset .admonition.info ul > li { margin: 0.4em 0; padding-left: 8.5rem; }
+.md-typeset .admonition.info ul > li > strong:first-child {   /* "Region:", "Type:"... as a label column */
+  display: inline-block;
+  width: 8rem;
+  margin-left: -8.5rem;
+  font-weight: 400;
+  color: var(--ab-label);
+}
+.md-typeset h2#unknown + ul {                         /* ## Unknown: a dashed box with diamond bullets */
+  list-style: none;
+  margin: 0.6em 0 1.2em;
+  padding: 0.8rem 1.1rem;
+  border: 1px dashed rgba(176, 181, 180, 0.3);
+  border-radius: 0.7rem;
+}
+.md-typeset h2#unknown + ul > li { position: relative; margin: 0.3em 0; padding-left: 1.3em; }
+.md-typeset h2#unknown + ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0.15em;
+  top: 0.65em;
+  width: 0.32em;
+  height: 0.32em;
+  background: var(--ab-text);
+  transform: rotate(45deg);
+}
+
+/* ---------- NPC cards (hooks/npc_cards.py) ---------- */
+.md-typeset .npc-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));   /* always two cards side by side... */
+  gap: 1rem;
+  align-items: stretch;            /* every card in a row is the same height */
+}
+@media screen and (max-width: 44.9375em) {            /* ...except on a phone, where one fits */
+  .md-typeset .npc-cards { grid-template-columns: 1fr; }
+}
+.md-typeset .npc-cards .statblock {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  max-width: none;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1rem 1rem 0.9rem;
+  background: #122325;
+  border: 1px solid rgba(176, 181, 180, 0.14);
+  border-radius: 0.7rem;
+  box-shadow: none;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.md-typeset .npc-cards .statblock:hover {
+  border-color: rgba(176, 181, 180, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+}
+.md-typeset .npc-card .eb-sbbar {      /* Edit: top right, shown when the card is hovered */
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.md-typeset .npc-card:hover .eb-sbbar, .md-typeset .npc-card .eb-sbbar:focus-within { opacity: 1; }
+.md-typeset .npc-card p:has(> img.npc-portrait) { margin: 0; }
+.md-typeset .npc-card img.npc-portrait,
+.md-typeset .npc-card .npc-portrait--empty {
+  display: block;
+  width: min(65%, 170px);
+  aspect-ratio: 1;
+  object-fit: cover;
+  margin: 0.1rem auto 0.7rem;
+  box-sizing: border-box;
+  border: 1px solid rgba(176, 181, 180, 0.3);
+  border-radius: 0.6rem;
+}
+.md-typeset .npc-card .npc-portrait--empty {   /* no portrait yet: the first letter of the name */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #081112;
+  font-family: var(--cx-heading-font);
+  font-size: 2.6rem;
+  font-weight: 600;
+  color: #667271;
+}
+.md-typeset .npc-card > h3 { text-align: center; text-transform: none; font-size: 1rem; margin: 0.2em 0 0.15em; }
+.md-typeset .npc-card > h3 + p { text-align: center; margin: 0; color: var(--ab-text); }
+.md-typeset .npc-card p.npc-status-row { min-height: 1.6em; margin: 0.35em 0 0; text-align: center; }
+.md-typeset .npc-card .npc-status {
+  display: inline-block;
+  padding: 0 0.7em;
+  border: 1px solid rgba(176, 181, 180, 0.28);
+  border-radius: 1em;
+  background: rgba(176, 181, 180, 0.12);
+  color: var(--ab-head);
+  font-size: 0.8em;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 1.6;
+}
+.md-typeset .npc-card hr {            /* the divider under the name: a line with a diamond */
+  position: relative;
+  overflow: visible;
+  flex: none;
+  height: 1px;
+  margin: 0.8em 0 0.6em;
+  border: 0;
+  background: var(--ab-line);
+}
+.md-typeset .npc-card hr::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -0.17rem;
+  width: 0.3rem;
+  height: 0.3rem;
+  border: 1px solid var(--ab-text);
+  background: #122325;
+  transform: translateX(-50%) rotate(45deg);
+}
+.md-typeset .npc-card p.sb-section,
+.md-typeset .npc-card .npc-label {        /* section labels and Appearance / Personality */
+  font-family: var(--cx-heading-font);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ab-label);
+  border: 0;
+}
+.md-typeset .npc-card .npc-label { display: inline-block; min-width: 6.4rem; }
+.md-typeset .npc-card p.sb-section { margin: 0.8em 0 0.15em; }
+.md-typeset .npc-card .npc-empty { color: var(--ab-label); font-style: italic; }
+.md-typeset .npc-card .npc-private {   /* private theories: pinned to the bottom of the card */
+  margin-top: auto;
+  padding: 0.1rem 0.8rem 0.5rem;
+  border: 1px dashed rgba(176, 181, 180, 0.28);
+  border-radius: 0.5rem;
+  background: #081112;
+}
+.md-typeset .npc-card .npc-private p.sb-section { margin-top: 0.6em; }
+.md-typeset .npc-card .npc-private p.sb-section::before {
+  content: "";
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  margin: 0 0.5em -0.08em 0;
+  background: currentColor;
+  -webkit-mask: var(--icon-dm) center / contain no-repeat;
+  mask: var(--icon-dm) center / contain no-repeat;
+}
+.md-typeset .npc-card .npc-private { margin-bottom: 0; }
+.md-typeset .npc-card > p:has(+ .npc-private) { margin-bottom: 1rem; }
+
+/* Every tab's side menu: a menu panel with separators. In World: region (dropdown) > towns. */
+@media screen and (min-width: 76.25em) {
+  .md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list {
+    margin-top: 0.4rem;
+    padding: 0.3rem;
+    background: #0E1B1D;
+    border: 1px solid var(--ab-line);
+    border-radius: 0.6rem;
+  }
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item {
+  padding: 0;
+  border-bottom: 1px solid var(--ab-line);
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item:last-child { border-bottom: 0; }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link,
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item > .md-nav__container > .md-nav__link {
+  margin: 0;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.4rem;
+  color: var(--ab-text);
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav__container > a.md-nav__link,
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > label.md-nav__link {   /* regions */
+  font-family: var(--cx-heading-font);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.md-nav--lifted .md-nav__item--nested > .md-nav__container > label.md-nav__link { flex: none; padding: 0.45rem 0.5rem; }
+.md-nav--lifted .md-nav .md-nav .md-nav__item--nested > .md-nav__container > a.md-nav__link,
+.md-nav--lifted .md-nav .md-nav .md-nav__item--nested > label.md-nav__link { font-weight: 700; }   /* cities */
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__link[href]:hover,
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list label.md-nav__link:hover { background: var(--ab-hover); color: var(--ab-head); }
+.md-nav--lifted .md-nav__item--nested > .md-toggle:checked ~ .md-nav__container > .md-nav__link,
+.md-nav--lifted .md-nav__item--nested > .md-toggle:checked ~ .md-nav__link { color: var(--ab-head); }
+/* An open region: its towns step in. An open town: its pages sit on a highlighted inset panel. */
+/* Every row's highlight runs edge to edge of the menu frame; deeper levels step in with text padding only. */
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list {
+  margin: 0 0 0.3rem;
+  padding: 0;
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link:not(.md-nav__container),
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav__container > a.md-nav__link {
+  padding-left: 1.3rem;   /* towns */
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__link { margin-right: 0; }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav .md-nav__item--nested > .md-nav > .md-nav__list {
+  margin: 0;
+  padding: 0;
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav .md-nav__item--nested > .md-toggle:checked ~ .md-nav > .md-nav__list {
+  padding-bottom: 0.4rem;   /* when a town is open: a gap after its pages, so the last one doesn't run into the next town */
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav .md-nav__item--nested > .md-toggle:checked ~ .md-nav { margin-bottom: 0; }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link {
+  padding-left: 2.1rem;   /* a town's own pages (Locations, People...) */
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav .md-nav__link { margin-top: 0; padding: 0.3rem 0.6rem; border-radius: 0.4rem; }
+/* A row with a dropdown (a region, or a town) is a link plus an arrow inside one container:
+   pad the link and the arrow, not the container too, so names line up; hover lights the whole row. */
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__container.md-nav__link {
+  margin: 0;
+  padding: 0;
+  border-radius: 0.4rem;
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__container:hover { background: var(--ab-hover); }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__container > .md-nav__link:hover { background: transparent; }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__container:hover > .md-nav__link { color: var(--ab-head); }
+/* The page you're on, when it's a dropdown row: one highlight on the whole row, not one on the name too. */
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__container:has(> a.md-nav__link--active) { background: var(--ab-current); }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__container > a.md-nav__link--active { background: transparent; }
+/* Less space between an opened region and its first town. */
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav { margin-top: 0; }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list { padding-top: 0; }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list a.md-nav__link--active {
+  background: var(--ab-current);
+  color: var(--ab-head);
+  font-weight: 700;
+}
+
+/* Sessions (hooks/session_dates.py): the date and time under each session in the menu, and under
+   the session page's title. */
+.md-nav .session-when {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.62rem;
+  font-weight: 400;
+  color: var(--ab-label);
+}
+.md-nav .md-ellipsis:has(> .session-when) { white-space: normal; }
+.md-header .session-when { display: none; }   /* the header's page title: just the name */
+.md-typeset h1 + p.session-date {
+  margin-top: -0.6em;
+  font-size: 0.85em;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: var(--ab-label);
+}
+
+/* The New session bar on This Session (javascripts/page-editor.js); its buttons are outlined
+   like Record & Transcribe. */
+.pe-session-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin: -0.4em 0 1.2em; }
+.md-typeset .pe-session-bar .md-button,
+.md-typeset .pe-session-bar .md-button--primary {
+  margin: 0;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid #fff;
+  border-radius: 0.2rem;
+  background: transparent;
+  color: var(--ab-head);
+  font-family: var(--cx-heading-font);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.md-typeset .pe-session-bar .md-button:hover,
+.md-typeset .pe-session-bar .md-button:focus-visible {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: #fff;
+  color: #fff;
+}
+.pe-session-msg { font-size: 0.7rem; font-style: italic; color: var(--ab-label); }
+/* Delete session: small and quiet, at the foot of a session page. */
+.pe-session-bar.pe-session-foot { justify-content: flex-end; margin: 2.5rem 0 0; padding-top: 0.8rem; border-top: 1px solid var(--ab-line); }
+.pe-session-foot .pe-session-msg { order: -1; }
+.pe-delete-session {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid transparent;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--ab-label);
+  font: inherit;
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+.pe-delete-session:hover, .pe-delete-session:focus-visible { color: #e0a39a; border-color: rgba(224, 163, 154, 0.4); background: rgba(224, 163, 154, 0.08); }
+
+/* The Sessions page: every session as a dated entry, newest first ({{ session-log }}). */
+.md-typeset .session-log { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.2rem 0; }
+.md-typeset a.session-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.8rem 1rem;
+  background: #122325;
+  border: 1px solid rgba(176, 181, 180, 0.14);
+  border-radius: 0.7rem;
+  color: var(--md-typeset-color);
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.md-typeset a.session-card:hover {
+  border-color: rgba(176, 181, 180, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+}
+.session-card-title { font-family: var(--cx-heading-font); font-size: 1.05em; font-weight: 600; letter-spacing: 0.04em; color: var(--ab-head); }
+.session-card-meta { font-size: 0.85em; font-style: italic; color: var(--ab-label); }
+.session-card-recap { margin-top: 0.3rem; font-size: 0.92em; color: var(--ab-text); }
+.session-log-empty { color: var(--ab-label); font-style: italic; }
+.pe-session-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.6rem; width: 100%; font-size: 0.72rem; }
+.pe-session-form label { display: flex; flex-direction: column; gap: 0.2rem; color: var(--ab-label); }
+.pe-session-form input {
+  min-width: 14rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--ab-line);
+  border-radius: 0.4rem;
+  background: #0E1B1D;
+  color: var(--ab-head);
+  font: inherit;
+  font-size: 0.8rem;
+}
+
+/* NPC Index side menu: every NPC's name under "NPC Index", grouped by region (hooks/npc_cards.py). */
+.md-sidebar--primary .npc-side { margin: 0.2rem 0 0.4rem 0.6rem; }
+.md-sidebar--primary .npc-side .md-nav__item { border: 0; }   /* no separators: names just step in under their region */
+.md-sidebar--primary .npc-side .md-nav__item:not(.npc-side__region) { padding-left: 0.6rem; }
+.md-sidebar--primary .npc-side .md-nav__link { margin-top: 0.2em; padding: 0.2rem 0.5rem; border-radius: 0.35rem; }
+.md-sidebar--primary .npc-side__region {
+  margin-top: 0.9em;
+  font-family: var(--cx-heading-font);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ab-label);
+}
+
+/* Page editor (hooks/page_editor.py, javascripts/page-editor.js): the pencil and the editor. */
+.md-typeset h1 .pe-pencil {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin-left: 0.6rem;
+  vertical-align: middle;
+  border: 1px solid var(--ab-line);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ab-text);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.md-typeset h1 .pe-pencil:hover { background: var(--ab-hover); color: var(--ab-head); border-color: var(--ab-text); }
+html.pe-open { overflow: hidden; }
+.pe-editor {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  padding: 3vh 2vw;
+  background: rgba(4, 9, 10, 0.75);
+}
+.pe-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: min(100%, 64rem);
+  max-height: 94vh;
+  overflow: auto;
+  padding: 1rem 1.2rem;
+  background: #122325;
+  border: 1px solid var(--ab-line);
+  border-radius: 0.8rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  font-size: 0.8rem;
+}
+.pe-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+.pe-title { flex: 1; font-family: var(--cx-heading-font); color: var(--ab-head); letter-spacing: 0.04em; }
+.pe-title code { font-family: var(--md-code-font-family); font-size: 0.85em; letter-spacing: 0; }
+.pe-status { color: var(--ab-label); font-style: italic; }
+.pe-head .md-button { margin: 0; padding: 0.35em 1.2em; font-size: 0.75rem; }
+.pe-hint { color: var(--ab-label); font-size: 0.7rem; }
+.pe-editor .EasyMDEContainer .CodeMirror {
+  background: #0E1B1D;
+  color: #D6D9DB;
+  border-color: var(--ab-line);
+  border-radius: 0 0 0.5rem 0.5rem;
+  font-family: var(--md-code-font-family);
+  font-size: 0.8rem;
+}
+.pe-editor .CodeMirror-cursor { border-left-color: #D6D9DB; }
+/* Selected text: a soft blue-grey behind light text (EasyMDE's own sheet loads later, hence the
+   longer selectors). */
+.pe-editor .EasyMDEContainer .CodeMirror .CodeMirror-selected,
+.pe-editor .EasyMDEContainer .CodeMirror-focused .CodeMirror-selected { background: rgba(143, 170, 180, 0.38); }
+.pe-editor .EasyMDEContainer .CodeMirror .CodeMirror-line::selection,
+.pe-editor .EasyMDEContainer .CodeMirror .CodeMirror-line > span::selection,
+.pe-editor .EasyMDEContainer .CodeMirror .CodeMirror-line > span > span::selection { background: rgba(143, 170, 180, 0.38); color: #fff; }
+.pe-editor .EasyMDEContainer .editor-toolbar {
+  background: #081112;
+  border-color: var(--ab-line);
+  border-radius: 0.5rem 0.5rem 0 0;
+  opacity: 1;
+}
+.pe-editor .editor-toolbar button {
+  width: auto;
+  min-width: 2rem;
+  padding: 0 0.5rem;
+  color: var(--ab-text);
+  font-family: var(--md-text-font-family);
+  font-weight: 700;
+  border-color: transparent;
+}
+.pe-editor .editor-toolbar button:hover, .pe-editor .editor-toolbar button.active { background: var(--ab-hover); border-color: var(--ab-line); color: var(--ab-head); }
+.pe-editor .editor-toolbar i.separator { border-left-color: var(--ab-line); border-right-color: transparent; }
+.pe-editor .editor-preview, .pe-editor .editor-preview-side {
+  background: #081112;
+  color: #C3C8C7;
+  border-color: var(--ab-line);
+}
+.pe-editor .editor-statusbar { color: var(--ab-label); }
+.pe-editor .cm-s-easymde .cm-header { color: #D6D9DB; }
+.pe-editor .cm-s-easymde .cm-header-1 { font-size: 1.35em; }
+.pe-editor .cm-s-easymde .cm-header-2 { font-size: 1.2em; }
+.pe-editor .cm-s-easymde .cm-header-3, .pe-editor .cm-s-easymde .cm-header-4 { font-size: 1.05em; }
+.pe-editor .cm-s-easymde .cm-link, .pe-editor .cm-s-easymde .cm-url { color: #B0B5B4; }
+.pe-editor .cm-s-easymde .cm-quote { color: #899291; }
+
+/* The visual editor (Toast UI): one shared toolbar, then the page's parts - text, boxes framed like
+   the site's own, and grey bars for what the site fills in. */
+.pe-writer { display: flex; flex-direction: column; gap: 0.6rem; }
+.pe-tools {
+  position: sticky;
+  top: -1rem;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.35rem;
+  background: #081112;
+  border: 1px solid var(--ab-line);
+  border-radius: 0.5rem;
+}
+.pe-tools button {
+  min-width: 2rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid transparent;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--ab-text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.pe-tools button:hover { background: var(--ab-hover); border-color: var(--ab-line); color: var(--ab-head); }
+.pe-tools i { width: 1px; height: 1.2rem; margin: 0 0.3rem; background: var(--ab-line); }
+.pe-segs { display: flex; flex-direction: column; gap: 0.7rem; }
+.pe-seg-box { border: 1px solid var(--ab-line); border-radius: 0.6rem; overflow: hidden; background: #0E1B1D; }
+.pe-seg-box.pe-kind-dm { border-style: dashed; }
+.pe-seg-box.pe-kind-read-aloud { border-color: rgba(201, 162, 77, 0.7); }
+.pe-seg-box-head {
+  padding: 0.4rem 0.8rem;
+  background: #1A2E30;
+  color: var(--ab-head);
+  font-weight: 700;
+}
+.pe-seg-box.pe-kind-read-aloud .pe-seg-box-head { background: #2b3328; }
+.pe-seg-box-body { display: flex; flex-direction: column; gap: 0.5rem; }
+.pe-seg-box-body > .pe-seg-locked { margin: 0 0.5rem; }
+.pe-seg-box-body > .pe-seg-box { margin: 0 0.5rem 0.5rem; }
+.pe-seg-locked {
+  padding: 0.35rem 0.8rem;
+  border-radius: 0.4rem;
+  background: rgba(176, 181, 180, 0.08);
+  color: var(--ab-label);
+  font-size: 0.7rem;
+  font-style: italic;
+}
+.pe-tools .pe-t-h { font-family: var(--cx-heading-font); }
+.pe-tools .pe-t-i { font-style: italic; }
+.pe-tools .pe-t-u { text-decoration: underline; text-underline-offset: 2px; }
+.pe-tools .pe-t-s { text-decoration: line-through; }
+/* Each writing area: one rounded frame (its insides clipped to the curve); inside a box, no frame
+   of its own - the box is the frame. */
+.pe-writer .toastui-editor-defaultUI { border: 1px solid var(--ab-line); border-radius: 0.5rem; overflow: hidden; }
+.pe-writer .pe-seg-box .toastui-editor-defaultUI { border: 0; border-radius: 0; }
+/* Session pages: a line and some space before Where we left off and the sections after it, in the
+   editor and on the page. */
+.pe-seg-field.pe-field-group { margin-top: 1.2rem; padding-top: 1.4rem; border-top: 1px solid var(--ab-line); }
+.md-typeset h2#where-we-left-off { margin-top: 2.6em; padding-top: 1.6em; border-top: 1px solid var(--ab-line); }
+/* Session pages: each section a labelled field. */
+.pe-field-label {
+  margin: 0.2rem 0 0.3rem 0.15rem;
+  font-family: var(--cx-heading-font);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ab-label);
+}
+/* The page's main writing area: taller, and scrolls inside itself on the right. */
+.pe-writer .pe-seg-main .toastui-editor-ww-container .toastui-editor-contents {
+  min-height: 320px;
+  max-height: 58vh;
+  overflow-y: auto;
+}
+.pe-writer .toastui-editor-contents { scrollbar-width: thin; scrollbar-color: #667271 #0E1B1D; }
+.pe-writer .toastui-editor-contents::-webkit-scrollbar { width: 10px; }
+.pe-writer .toastui-editor-contents::-webkit-scrollbar-track { background: #0E1B1D; }
+.pe-writer .toastui-editor-contents::-webkit-scrollbar-thumb { background: #3a4a4c; border-radius: 5px; border: 2px solid #0E1B1D; }
+.pe-writer .toastui-editor-contents img { max-width: 100%; border-radius: 0.4rem; }
+.pe-writer .toastui-editor-dark .toastui-editor-contents hr { border-top-color: var(--ab-line); }
+.pe-writer .toastui-editor-dark .toastui-editor-contents h4 { font-family: var(--cx-heading-font); color: var(--ab-head); }
+.pe-writer .toastui-editor-defaultUI-toolbar,
+.pe-writer .toastui-editor-toolbar,
+.pe-writer .toastui-editor-mode-switch { display: none !important; }
+.pe-writer .toastui-editor-defaultUI,
+.pe-writer .toastui-editor-dark.toastui-editor-defaultUI,
+.pe-writer .toastui-editor-dark .toastui-editor-ww-container,
+.pe-writer .toastui-editor-dark .toastui-editor-main { background: #0E1B1D; }
+.pe-writer .toastui-editor-contents,
+.pe-writer .toastui-editor-dark .toastui-editor-contents p,
+.pe-writer .toastui-editor-dark .toastui-editor-contents li {
+  font-family: var(--md-text-font-family);
+  font-size: 15px;
+  line-height: 1.6;
+  color: #C3C8C7;
+}
+.pe-writer .toastui-editor-ww-container .toastui-editor-contents { padding: 0.5rem 0.9rem; }
+.pe-writer .toastui-editor-dark .toastui-editor-contents h1,
+.pe-writer .toastui-editor-dark .toastui-editor-contents h2,
+.pe-writer .toastui-editor-dark .toastui-editor-contents h3 {
+  font-family: var(--cx-heading-font);
+  color: var(--ab-head);
+  border-bottom: 0;
+}
+.pe-writer .toastui-editor-dark .toastui-editor-contents a { color: var(--ab-head); }
+.pe-writer .toastui-editor-dark .toastui-editor-contents blockquote { border-left-color: var(--ab-line-strong, #667271); }
+.pe-writer .toastui-editor-dark .toastui-editor-contents blockquote p { color: var(--ab-text); }
+.pe-writer .ProseMirror ::selection, .pe-writer .ProseMirror::selection { background: rgba(143, 170, 180, 0.38); color: #fff; }
+.pe-writer .ProseMirror { caret-color: #D6D9DB; }
+
+/* The NPC editor (javascripts/npc-cards.js). */
+.npc-form fieldset { margin-bottom: 1rem; }
+.npc-form .npc-area { display: block; margin-top: 0.6rem; }
+.npc-form .npc-area textarea { display: block; width: 100%; box-sizing: border-box; margin-top: 0.2rem; }
+.npc-form select { display: block; width: 100%; }
+.npc-form .npc-portrait-edit { display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; }
+.npc-form .npc-portrait-preview { width: 140px; height: 140px; object-fit: contain; }
+
+/* Party character cards: the same rounded panel as the NPC cards, no red rules; contents unchanged. */
+.md-typeset .pc-cards .statblock.pc-card {
+  background: #122325;
+  border: 1px solid rgba(176, 181, 180, 0.14);
+  border-radius: 0.7rem;
+  box-shadow: none;
+  padding: 1rem 1rem 0.9rem;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.md-typeset .pc-cards .statblock.pc-card:hover {
+  border-color: rgba(176, 181, 180, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+}
+.md-typeset .pc-cards .pc-card hr {   /* dividers: a line with a diamond, like the NPC cards */
+  position: relative;
+  overflow: visible;
+  height: 1px;
+  margin: 0.9em 0;
+  border: 0;
+  background: var(--ab-line);
+}
+.md-typeset .pc-cards .pc-card hr::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -0.17rem;
+  width: 0.3rem;
+  height: 0.3rem;
+  border: 1px solid var(--ab-text);
+  background: #122325;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* ---------- Record & Transcribe: transcribe only ----------
+   OBS records the session, so the page's microphone, level, folder and Record controls are hidden
+   (the folder is set by recordings: in campaign.yml). The status line stays: it shows transcription errors. */
+#rec-root .rec-grid,
+#rec-root .rec-controls,
+#rec-root .rec-panel > .eb-hint,
+#rec-root .rec-silence,
+#rec-root .rec-elsewhere { display: none !important; }
+#rec-root .rec-panel { border: 0; background: none; padding: 0; margin: 0; }
+
+/* "Recordings": a section heading in white with a diamond, over a dividing line */
+#rec-root .rec-list-title {
+  font-family: var(--cx-heading-font);
+  font-size: 1.25em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--ab-head);
+  margin: 1.6rem 0 0.6rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--ab-line);
+}
+#rec-root .rec-list-title::before {   /* the same small diamond as the ## headings */
+  content: "";
+  display: inline-block;
+  width: 0.36em;
+  height: 0.36em;
+  margin: 0 0.65em 0.18em 0.1em;
+  border: 1px solid var(--ab-text);
+  transform: rotate(45deg);
+}
+/* The pencil would edit the engine's docs/recording.md and docs/guide/recording.md, not what hooks/recording_page.py
+   shows there (hooks/recording_page.md, and hooks/recording_cheatsheet.md at the end of the guide page) */
+.md-content:has(#rec-root) .pe-pencil,
+.md-content:has(#cheat-sheet) .pe-pencil { display: none; }
+
+/* ---------- Layout: a wider middle column ----------
+   The engine's extra.css caps the whole page at 1440px; on a wide screen that leaves the
+   content column narrow with lots of empty space on both sides. Allow more width here. */
+.md-grid { max-width: 1760px; }
