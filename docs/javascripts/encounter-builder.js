@@ -14,6 +14,18 @@
   function helperFetch(url, opts) {
     return ONLINE ? Promise.reject(new Error("online copy")) : fetch(url, opts);
   }
+  // The DM site online reaches the players' site through its own worker (publish/dm/worker.js), so sharing
+  // the tracker and the party's HP and conditions work there too. LIVE: it answered.
+  var LIVE = false;
+  var liveReady = !ONLINE ? Promise.resolve(false) : fetch("/api/tracker").then(function (r) {
+    LIVE = r.ok && /json/.test(r.headers.get("Content-Type") || "");
+    return LIVE;
+  }).catch(function () { return false; });
+  function livePost(path, body) {   // a path as the helper has it: online, the same thing at /api
+    var opts = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
+    return (ONLINE ? fetch("/api" + path, opts) : helperFetch(HELPER + path, opts))
+      .then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); });
+  }
   var STORE = CAMPAIGN + "-encounter-builder";
 
   function init() {
@@ -747,9 +759,9 @@
       return snap;
     }
     function partyFromLive(c) {
-      if (ONLINE || partyOnline === false) return;
+      if ((ONLINE && !LIVE) || partyOnline === false) return;
       partyLoading = c;   // until it's here, nothing goes back (it would put everyone at full HP)
-      helperFetch(HELPER + "/party/live").then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+      (ONLINE ? fetch("/api/party") : helperFetch(HELPER + "/party/live")).then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
         .then(function (res) {
           if (partyLoading === c) partyLoading = null;
           if (res.status !== 200 || !res.body.status) { if (res.body && res.body.online === false) partyOnline = false; return; }
@@ -768,7 +780,7 @@
     }
     function partyToLive() {
       var c = state.combat;
-      if (ONLINE || partyOnline === false || !c || partyLoading === c) return;
+      if ((ONLINE && !LIVE) || partyOnline === false || !c || partyLoading === c) return;
       clearTimeout(partyTimer);
       partyTimer = setTimeout(function () {
         var cards = [];
@@ -780,7 +792,7 @@
           cards.push(snap);
         });
         if (!cards.length) return;
-        helperPost("/party/status", { cards: cards }).then(function (res) {
+        livePost("/party/status", { cards: cards }).then(function (res) {
           if (res.status === 502 && res.body.online === false) partyOnline = false;
           else if (res.status !== 200) cards.forEach(function (s) { delete partySent[s.id]; });   // try again with the next change
         }).catch(function () { cards.forEach(function (s) { delete partySent[s.id]; }); });
@@ -887,9 +899,9 @@
                    : '<button class="ei-next md-button md-button--primary" data-ia="start">Start combat</button>') +
         '  <button class="eb-act" data-ia="reroll" title="Roll the creatures\' initiative again">Reroll creatures</button>' +
         '  <label class="ei-group"><input type="checkbox" data-ia="group"' + (state.initGroup ? " checked" : "") + "> One roll per creature type</label>" +
-        (ONLINE ? "" : '  <label class="ei-share" title="Show the order, turn, and conditions on the players\' site (Initiative page) as you go. HP, AC, and notes stay here."><input type="checkbox" data-ia="share"' +
+        (ONLINE && !LIVE ? "" : '  <label class="ei-share" title="Show the order, turn, and conditions on the players\' site (Initiative page) as you go. HP, AC, and notes stay here."><input type="checkbox" data-ia="share"' +
           (state.share ? " checked" : "") + '> Share with players</label> <span class="ei-share-status"></span>') +
-        (state.share && !ONLINE ? '  <button class="eb-act ei-victory" data-ia="victory" title="End the fight with a victory fanfare on the players\' phones">🏆 Victory</button>' : "") +
+        (state.share && !(ONLINE && !LIVE) ? '  <button class="eb-act ei-victory" data-ia="victory" title="End the fight with a victory fanfare on the players\' phones">🏆 Victory</button>' : "") +
         '  <button class="eb-act eb-danger" data-ia="end">End combat</button>' +
         " </div></div>" +
         (!(D.party.members || []).length ? '<div class="eb-msg eb-warn">The party list isn\'t loaded, so the players aren\'t here. ' +
@@ -955,6 +967,7 @@
     // conditions - never HP, AC, notes, or anyone hidden with the row's "hide" link. Until Start combat,
     // only the party shows, so the players don't see who they're up against before the fight begins.
     var shareTimer = null, shareLast = null, shareVictory = false;
+    liveReady.then(function (ok) { if (ok && state.combat) renderInit(); });   // online: Share with players appears
     function shareView() {
       var c = state.combat;
       if (!c) return shareVictory ? { active: false, victory: true } : { active: false };
@@ -966,11 +979,18 @@
         }) };
     }
     function share(force) {
-      if (ONLINE || (!state.share && !force)) return;
+      if ((ONLINE && !LIVE) || (!state.share && !force)) return;
       clearTimeout(shareTimer);
       shareTimer = setTimeout(function () {
         var view = state.share ? shareView() : { active: false };
         shareVictory = false;
+        if (ONLINE) {   // straight to the players' site, and its answer is this send's
+          return livePost("/tracker", view).then(function (res) {
+            shareLast = res.status === 200 ? { ok: true, watching: res.body.watching }
+              : { ok: false, error: res.body.error || "The players' site answered " + res.status + "." };
+            shareStatus();
+          }).catch(function () { shareLast = { ok: false, error: "Couldn't reach the players' site." }; shareStatus(); });
+        }
         helperPost("/tracker/share", { view: view }).then(function (res) {
           shareLast = res.body.token === false ? { ok: false, error: "tools\\tracker-token.txt is missing." } : res.body.last;
           shareStatus();

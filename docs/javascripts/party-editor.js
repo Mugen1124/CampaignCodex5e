@@ -11,7 +11,11 @@
    with Undo. With the players' site online, each card also shows its live status - current HP,
    conditions, the players' trackers - and the top of the page the party treasury and the switch for
    whether players see each other's current HP; all of it yours to change (party-cards.js draws them,
-   this sends your changes through the helper), refreshed every few seconds. */
+   this sends your changes through the helper), refreshed every few seconds.
+
+   Online, the DM site does the live part too - the status, the treasury, the HP switch, History and
+   Undo - straight through its own worker (publish/dm/worker.js), without CampaignCodex5e running at home.
+   Editing, importing and getting players' changes write data/party.yml, so they stay at home. */
 (function () {
   "use strict";
   var HELPER = "http://127.0.0.1:8765";
@@ -29,9 +33,12 @@
   }
   function init() {
     var grid = document.querySelector(".pc-cards");
-    if (!grid) return;
-    if (ONLINE || grid.getAttribute("data-audience") === "players") return;
-    setup(grid);
+    if (!grid || grid.getAttribute("data-audience") === "players") return;
+    if (!ONLINE) return setup(grid);
+    // Online: only where the DM site has its live line to the players' site (an older publish doesn't).
+    fetch("/api/party").then(function (r) {
+      if (r.ok && /json/.test(r.headers.get("Content-Type") || "")) setup(grid);
+    }).catch(function () {});
   }
 
   function setup(grid) {
@@ -40,15 +47,15 @@
     // ------------------------------------------------------------ buttons
     var bar = document.createElement("div");
     bar.className = "eb pe-bar";
-    bar.innerHTML = '<button class="md-button pe-add">Add character</button>' +
+    bar.innerHTML = (ONLINE ? "" : '<button class="md-button pe-add">Add character</button>' +
       '<button class="md-button pe-import">Import from CCC5e</button>' +
       '<button class="md-button pe-pull" style="display: none" title="Bring what players changed on the players\' site into data/party.yml">' +
-      "Get players' changes</button>" + '<span class="pe-msg"></span>';
+      "Get players' changes</button>") + '<span class="pe-msg"></span>';
     grid.parentNode.insertBefore(bar, grid);
     var sugBox = document.createElement("div");
     sugBox.className = "eb pe-sugs";
     grid.parentNode.insertBefore(sugBox, grid);
-    var online = false;   // the players' site answers (Get players' changes worked)
+    var online = ONLINE;   // the players' site answers (Get players' changes worked, or this is the DM site online)
     // Each card's buttons - again whenever party-cards.js draws the cards afresh (live status).
     function addTools() {
       grid.querySelectorAll(".pc-card[data-pc]").forEach(function (card) {
@@ -56,9 +63,9 @@
         var tools = document.createElement("div");
         tools.className = "eb eb-sbbar pe-tools";
         tools.innerHTML = '<button class="eb-act pe-hist-btn" data-pe="history"' + (online ? "" : ' style="display: none"') +
-          ' title="Changes made on the players\' site, with Undo">History</button>' +
+          ' title="Changes made on the players\' site, with Undo">History</button>' + (ONLINE ? "" :
           '<button class="eb-act" data-pe="import" title="Update this card from a CCC5e export">Import .ccc5e</button>' +
-          '<button class="eb-act" data-pe="edit">Edit</button><button class="eb-act eb-danger" data-pe="remove">Remove</button>';
+          '<button class="eb-act" data-pe="edit">Edit</button><button class="eb-act eb-danger" data-pe="remove">Remove</button>');
         card.insertBefore(tools, card.firstChild);
       });
     }
@@ -73,7 +80,9 @@
     }
     function call(path, body) {
       var opts = body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {};
-      return fetch(HELPER + path, opts).then(function (r) {
+      // Online, the live calls go to the players' worker through this site's own (/party/live is its /api/party).
+      var url = !ONLINE ? HELPER + path : "/api" + (path === "/party/live" ? "/party" : path);
+      return fetch(url, opts).then(function (r) {
         return r.json().then(function (j) { return { status: r.status, body: j }; });
       });
     }
@@ -293,7 +302,8 @@
             return "<tr><td>" + esc(new Date(h.at).toLocaleString()) + "</td><td>" + esc(h.by === "dm" ? "you (publish)" : h.by === "undo" ? "you (undo)" : h.by) +
               "</td><td>" + esc(h.summary) + "</td><td>" + (h.undo ? '<button class="eb-act" data-undo="' + esc(h.key) + '" title="Put the card back as it was before this">Undo</button>' : "") + "</td></tr>";
           }).join("") + "</table>") +
-          '<p class="eb-hint">Undo puts the card back as it was just before that change, on the players\' site and in <code>data/party.yml</code>.</p>' +
+          '<p class="eb-hint">Undo puts the card back as it was just before that change, on the players\' site and in <code>data/party.yml</code>' +
+          (ONLINE ? " (the next time CampaignCodex5e gets players' changes at home)" : "") + ".</p>" +
           '<div class="pe-sug-act"><button class="md-button pe-hist-close">Close</button></div>';
       }).catch(function () { box.innerHTML = '<div class="eb-msg eb-warn">' + OFFLINE + "</div>"; });
       box.addEventListener("click", function (ev) {
@@ -304,6 +314,8 @@
         call("/party/undo", { id: card.id, key: key }).then(function (res) {
           if (res.status !== 200) { ev.target.disabled = false; return msg(esc(res.body.error || "Couldn't undo it."), "warn"); }
           box.remove();
+          if (ONLINE) return msg("Undone on the players' site. <code>data/party.yml</code> gets it the next time CampaignCodex5e " +
+                                 "gets players' changes at home.", "ok");
           msg("Undone. The page refreshes when the site rebuilds.", "ok");
         }).catch(function () { ev.target.disabled = false; msg(OFFLINE, "warn"); });
       });
@@ -326,9 +338,11 @@
     }
 
     // ------------------------------------------------------------ wiring
-    bar.querySelector(".pe-add").addEventListener("click", add);
-    bar.querySelector(".pe-import").addEventListener("click", function () { importFile(null); });
-    bar.querySelector(".pe-pull").addEventListener("click", function (ev) { ev.target.setAttribute("data-asked", "1"); pull(); });
+    if (!ONLINE) {
+      bar.querySelector(".pe-add").addEventListener("click", add);
+      bar.querySelector(".pe-import").addEventListener("click", function () { importFile(null); });
+      bar.querySelector(".pe-pull").addEventListener("click", function (ev) { ev.target.setAttribute("data-asked", "1"); pull(); });
+    }
     grid.addEventListener("click", function (ev) {
       var act = ev.target.getAttribute("data-pe");
       if (!act) return;
@@ -348,6 +362,11 @@
     });
 
     box.style.display = "none";
+    if (ONLINE) {   // nothing to get into data/party.yml from here: just the live status, kept fresh
+      loadLive(true);
+      liveTimer = setInterval(function () { if (document.visibilityState === "visible") loadLive(); }, 8000);
+      return;
+    }
     pull();
     if (draft) {   // a character was being edited when the page reloaded
       loadParty().catch(function () {}).then(function () { open(draft); });

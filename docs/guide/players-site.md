@@ -61,6 +61,8 @@ Your initiative tracker and the cards share HP and conditions: a fight starts fr
 
 This live status and the treasury are kept on the players' site only — not in `data/party.yml`.
 
+**Showing a player how.** **View as…**, at the top right of your DM site, opens the players' site as one of them, so you can walk them through something, or do it for them ([more](going-online.md#your-dm-site-online-and-view-as)).
+
 ## My Notes
 
 Once the players' site is [online](going-online.md), each player gets a **My Notes** tab: one notepad of their own that saves as they type, on any phone or computer they sign in from. It's **private** — only the player who wrote it can read it; not the other players, and not you. Notes are kept by Cloudflare under their sign-in, never in your campaign's files, so they never pass through the build or the leak check.

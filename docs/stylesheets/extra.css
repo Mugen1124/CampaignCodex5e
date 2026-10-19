@@ -900,3 +900,17 @@ html.rec-popout .rec-level-note { min-width: 0; }
   .cf-slots { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .cf-slots > span { grid-column: 1 / -1; }
 }
+
+/* ---------- "View as…" (javascripts/view-as.js), top right of the DM site ---------- */
+.va { position: relative; margin: 0 0.4rem; flex-shrink: 0; }
+.va-btn { font: 600 0.65rem/1 var(--md-text-font-family); color: var(--md-primary-bg-color); background: var(--md-primary-fg-color--light);
+  border: 1px solid var(--md-default-fg-color--lighter); border-radius: 0.2rem; padding: 0.4rem 0.6rem; cursor: pointer; white-space: nowrap; }
+.va-btn:hover, .va-btn[aria-expanded="true"] { border-color: var(--md-accent-fg-color); }
+.va-menu { position: absolute; right: 0; top: calc(100% + 0.3rem); z-index: 10; min-width: 13rem; max-width: 80vw; padding: 0.3rem 0;
+  background: var(--md-default-bg-color); border: 1px solid var(--md-default-fg-color--lightest); border-radius: 0.2rem;
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.5); }
+.va-menu a { display: block; padding: 0.35rem 0.8rem; font-size: 0.7rem; color: var(--md-default-fg-color); cursor: pointer; }
+.va-menu a:hover { background: var(--md-default-fg-color--lightest); color: var(--md-accent-fg-color); }
+.va-head, .va-foot { padding: 0.25rem 0.8rem; font-size: 0.6rem; color: var(--md-default-fg-color--light); }
+.va-foot { border-top: 1px solid var(--md-default-fg-color--lightest); margin-top: 0.2rem; padding-top: 0.4rem; }
+@media screen and (max-width: 44.9375em) { .va-btn { padding: 0.35rem 0.4rem; } }

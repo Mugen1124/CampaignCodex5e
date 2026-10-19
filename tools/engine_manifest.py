@@ -25,7 +25,7 @@ ENGINE = [
     "docs/guide/*", "docs/rules/*", "docs/javascripts/*", "docs/stylesheets/extra.css",
     "docs/players/*.js", "docs/players/tracker.md", "docs/players/notes.md", "docs/recording.md",
     "data/rules/srd.json", "data/monsters/srd.json",
-    "publish/players/*.js", "publish/players/*.mjs",
+    "publish/players/*.js", "publish/players/*.mjs", "publish/dm/*.js",
     "*.bat", "*.sh", "*.command", "requirements.txt", "requirements-transcribe.txt",
     "LICENSE", "CREDITS.md",
 ]

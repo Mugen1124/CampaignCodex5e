@@ -17,6 +17,7 @@ Keeping the numbers as data (not prose) is what lets future table tools
 """
 
 import copy
+import html
 import json
 import logging
 import posixpath
@@ -32,6 +33,7 @@ from codex import settings as codex_settings  # noqa: E402
 from codex import rules as codex_rules  # noqa: E402
 
 CAMPAIGN_SLUG = ["campaign"]   # campaign.yml's name, as a slug - set in on_config
+DM_URL = [""]   # the DM site online, when it has the players' site behind it (for "View as…") - set in on_config
 
 log = logging.getLogger("mkdocs.hooks.campaign")
 
@@ -124,7 +126,10 @@ def _load_yaml_dir(folder: Path, files: dict = None) -> dict:
 
 def on_config(config, **kwargs):
     root = Path(config.config_file_path).parent / "data"
-    CAMPAIGN_SLUG[0] = codex_settings.load(root.parent)["slug"]
+    settings = codex_settings.load(root.parent)
+    CAMPAIGN_SLUG[0] = settings["slug"]
+    on = settings["online"]
+    DM_URL[0] = settings["dm_url"] if on.get("enabled") and on.get("players_site", True) and settings["players_url"] else ""
     codex_rules.load(root.parent)
     MONSTERS.clear()
     MONSTER_FILES.clear()
@@ -825,4 +830,9 @@ def on_post_page(output, page, config, **kwargs):
     editors keep their saved state per campaign (two campaigns served on one computer share a
     browser address, and would otherwise overwrite each other's)."""
     tag = f'<meta name="codex-campaign" content="{CAMPAIGN_SLUG[0]}">'
+    if not PLAYERS[0]:
+        # "View as…" (javascripts/view-as.js): the DM site online, and whose eyes the players' site can be seen through.
+        party = [["pc-" + _pc_id(m), m.get("character", "")] for m in PARTY.get("members") or [] if isinstance(m, dict)]
+        data = html.escape(json.dumps({"url": DM_URL[0], "party": party}), quote=True)
+        tag += f'<meta name="codex-view-as" content="{data}">'
     return output.replace("</head>", tag + "</head>", 1)

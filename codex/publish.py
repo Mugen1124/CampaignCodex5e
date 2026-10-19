@@ -45,8 +45,12 @@ def write_configs(s: dict):
         "compatibility_date": COMPAT,
         "workers_dev": True,
         "preview_urls": False,
-        "assets": {"directory": "./site"},
+        "main": "dm/worker.js",   # publish/dm/worker.js: the DM site's live features and "View as..."
+        "assets": {"directory": "./site", "binding": "ASSETS"},
     }
+    if on.get("players_site", True):
+        # A private line to the players' site's worker (its Inside entrance), for everything live.
+        dm["services"] = [{"binding": "BRAIN", "service": on["players_worker"], "entrypoint": "Inside"}]
     players = {
         "name": on["players_worker"],
         "compatibility_date": COMPAT,
@@ -73,9 +77,11 @@ def write_configs(s: dict):
     (out / "players").mkdir(parents=True, exist_ok=True)
     (out / "wrangler.jsonc").write_text(note + json.dumps(dm, indent=2) + "\n", encoding="utf-8")
     (out / "players" / "wrangler.jsonc").write_text(note + json.dumps(players, indent=2) + "\n", encoding="utf-8")
-    if out != ROOT / "publish":   # building outside this folder: the worker goes along with the players' site
+    if out != ROOT / "publish":   # building outside this folder: the workers go along with the sites
         for module in (ROOT / "publish" / "players").glob("*.*js"):   # worker.js and the modules it imports
             shutil.copyfile(module, out / "players" / module.name)
+        (out / "dm").mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / "publish" / "dm" / "worker.js", out / "dm" / "worker.js")
 
 
 class _NoRedirect(HTTPRedirectHandler):
@@ -182,9 +188,7 @@ def main(args=None) -> int:
                                    str(out / "players" / "site")], cwd=ROOT) == 0
 
     write_configs(s)
-    print("\nUploading the DM site...")
-    problems |= not deploy(out, s["dm_url"], cmd)
-
+    # The players' site first: the DM site's live features connect to its worker.
     if on.get("players_site", True):
         if leak_ok:
             print("\nUploading the players' site...")
@@ -196,6 +200,9 @@ def main(args=None) -> int:
             print("  The players' site was NOT uploaded - the leak check found DM material in it")
             print("  (listed above). Fix those, then publish again.")
             print("*" * 76)
+
+    print("\nUploading the DM site...")
+    problems |= not deploy(out, s["dm_url"], cmd)
 
     print("\nFinished, with problems - see above." if problems else "\nDone - everything is up to date.")
     return 1 if problems else 0

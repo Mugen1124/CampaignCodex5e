@@ -87,6 +87,17 @@ Players see names, initiative, whose turn it is, the round, and conditions — n
 
 With the key in place, **Get players' changes** and **History** appear on your Party page, along with each card's live HP and conditions, the party treasury, and the switch for whether players see each other's current HP — and the tracker starts fights from the party's current HP and keeps the cards up to date. See [the Party page](players-site.md#the-party-page).
 
+## Your DM site online, and View as…
+
+With the players' site online, your **DM site online is live too**, through a private line between the two sites. Nobody on the internet can use that line, and it needs no key. From a laptop at the table, without `CampaignCodex5e` running at home:
+
+- the **Party page** shows each card's live HP and conditions, the party treasury and the HP switch, and **History** with **Undo**;
+- the **initiative tracker** can **Share with players**, and it keeps the cards' HP and conditions up to date.
+
+**View as…**, at the top right of your DM site, opens the players' site in a new tab **as one of your players**, with an orange banner at the top. It's for when a player asks "how do I add this to my character?": show them, or do it for them. What you see there is exactly their view: their own card has Edit, Import and Privacy, and everything else is as they'd find it. Anything you change there is saved as theirs, and the card's History says it was you (*DM (as Tam)*). **Any player** shows the site to someone signed in without a character. A player's private notes stay closed, even to you.
+
+At home, View as… opens your DM site online, so it appears once you've published. Your players never see any of it: it isn't on their site.
+
 ## Afterward
 
-The online copies are **read-only**: make changes on your computer with `CampaignCodex5e`, then `publish` again. If `publish` ever prints the big WARNING, open Zero Trust → Access → Applications and check that site's policy before doing anything else.
+Your pages, `data/party.yml` and your encounters change only on your computer: make changes there with `CampaignCodex5e`, then `publish` again. If `publish` ever prints the big WARNING, open Zero Trust → Access → Applications and check that site's policy before doing anything else.

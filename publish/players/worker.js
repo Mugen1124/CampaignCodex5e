@@ -36,7 +36,7 @@
 // this script, never one of the site's files. The helper's calls (POST tracker, the DM's Party calls, resolve)
 // are refused for players. Notes are private to the player who wrote them: each email has its own
 // store, nothing else reads it, and the helper's service token can't reach it - not even the DM sees them.
-import { DurableObject } from "cloudflare:workers";
+import { DurableObject, WorkerEntrypoint } from "cloudflare:workers";
 import ROSTER from "./roster.json";
 import * as ccc5e from "./ccc5e.mjs";
 import * as party from "./party.mjs";
@@ -47,37 +47,62 @@ const team = (env) => String(env.ACCESS_TEAM || "").replace(/\/+$/, "");
 
 const NOTE_MAX = 100000;   // bytes of notes per player (a Durable Object value holds up to 128 KiB)
 
+// From the internet: whoever Cloudflare Access says is signed in (a player, or the helper's service token).
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const path = url.pathname;
-    if (path === "/api/tracker" || path === "/api/tracker/ws") {
-      if (request.method === "POST" && !(await isHelper(request, env))) {
-        return json({ error: "Only the DM's tracker can change the fight." }, 403);
-      }
-      if (request.method !== "GET" && request.method !== "POST") return json({ error: "Not allowed." }, 405);
-      return env.TRACKER.get(env.TRACKER.idFromName("live")).fetch(request);
-    }
-    if (path === "/api/me") return whoAmI(request, env);
-    if (path.startsWith("/api/items/")) return claims(request, env, path);
-    if (path === "/api/notes") return notes(request, env);
-    if (path === "/api/party" || path.startsWith("/api/party/")) return partyApi(request, env, path);
-    return env.ASSETS.fetch(request);
+    if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
+    return handle(request, env, await identity(request, env));
   },
 };
 
-async function whoAmI(request, env) {
-  const who = await identity(request, env);
-  if (!who) return json({ error: "Not signed in." }, 401);
-  const me = who.service ? null : playerFor(who.email);
-  if (!me) return json({ character: null });
-  return json({ character: me.character, index: me.index, id: me.id || party.cardId(me.character), level: ROSTER.level || null });
+// From the DM's own site only (a service binding, publish/dm/worker.js) - never reachable from the internet.
+// Only the DM can open the DM site, so what comes through here is the DM: as the DM ("X-Codex-As: dm"), or
+// seeing the players' site as one player ("X-Codex-As: <card id>") or as any player ("players").
+export class Inside extends WorkerEntrypoint {
+  async fetch(request) {
+    const as = request.headers.get("X-Codex-As") || "dm";
+    const who = as === "dm" ? { service: true } : { acting: true, asId: as === "players" ? null : as };
+    const url = new URL(request.url);
+    if (!url.pathname.startsWith("/api/")) return this.env.ASSETS.fetch(request);
+    return handle(request, this.env, who);
+  }
 }
 
-async function claims(request, env, path) {
-  const store = env.CARDS.get(env.CARDS.idFromName("cards"));
-  const who = await identity(request, env);
+// who: {service: true} the DM (the helper, or the DM's site); {email} a player signed in; {acting, asId} the DM
+// seeing the site as a player; null nobody.
+async function handle(request, env, who) {
+  const path = new URL(request.url).pathname;
+  if (path === "/api/tracker" || path === "/api/tracker/ws") {
+    if (request.method === "POST" && !(who && who.service)) {
+      return json({ error: "Only the DM's tracker can change the fight." }, 403);
+    }
+    if (request.method !== "GET" && request.method !== "POST") return json({ error: "Not allowed." }, 405);
+    return env.TRACKER.get(env.TRACKER.idFromName("live")).fetch(request);
+  }
   if (!who) return json({ error: "Not signed in." }, 401);
+  if (path === "/api/me") return whoAmI(who);
+  if (path.startsWith("/api/items/")) return claims(request, env, path, who);
+  if (path === "/api/notes") return notes(request, env, who);
+  if (path === "/api/party" || path.startsWith("/api/party/")) return partyApi(request, env, path, who);
+  return json({ error: "Not found." }, 404);
+}
+
+// The roster entry a request speaks for: a player's own, or the one the DM is seeing the site as.
+function memberFor(who) {
+  if (who.acting) return who.asId ? (ROSTER.members || []).find((m) => (m.id || party.cardId(m.character)) === who.asId) || null : null;
+  return who.service ? null : playerFor(who.email);
+}
+
+async function whoAmI(who) {
+  const me = memberFor(who);
+  if (!me) return json({ character: null, acting: !!who.acting });
+  return json({ character: me.character, index: me.index, id: me.id || party.cardId(me.character), level: ROSTER.level || null,
+                acting: !!who.acting });
+}
+
+async function claims(request, env, path, who) {
+  const store = env.CARDS.get(env.CARDS.idFromName("cards"));
   if (path === "/api/items/claims" && request.method === "GET") {
     return store.fetch("https://cards/claims" + (who.service ? "?all=1" : ""));
   }
@@ -86,24 +111,24 @@ async function claims(request, env, path) {
     return store.fetch(new Request("https://cards/claim-resolve", request));
   }
   if (path === "/api/items/claim" && request.method === "POST") {
-    const me = playerFor(who.email);
+    const me = memberFor(who);
     if (!me) return json({ error: "Your email isn't linked to a character yet - ask the DM." }, 403);
     let body;
     try { body = await request.json(); } catch (e) { return json({ error: "Couldn't read that." }, 400); }
     const item = (ROSTER.grabs || []).find((i) => i.id === String((body && body.item) || ""));
     if (!item) return json({ error: "That item isn't up for grabs any more." }, 404);
     return store.fetch("https://cards/claim", {
-      method: "POST", body: JSON.stringify({ item: item.id, character: me.character, email: who.email, withdraw: !!body.withdraw }),
+      method: "POST", body: JSON.stringify({ item: item.id, character: me.character, email: who.acting ? "dm" : who.email,
+                                             withdraw: !!body.withdraw }),
     });
   }
   return json({ error: "Not found." }, 404);
 }
 
 // A player's own notes. Any signed-in email may keep notes (linked to a character or not); the
-// helper's service token has no email, so it never gets in.
-async function notes(request, env) {
-  const who = await identity(request, env);
-  if (!who) return json({ error: "Not signed in." }, 401);
+// helper's service token has no email, so it never gets in - and nor does the DM seeing the site as a player.
+async function notes(request, env, who) {
+  if (who.acting) return json({ error: "A player's notes are private - even from the DM." }, 403);
   if (!who.email) return json({ error: "Notes belong to a signed-in player." }, 403);
   const store = env.NOTES.get(env.NOTES.idFromName(who.email));
   if (request.method === "GET") return store.fetch("https://notes/");
@@ -179,12 +204,10 @@ export class Notes extends DurableObject {
 // ---------------------------------------------------------------- the live Party page
 // One Party store for the campaign. The worker tells it who's asking (a header it sets itself - the
 // store is only reachable through here): the DM's helper, a player and their card's id, or nobody.
-async function partyApi(request, env, path) {
-  const who = await identity(request, env);
-  if (!who) return json({ error: "Not signed in." }, 401);
-  const me = who.service ? null : playerFor(who.email);
-  const viewer = who.service ? { dm: true } : { email: who.email, id: me ? me.id || party.cardId(me.character) : null,
-                                               name: me ? me.character : null };
+async function partyApi(request, env, path, who) {
+  const me = memberFor(who);
+  const viewer = who.service ? { dm: true } : { email: who.acting ? "" : who.email, id: me ? me.id || party.cardId(me.character) : null,
+                                               name: me ? me.character : null, acting: !!who.acting };
   const url = new URL(request.url);
   // The body read here in full, so a request refused before it's read can't leave the stream hanging.
   const headers = new Headers(request.headers);
@@ -197,6 +220,8 @@ async function partyApi(request, env, path) {
 }
 
 const HISTORY_KEPT = 30;
+// A change's author in the card's history: the player's email, or the DM when seeing the site as them.
+const changedBy = (viewer) => viewer.acting ? `DM (as ${viewer.name || "a player"})` : viewer.email;
 const PORTRAIT_MAX = 200000;   // characters of base64 - the page shrinks it to 320 px first
 
 export class Party extends DurableObject {
@@ -332,7 +357,7 @@ export class Party extends DurableObject {
       await this.ctx.storage.put("portrait:" + viewer.id, { mime: pic[1], b64: pic[2] });
       next.portrait = `/api/party/portrait/${encodeURIComponent(viewer.id)}?v=${s.rev + 1}`;
     }
-    await this.save(viewer.id, s, next, viewer.email, "imported from CCC5e: " + party.summary(s.card, next));
+    await this.save(viewer.id, s, next, changedBy(viewer), "imported from CCC5e: " + party.summary(s.card, next));
     return json({ ok: true, rev: s.rev + 1 });
   }
 
@@ -370,7 +395,7 @@ export class Party extends DurableObject {
     try { r = party.applyTreasury(await this.ctx.storage.get("treasury"), body); } catch (e) { return json({ error: e.message }, 400); }
     const at = Date.now();
     await this.ctx.storage.put("treasury", r.treasury);
-    await this.ctx.storage.put("tlog:" + String(at).padStart(15, "0"), { at, by: viewer.dm ? "DM" : viewer.name, text: r.text });
+    await this.ctx.storage.put("tlog:" + String(at).padStart(15, "0"), { at, by: viewer.dm ? "DM" : viewer.acting ? `DM (as ${viewer.name || "a player"})` : viewer.name, text: r.text });
     const old = [...(await this.ctx.storage.list({ prefix: "tlog:" })).keys()];
     if (old.length > 200) await this.ctx.storage.delete(old.slice(0, old.length - 200));
     this.announce();
@@ -390,7 +415,7 @@ export class Party extends DurableObject {
     let next;
     try { next = party.fromPlayer(s.card, Object.assign({}, s.card, body.card)); } catch (e) { return json({ error: e.message }, 400); }
     if (party.canonical(next) === party.canonical(s.card)) return json({ ok: true, rev: s.rev, unchanged: true });
-    await this.save(viewer.id, s, next, viewer.email, "edited: " + party.summary(s.card, next));
+    await this.save(viewer.id, s, next, changedBy(viewer), "edited: " + party.summary(s.card, next));
     return json({ ok: true, rev: s.rev + 1 });
   }
 
@@ -407,7 +432,7 @@ export class Party extends DurableObject {
     (next.inventory || []).forEach((i) => { if (hidden.has(i.name)) i.private = true; else delete i.private; });
     let clean;
     try { clean = party.fromPlayer(s.card, next); } catch (e) { return json({ error: e.message }, 400); }
-    await this.save(viewer.id, s, clean, viewer.email, party.summary(s.card, clean));
+    await this.save(viewer.id, s, clean, changedBy(viewer), party.summary(s.card, clean));
     return json({ ok: true, rev: s.rev + 1 });
   }
 
@@ -497,11 +522,6 @@ function clean(raw) {
         .map((c) => ({ n: str(c && c.n, 30), r: int(c && c.r) })),
     })),
   };
-}
-
-async function isHelper(request, env) {
-  const who = await identity(request, env);
-  return !!(who && who.service);
 }
 
 // Who is asking: {email} for a player (or the DM) signed in through Access, {service: true} for the

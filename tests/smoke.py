@@ -154,6 +154,20 @@ def main() -> int:
                 "print([b['class_name'] for b in c['durable_objects']['bindings']], [m['tag'] for m in c['migrations']])")
         check("publish sets up the notes store for Cloudflare", "'Notes'" in r.stdout and "'v3'" in r.stdout, r.stdout + r.stderr)
 
+        print("The DM site online, and View as…:")
+        r = run(proj, "-c", "import json; from codex import publish; publish.write_configs({'online': "
+                "{'dm_worker': 'dm', 'players_worker': 'pl'}, 'access_url': 'https://team.cloudflareaccess.com'}); "
+                "t = open('publish/wrangler.jsonc', encoding='utf-8').read().split('\\n', 1)[1]; c = json.loads(t); "
+                "print(c.get('main'), c.get('services'))")
+        check("the DM site gets its worker, with a private line to the players' worker",
+              "dm/worker.js" in r.stdout and "'BRAIN'" in r.stdout and "'pl'" in r.stdout and "'Inside'" in r.stdout, r.stdout + r.stderr)
+        brain = (proj / "publish" / "players" / "worker.js").read_text(encoding="utf-8")
+        check("the players' worker has the Inside entrance, and only it takes View as",
+              "class Inside extends WorkerEntrypoint" in brain and brain.count('headers.get("X-Codex-As")') == 1)
+        check("the DM site's pages have View as… (not online here, so no address)",
+              "view-as.js" in dm_home and '<meta name="codex-view-as"' in dm_home and "&quot;url&quot;: &quot;&quot;" in dm_home)
+        check("the players' site doesn't", "view-as.js" not in pl_home and "codex-view-as" not in pl_home)
+
         print("The rules encyclopedia:")
         spells = (out / "dm" / "rules" / "spells.html").read_text(encoding="utf-8")
         check("every spell is on the Spells page", spells.count('class="rules-entry spell') == 319)
