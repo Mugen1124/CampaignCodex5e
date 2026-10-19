@@ -25,6 +25,7 @@ The rules data was retrieved through [Open5e](https://open5e.com/). The monster 
 - [mkdocs-glightbox](https://github.com/blueswen/mkdocs-glightbox) (MIT)
 - [Pillow](https://python-pillow.org/) (HPND)
 - Two box icons (read-aloud, DM) from [Material Design Icons](https://pictogrammers.com/library/mdi/) (Apache-2.0)
+- The page editor's libraries in `docs/javascripts/vendor/`: [EasyMDE](https://github.com/Ionaru/easy-markdown-editor) (MIT) and [Toast UI Editor](https://github.com/nhn/tui.editor) (MIT)
 - The fonts in `docs/fonts/`: [Cinzel](https://github.com/NDISCOVER/Cinzel) and [Alegreya Sans](https://github.com/huertatipografica/Alegreya-Sans) (SIL Open Font License 1.1, see `docs/fonts/OFL.txt`)
 - [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (MIT), optional
 - [Cloudflare wrangler](https://github.com/cloudflare/workers-sdk) (MIT/Apache-2.0), optional, through npx

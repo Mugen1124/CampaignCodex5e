@@ -12,6 +12,7 @@ site_description: The campaign, for its players
 # codex/site-players.yml, add it here too.
 hooks:
   - hooks/sessions.py
+  - hooks/session_dates.py   # Session N: Title entries with their date and time
   - hooks/players.py
   - hooks/campaign.py
   - hooks/maps.py

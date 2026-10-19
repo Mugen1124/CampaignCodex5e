@@ -9,16 +9,30 @@ site_description: Campaign prep and table reference
 # before entities.py. If a `codex update` adds a hook to codex/site.yml, add it here too.
 hooks:
   - hooks/sessions.py
+  - hooks/session_dates.py   # Session N: Title entries with their date and time
   - hooks/campaign.py
   - hooks/maps.py
   - hooks/rules.py
   - hooks/npc_cards.py
   - hooks/entities.py
+  - hooks/page_editor.py     # the pencil that edits a page's Markdown (DM site only)
+
+# The engine's theme features minus navigation.sections and navigation.indexes: regions in the World
+# menu are dropdowns rather than always-open headings, and each section's main page is a row in its
+# menu (styled in docs/stylesheets/campaign.css).
+# This replaces the engine's list: after a `codex update`, compare it with codex/site.yml.
+theme:
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - search.highlight
+    - toc.follow
+    - content.tabs.link
 
 # Tab and page order. Top-level entries become the tabs across the header.
 nav:
   - Sessions: []          # filled in by hooks/sessions.py: This Session, then each session, newest first
-  - Record & Transcribe: recording.md
   - Party: party/index.md
   - World:
       - world/index.md
@@ -66,3 +80,4 @@ nav:
       - Recording sessions: guide/recording.md
       - Working with Claude: guide/ai-assistant.md
       - Troubleshooting: guide/troubleshooting.md
+  - Record & Transcribe: recording.md   # kept last; campaign.css pushes it to the far right
