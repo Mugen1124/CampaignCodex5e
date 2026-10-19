@@ -178,6 +178,28 @@ def main() -> int:
         bestiary = (out / "dm" / "reference" / "bestiary.html").read_text(encoding="utf-8")
         check("a condition in a stat block gets a hover card", 'data-ref="condition:' in bestiary)
 
+        print("The map cache:")
+        cache = proj / ".map-cache" / "assets" / "maps"
+        maps_file = proj / "data" / "maps.yml"
+        maps_text = maps_file.read_text(encoding="utf-8")
+        before = (cache / "greywater.jpg").read_bytes()
+        older = proj / "maps" / "older.png"
+        shutil.copyfile(proj / "maps" / "bellwether-light.png", older)
+        os.utime(older, (946684800, 946684800))   # 2000: older than the cached copy
+        maps_file.write_text(maps_text.replace("source: greywater.png", "source: older.png"), encoding="utf-8")
+        build(proj, "mkdocs.yml", out / "mapcache")
+        check("a map pointed at another (older) file is redone", (cache / "greywater.jpg").read_bytes() != before
+              and "older.png" in (cache / "greywater.source").read_text(encoding="utf-8"))
+        maps_file.write_text(maps_text.split("  - id: bellwether-light")[0], encoding="utf-8")
+        build(proj, "mkdocs-players.yml", out / "mapcache-pl")
+        check("a map taken out of maps.yml leaves the cache",
+              not (cache / "bellwether-light.jpg").exists() and not (cache / "bellwether-light.source").exists())
+        maps_file.write_text(maps_text, encoding="utf-8")
+        older.unlink()
+        build(proj, "mkdocs.yml", out / "mapcache")
+        check("...and back again, both are there", (cache / "greywater.jpg").read_bytes() == before
+              and (cache / "bellwether-light.jpg").is_file())
+
         print("A link to a dm_only page:")
         page = proj / "docs" / "world" / "index.md"
         original = page.read_text(encoding="utf-8")

@@ -8,7 +8,9 @@ maps folder set in campaign.yml (maps: base:). Nothing is copied by hand.
 On each build, any map whose source is new or has changed is resized to a
 web-friendly JPG in .map-cache/ (or under output: local, on this computer; kept outside docs/ so it doesn't trigger a
 live-reload loop). The cached copies are published as assets/maps/<id>.jpg.
-Re-export a map and the site picks up the new version on the next rebuild.
+Re-export a map, or point it at another file (even an older one), and the site picks up the new version on the
+next rebuild: next to each copy, <id>.source notes the file it was made from. A map taken out of maps.yml
+leaves the cache too.
 
 Markers (each alone on its own line):
     {{ map greywater }}     one map, click to zoom
@@ -64,6 +66,26 @@ def _resize(src: Path, out: Path, max_width: int, quality: int) -> None:
         im.save(out, "JPEG", quality=quality, optimize=True, progressive=True)
 
 
+def _stamp(src: Path, max_width: int, quality: int) -> str:
+    """What a cached copy was made from: the file, its size and time, and the resize settings."""
+    st = src.stat()
+    return f"{src}\n{st.st_size}\n{st.st_mtime_ns}\n{max_width}\n{quality}\n"
+
+
+def _prune(ids: set) -> None:
+    """Maps no longer in maps.yml: their cached copies go."""
+    folder = CACHE_ROOT / ASSET_DIR
+    if not folder.is_dir():
+        return
+    for f in folder.iterdir():
+        if f.suffix in (".jpg", ".source") and f.stem not in ids:
+            try:
+                f.unlink()
+                log.info("Map cache: removed %s (no longer in data/maps.yml)", f.name)
+            except OSError:
+                pass
+
+
 def on_config(config, **kwargs):
     global CACHE_ROOT
     root = Path(config.config_file_path).parent
@@ -82,6 +104,7 @@ def on_config(config, **kwargs):
 
     if Image is None:
         log.warning("Pillow isn't installed - run setup again to enable maps.")
+    _prune({str(e["id"]) for e in data.get("maps", []) if isinstance(e, dict) and e.get("id")})
 
     PLAYERS[0] = (config.get("extra") or {}).get("audience") == "players"
     for entry in data.get("maps", []):
@@ -98,13 +121,18 @@ def on_config(config, **kwargs):
         if not src.is_file():
             log.warning("Map '%s': source not found: %s", mid, src)
             continue
-        fresh = out.is_file() and out.stat().st_mtime >= src.stat().st_mtime
+        stamp, note = _stamp(src, max_width, quality), out.with_suffix(".source")
+        fresh = out.is_file() and note.is_file() and note.read_text(encoding="utf-8") == stamp
+        if out.is_file() and not note.is_file() and out.stat().st_mtime >= src.stat().st_mtime:
+            note.write_text(stamp, encoding="utf-8")   # a copy from before .source notes: take it as it is
+            fresh = True
         if not fresh:
             if Image is None:
                 continue
             log.info("Map '%s': resizing %s", mid, src.name)
             try:
                 _resize(src, out, max_width, quality)
+                note.write_text(stamp, encoding="utf-8")
             except Exception as err:  # keep the build alive on a bad file
                 log.warning("Map '%s': could not process %s: %s", mid, src.name, err)
                 continue
