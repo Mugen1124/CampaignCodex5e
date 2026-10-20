@@ -13,6 +13,14 @@ Then it backs everything up, removes the demo, and writes a clean start: a page 
 
 **Run it once.** Running it again replaces your campaign's starting files (This Session, the party, factions, maps, menus) with fresh ones. The backup it makes first goes in the `<folder>-backups` folder next to this one.
 
+## The settings menu
+
+The **⚙** at the top right of every page, on both sites. It holds settings for whoever is looking, saved in their browser:
+
+- **Colours**: Original, Abyss, Ember or Arcane. Everyone starts on the campaign's (`palette:` in `campaign.yml`, below).
+- **Text size**: Smaller, Normal or Larger.
+- On your DM site: **View the players' site as…** one of your players, once you're online (see [Going online](going-online.md#your-dm-site-online-and-view-as)), and **Help**, the way to this guide.
+
 ## campaign.yml
 
 The one settings file. The parts you'll touch most:
@@ -26,6 +34,7 @@ The one settings file. The parts you'll touch most:
 | `skip_mentions` | Names `add-mentions` should never wrap. |
 | `maps: base` | Where your map exports live. |
 | `output` | Where built sites and caches go: `here` (in this folder) or `local` (on this computer, outside it). Use `local` if this folder is in Google Drive, Dropbox, OneDrive or iCloud, so the cloud only holds your own files - then run setup again, and it moves the site's Python packages out of the folder too. Using the campaign on a second computer (a laptop at the table)? Run setup once on that computer as well; each keeps its own packages. |
+| `palette` | The site's colours: `original` (black and grey), `abyss` (teal), `ember` (warm brown) or `arcane` (violet). Everyone sees these until they pick their own in the settings menu. |
 | `online` | Only if you go online — see [Going online](going-online.md). |
 
 ## Add a town

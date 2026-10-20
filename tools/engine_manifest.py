@@ -22,7 +22,7 @@ from codex.update import MANIFEST, fingerprint  # noqa: E402
 
 ENGINE = [
     "codex/*", "hooks/*", "tools/*", "templates/*",
-    "docs/guide/*", "docs/rules/*", "docs/javascripts/*", "docs/stylesheets/extra.css",
+    "docs/guide/*", "docs/rules/*", "docs/javascripts/*", "docs/stylesheets/extra.css", "docs/stylesheets/theme.css", "docs/fonts/*",
     "docs/players/*.js", "docs/players/tracker.md", "docs/players/notes.md", "docs/recording.md",
     "data/rules/srd.json", "data/monsters/srd.json",
     "publish/players/*.js", "publish/players/*.mjs", "publish/dm/*.js",

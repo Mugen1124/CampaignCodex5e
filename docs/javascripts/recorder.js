@@ -5,8 +5,9 @@
    Works on the site at home or on the laptop at the table (CampaignCodex5e); the online copy only
    explains that.
 
-   Pop out: the recorder can run in its own small window (recording.html?popout), so the main
-   window can move around the site - leaving a page would otherwise stop its recording. The
+   Pop out: the recorder runs in its own small window (recording.html?popout), with the recordings to
+   transcribe under it, so the main window can move around the site - leaving a page would otherwise stop
+   its recording. The Record & Transcribe button at the top of every page opens that window. The
    recorder says how it's doing every second on a BroadcastChannel; every other page of the site
    shows that as a "REC" light in its header (click it to bring the recorder forward), and keeps
    the screen awake while it's visible. Only one window records at a time. */
@@ -31,7 +32,7 @@
   // Bring the recorder window forward - or open it. (Opening it by its URL when it's already open
   // would reload it and end its recording, so first ask for the window by name without a URL.)
   function openRecorder() {
-    var w = window.open("", WINDOW_NAME, "popup,width=600,height=470");
+    var w = window.open("", WINDOW_NAME, "popup,width=640,height=720");
     if (!w) { window.alert("The browser blocked the recorder window - allow pop-ups for this site, then try again."); return; }
     try { if (w.location.href === "about:blank") w.location.href = recorderUrl(); } catch (e) {}
     w.focus();
@@ -88,7 +89,7 @@
       ' <div class="rec-status"></div><div class="rec-silence"></div><div class="rec-elsewhere"></div>' +
       (POPOUT
         ? ' <p class="eb-hint">Ask the table before recording. Keep this window open (park it in a corner) - closing it stops the recording. ' +
-          "Use the main window for the rest of the site; its REC light brings this window back.</p>"
+          "Use the main window for the rest of the site; its REC light (or Record &amp; Transcribe) brings this window back.</p>"
         : ' <p class="eb-hint">Ask the table before recording. Leaving this page stops a recording made here - use <b>Pop out</b> to record ' +
           "in a small window of its own and keep using the site. The audio is saved every few seconds, so a crash loses seconds, not the session.</p>") +
       "</div>" +
@@ -403,7 +404,23 @@
     });
   }
 
-  function start() { init(); initLight(); }
+  // ------------------------------------------------------------ the Record & Transcribe button
+  // A click opens the recorder in its own window (or brings it forward) and leaves this page where it is,
+  // so a recording never stops because someone moved around the site. A middle or Ctrl click still
+  // opens the page itself, as does the online copy (which can't record).
+  function initButton() {
+    if (POPOUT || ONLINE) return;
+    var page = new URL(recorderUrl()).pathname;
+    document.addEventListener("click", function (ev) {
+      var a = ev.target.closest && ev.target.closest("a[href]");
+      if (!a || ev.button !== 0 || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey) return;
+      if (new URL(a.href, location.href).pathname !== page) return;
+      ev.preventDefault();
+      openRecorder();
+    });
+  }
+
+  function start() { init(); initLight(); initButton(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
 })();

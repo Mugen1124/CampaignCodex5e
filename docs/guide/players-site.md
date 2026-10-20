@@ -61,7 +61,7 @@ Your initiative tracker and the cards share HP and conditions: a fight starts fr
 
 This live status and the treasury are kept on the players' site only — not in `data/party.yml`.
 
-**Showing a player how.** **View as…**, at the top right of your DM site, opens the players' site as one of them, so you can walk them through something, or do it for them ([more](going-online.md#your-dm-site-online-and-view-as)).
+**Showing a player how.** **View as…**, in the settings menu (**⚙**, top right) of your DM site, opens the players' site as one of them, so you can walk them through something, or do it for them ([more](going-online.md#your-dm-site-online-and-view-as)).
 
 ## My Notes
 

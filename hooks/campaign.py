@@ -33,6 +33,8 @@ from codex import settings as codex_settings  # noqa: E402
 from codex import rules as codex_rules  # noqa: E402
 
 CAMPAIGN_SLUG = ["campaign"]   # campaign.yml's name, as a slug - set in on_config
+PALETTES = ("original", "abyss", "ember", "arcane")   # theme.css has their colours
+PALETTE = ["original"]   # campaign.yml palette: - the colours until someone picks their own - set in on_config
 DM_URL = [""]   # the DM site online, when it has the players' site behind it (for "View as…") - set in on_config
 
 log = logging.getLogger("mkdocs.hooks.campaign")
@@ -128,6 +130,10 @@ def on_config(config, **kwargs):
     root = Path(config.config_file_path).parent / "data"
     settings = codex_settings.load(root.parent)
     CAMPAIGN_SLUG[0] = settings["slug"]
+    PALETTE[0] = str(settings.get("palette") or "original").strip().lower()
+    if PALETTE[0] not in PALETTES:
+        log.warning("campaign.yml: palette: %s isn't one of %s - using original", PALETTE[0], ", ".join(PALETTES))
+        PALETTE[0] = "original"
     on = settings["online"]
     DM_URL[0] = settings["dm_url"] if on.get("enabled") and on.get("players_site", True) and settings["players_url"] else ""
     codex_rules.load(root.parent)
@@ -830,6 +836,13 @@ def on_post_page(output, page, config, **kwargs):
     editors keep their saved state per campaign (two campaigns served on one computer share a
     browser address, and would otherwise overwrite each other's)."""
     tag = f'<meta name="codex-campaign" content="{CAMPAIGN_SLUG[0]}">'
+    # The colours and text size from the settings menu (javascripts/settings.js) - or the campaign's colours
+    # (campaign.yml palette:) - on the page before it draws, so it never flashes the wrong ones.
+    tag += f'<meta name="codex-palette" content="{PALETTE[0]}">'
+    tag += ("<script>(function(){var d=document.documentElement,p=" + json.dumps(PALETTE[0]) + ",t='';"
+            "try{p=localStorage.getItem(" + json.dumps(CAMPAIGN_SLUG[0] + "-palette") + ")||p;"
+            "t=localStorage.getItem(" + json.dumps(CAMPAIGN_SLUG[0] + "-text") + ")||''}catch(e){}"
+            "if(p!=='original')d.setAttribute('data-cx-palette',p);if(t)d.setAttribute('data-cx-text',t)})()</script>")
     if not PLAYERS[0]:
         # "View as…" (javascripts/view-as.js): the DM site online, and whose eyes the players' site can be seen through.
         party = [["pc-" + _pc_id(m), m.get("character", "")] for m in PARTY.get("members") or [] if isinstance(m, dict)]

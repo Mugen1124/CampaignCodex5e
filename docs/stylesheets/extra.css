@@ -664,7 +664,7 @@
 /* ---------- Recorder pop-out window and the REC light in the header ---------- */
 /* The pop-out (recording.html?popout) shows only the recorder. */
 html.rec-popout .md-header, html.rec-popout .md-tabs, html.rec-popout .md-sidebar, html.rec-popout .md-footer,
-html.rec-popout .md-content__inner > :not(#rec-root), html.rec-popout .rec-list-title, html.rec-popout .rec-list { display: none !important; }
+html.rec-popout .md-content__inner > :not(#rec-root) { display: none !important; }
 html.rec-popout .md-main__inner { margin: 0; padding: 0; }
 html.rec-popout .md-content__inner { margin: 0.4rem 0.6rem; padding: 0; }
 html.rec-popout .rec-panel { margin: 0; }
@@ -901,16 +901,50 @@ html.rec-popout .rec-level-note { min-width: 0; }
   .cf-slots > span { grid-column: 1 / -1; }
 }
 
-/* ---------- "View as…" (javascripts/view-as.js), top right of the DM site ---------- */
-.va { position: relative; margin: 0 0.4rem; flex-shrink: 0; }
-.va-btn { font: 600 0.65rem/1 var(--md-text-font-family); color: var(--md-primary-bg-color); background: var(--md-primary-fg-color--light);
-  border: 1px solid var(--md-default-fg-color--lighter); border-radius: 0.2rem; padding: 0.4rem 0.6rem; cursor: pointer; white-space: nowrap; }
-.va-btn:hover, .va-btn[aria-expanded="true"] { border-color: var(--md-accent-fg-color); }
-.va-menu { position: absolute; right: 0; top: calc(100% + 0.3rem); z-index: 10; min-width: 13rem; max-width: 80vw; padding: 0.3rem 0;
-  background: var(--md-default-bg-color); border: 1px solid var(--md-default-fg-color--lightest); border-radius: 0.2rem;
+/* ---------- The settings menu (javascripts/settings.js): the cog at the top right ---------- */
+.cx-set { position: relative; margin: 0 0.4rem; flex-shrink: 0; }
+.cx-set-btn { display: flex; align-items: center; justify-content: center; width: 1.7rem; height: 1.7rem; padding: 0; cursor: pointer;
+  background: transparent; border: 1px solid transparent; border-radius: 0.2rem; color: var(--md-primary-bg-color); }
+.cx-set-btn svg { width: 1.1rem; height: 1.1rem; fill: currentColor; transition: transform 0.25s; }
+.cx-set-btn:hover, .cx-set-btn[aria-expanded="true"] { border-color: var(--md-primary-bg-color--light); }
+.cx-set-btn[aria-expanded="true"] svg { transform: rotate(45deg); }
+.cx-set-menu { position: absolute; right: 0; top: calc(100% + 0.35rem); z-index: 10; width: 15rem; max-width: 85vw; padding: 0.2rem 0;
+  max-height: 80vh; overflow-y: auto; font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--md-default-bg-color); border: 1px solid var(--md-default-fg-color--lightest); border-radius: 0.3rem;
   box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.5); }
-.va-menu a { display: block; padding: 0.35rem 0.8rem; font-size: 0.7rem; color: var(--md-default-fg-color); cursor: pointer; }
-.va-menu a:hover { background: var(--md-default-fg-color--lightest); color: var(--md-accent-fg-color); }
-.va-head, .va-foot { padding: 0.25rem 0.8rem; font-size: 0.6rem; color: var(--md-default-fg-color--light); }
-.va-foot { border-top: 1px solid var(--md-default-fg-color--lightest); margin-top: 0.2rem; padding-top: 0.4rem; }
-@media screen and (max-width: 44.9375em) { .va-btn { padding: 0.35rem 0.4rem; } }
+.cx-set-sec + .cx-set-sec { border-top: 1px solid var(--md-default-fg-color--lightest); }
+.cx-set-head { padding: 0.5rem 0.8rem 0.2rem; font-size: 0.55rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--md-default-fg-color--light); }
+.cx-set-body { padding: 0 0 0.4rem; }
+.cx-set-note { padding: 0.25rem 0.8rem 0; font-size: 0.58rem; color: var(--md-default-fg-color--light); }
+/* Colours: one row per palette, with a chip of its page, panel and accent colours */
+.cx-pal { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem; padding: 0.2rem 0.8rem; }
+.cx-pal-opt { display: flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.4rem; cursor: pointer; font: inherit; font-size: 0.65rem;
+  color: var(--md-default-fg-color); background: transparent; border: 1px solid var(--md-default-fg-color--lightest); border-radius: 0.25rem; }
+.cx-pal-opt:hover { border-color: var(--md-default-fg-color--light); }
+.cx-pal-opt.cx-on { border-color: var(--md-accent-fg-color); }
+.cx-pal-chip { display: flex; width: 1.6rem; height: 0.9rem; border-radius: 0.15rem; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.15); padding-left: 0.5rem; }
+.cx-pal-chip > span { flex: 1; }
+.cx-set-link { cursor: pointer; color: var(--md-typeset-a-color); }
+.cx-set-link:hover { text-decoration: underline; }
+/* Text size: three buttons side by side */
+.cx-seg { display: flex; margin: 0.2rem 0.8rem; border: 1px solid var(--md-default-fg-color--lightest); border-radius: 0.25rem; overflow: hidden; }
+.cx-seg button { flex: 1; padding: 0.3rem 0; cursor: pointer; font: inherit; font-size: 0.65rem; color: var(--md-default-fg-color);
+  background: transparent; border: 0; }
+.cx-seg button + button { border-left: 1px solid var(--md-default-fg-color--lightest); }
+.cx-seg button:hover { background: var(--md-default-fg-color--lightest); }
+.cx-seg button.cx-on { background: var(--cx-highlight); color: var(--md-accent-fg-color); }
+/* Text size (settings menu): the whole site scales from the page's base size, which Material steps up on wide screens. */
+html[data-cx-text="small"] { font-size: 112.5%; }
+html[data-cx-text="large"] { font-size: 137.5%; }
+@media screen and (min-width: 100em) {
+  html[data-cx-text="small"] { font-size: 125%; }
+  html[data-cx-text="large"] { font-size: 150%; }
+}
+@media screen and (min-width: 125em) {
+  html[data-cx-text="small"] { font-size: 137.5%; }
+  html[data-cx-text="large"] { font-size: 162.5%; }
+}
+/* View as… (javascripts/view-as.js) */
+.cx-va a { display: block; padding: 0.3rem 0.8rem; font-size: 0.68rem; color: var(--md-default-fg-color); cursor: pointer; }
+.cx-va a:hover { background: var(--md-default-fg-color--lightest); color: var(--md-accent-fg-color); }

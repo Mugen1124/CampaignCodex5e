@@ -39,6 +39,9 @@ DEFAULTS = {
     # "local" - on this computer, outside this folder. Use local if this folder is in Google Drive,
     # Dropbox, OneDrive or iCloud, so the cloud only holds your own files.
     "output": "here",
+    # The site's colours, until someone picks their own in the settings menu (the cog, top right):
+    # original (black and grey), abyss (teal), ember (warm brown) or arcane (violet).
+    "palette": "original",
     "transcribe": {
         "model": "large-v3-turbo",
         # One sentence that tells the speech model what it's listening to.

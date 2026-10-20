@@ -168,6 +168,14 @@ def main() -> int:
               "view-as.js" in dm_home and '<meta name="codex-view-as"' in dm_home and "&quot;url&quot;: &quot;&quot;" in dm_home)
         check("the players' site doesn't", "view-as.js" not in pl_home and "codex-view-as" not in pl_home)
 
+        print("The look and the settings menu:")
+        check("both sites have the theme, its fonts and the settings menu",
+              all("stylesheets/theme.css" in h and "javascripts/settings.js" in h for h in (dm_home, pl_home))
+              and (out / "dm" / "fonts" / "spectral-sc-latin-600-normal.woff2").is_file()
+              and (out / "players" / "fonts" / "alegreya-sans-latin-400-normal.woff2").is_file())
+        check("the campaign's colours (palette:) are on every page, set before it draws",
+              all('<meta name="codex-palette" content="original">' in h and "data-cx-palette" in h for h in (dm_home, pl_home)))
+
         print("The rules encyclopedia:")
         spells = (out / "dm" / "rules" / "spells.html").read_text(encoding="utf-8")
         check("every spell is on the Spells page", spells.count('class="rules-entry spell') == 319)

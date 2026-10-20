@@ -1,0 +1,369 @@
+/* The engine's look - Spectral SC headings, diamond ornaments, framed menus and boxes - on the original
+   black-and-grey colours (extra.css). Based on "Abyss" by Kosmos (github.com/IIKosmosII). Loaded after
+   extra.css and before your campaign.css, so a campaign can still change anything here in campaign.css.
+   Engine file: `codex update` replaces it. */
+
+/* Fonts live in docs/fonts/ so the site still works offline (SIL Open Font License, see docs/fonts/OFL.txt).
+   Running text is Alegreya Sans; the boxes and tools (cards, the tracker, tables, menus) use Segoe UI. */
+@font-face { font-family: "Spectral SC"; font-weight: 400; font-display: swap; src: url("../fonts/spectral-sc-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Spectral SC"; font-weight: 600; font-display: swap; src: url("../fonts/spectral-sc-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Spectral SC"; font-weight: 700; font-display: swap; src: url("../fonts/spectral-sc-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Alegreya Sans"; font-weight: 400; font-display: swap; src: url("../fonts/alegreya-sans-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Alegreya Sans"; font-weight: 400; font-style: italic; font-display: swap; src: url("../fonts/alegreya-sans-latin-400-italic.woff2") format("woff2"); }
+@font-face { font-family: "Alegreya Sans"; font-weight: 500; font-display: swap; src: url("../fonts/alegreya-sans-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Alegreya Sans"; font-weight: 700; font-display: swap; src: url("../fonts/alegreya-sans-latin-700-normal.woff2") format("woff2"); }
+
+/* The colours are extra.css's; these name the ones this file uses. */
+[data-md-color-scheme="slate"] {
+  --md-text-font-family:  "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+  --cx-heading-font:      "Spectral SC", Georgia, "Times New Roman", serif;
+  --cx-ui-font:           "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+
+  --ab-label:   var(--md-default-fg-color--light);
+  --ab-text:    var(--md-default-fg-color--light);
+  --ab-head:    var(--cx-title);
+  --ab-hover:   var(--cx-hover);
+  --ab-current: var(--cx-highlight);
+  --ab-line:    var(--cx-line);
+}
+
+/* ---------- Text and headings ---------- */
+.md-typeset { font-size: 0.84rem; line-height: 1.7; }
+.md-typeset h1, .md-typeset h2 { text-transform: none; color: var(--ab-head); }
+.md-typeset h1 { font-weight: 600; letter-spacing: 0.05em; }
+.md-typeset h2 { font-weight: 600; letter-spacing: 0.06em; font-size: 1.25em; }
+.md-typeset h2::before {           /* a small diamond before each section heading */
+  content: "";
+  display: inline-block;
+  width: 0.36em;
+  height: 0.36em;
+  margin: 0 0.65em 0.18em 0.1em;
+  border: 1px solid var(--ab-text);
+  transform: rotate(45deg);
+}
+.md-typeset h3 { font-family: var(--cx-heading-font); letter-spacing: 0.03em; color: var(--ab-head); }
+/* The boxes and tools - the encounter builder and tracker, the Party page's cards, the recorder, tables,
+   menus, boxes and buttons - in Segoe UI, which reads best at their small sizes. */
+.md-typeset .eb, .md-typeset .pc-cards, .md-typeset .pcx, .md-typeset table, #rec-root, .md-nav, .ref-card,
+.cx-set-menu, .md-typeset .admonition, .md-typeset details, .md-typeset .md-button, .md-typeset .statblock {
+  font-family: var(--cx-ui-font);
+}
+.md-typeset .md-button, .md-typeset a.headerlink { text-decoration: none; }
+.md-typeset hr { border-bottom-color: var(--ab-line); }
+
+/* ---------- Header and search ---------- */
+.md-header { border-bottom: 1px solid var(--ab-line); box-shadow: none; }
+.md-header__topic { text-transform: none; letter-spacing: 0.06em; }
+.md-search__form { background: var(--md-default-bg-color); border: 1px solid rgba(164, 172, 177, 0.18); border-radius: 0.4rem; }
+.md-search__form:hover { background: var(--md-default-bg-color); border-color: var(--ab-line); }
+/* Record & Transcribe sits apart from the other tabs, centred under the search bar
+   (same width and right edge as the search box), drawn as an outlined button - and always last, wherever a
+   campaign's menu lists it. A click opens the recorder in its own window (javascripts/recorder.js). */
+.md-tabs__item:has(> a[href$="recording.html"]) {
+  order: 99;
+  margin-left: auto;
+  margin-right: 0.2rem;
+  width: 11.7rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.md-tabs__item > a[href$="recording.html"] {
+  margin-top: 0;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid #fff;
+  border-radius: 0.2rem;
+  opacity: 1;
+}
+
+.md-tabs__item > a[href$="recording.html"]:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* The settings cog (javascripts/settings.js): an outline like Record & Transcribe's. */
+.cx-set-btn { border-color: rgba(255, 255, 255, 0.55); color: #fff; }
+.cx-set-btn:hover, .cx-set-btn[aria-expanded="true"] { border-color: #fff; background: rgba(255, 255, 255, 0.12); }
+
+/* ---------- "On this page" ---------- */
+.md-nav--secondary > .md-nav__title {
+  font-family: var(--cx-heading-font);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ab-label);
+  background: transparent;
+  box-shadow: none;
+}
+.md-nav--secondary .md-nav__link { color: var(--ab-text); border-radius: 0.4rem; padding: 0.15rem 0.5rem; }
+.md-nav--secondary .md-nav__link:hover { background: var(--ab-hover); color: var(--ab-head); }
+.md-nav--secondary .md-nav__link--active { color: var(--ab-head); font-weight: 700; }
+
+/* ---------- Boxes: At a glance (!!! info), notes, DM boxes ---------- */
+.md-typeset .admonition, .md-typeset details {
+  border: 1px solid var(--ab-line);
+  border-radius: 0.7rem;
+  box-shadow: none;
+  font-size: 0.8rem;
+}
+.md-typeset .admonition.info, .md-typeset details.info {
+  background: var(--cx-panel);
+  border-color: rgba(164, 172, 177, 0.16);
+  padding: 0.2rem 1rem 0.6rem;
+}
+.md-typeset .admonition.info > .admonition-title {
+  background: transparent;
+  border: 0;
+  padding-left: 0;
+  font-family: var(--cx-heading-font);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ab-head);
+}
+.md-typeset .admonition.info > .admonition-title::before { display: none; }
+.md-typeset details.dm { background: var(--md-primary-fg-color); border-style: dashed; }
+/* Keep each box's title bar inside its rounded border (the theme gives it its own square-cornered
+   background, which otherwise pokes out past the curve). */
+.md-typeset .admonition, .md-typeset details { overflow: hidden; }
+.md-typeset details.dm > summary, .md-typeset .admonition.dm > .admonition-title { background: transparent; }
+:root {   /* DM boxes hold your private theories: a lock instead of the engine's shield */
+  --icon-dm: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3z"/></svg>');
+}
+
+/* ---------- Lore pages (docs/world/): # Title, *tagline*, !!! info "At a glance", ## sections ---------- */
+.md-typeset h1 + p:has(> em:only-child) {            /* the italic tagline under the title, with a divider */
+  position: relative;
+  margin-top: -0.6em;
+  padding-bottom: 1.3em;
+  font-size: 1.15em;
+  color: var(--ab-text);
+}
+.md-typeset h1 + p:has(> em:only-child)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--ab-line);
+}
+.md-typeset h1 + p:has(> em:only-child)::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.17rem;
+  width: 0.3rem;
+  height: 0.3rem;
+  border: 1px solid var(--ab-text);
+  background: var(--md-default-bg-color);
+  transform: translateX(-50%) rotate(45deg);
+}
+.md-typeset .admonition.info ul { list-style: none; margin: 0.4em 0 0; padding: 0; }
+.md-typeset .admonition.info ul > li { margin: 0.4em 0; padding-left: 8.5rem; }
+.md-typeset .admonition.info ul > li > strong:first-child {   /* "Region:", "Type:"... as a label column */
+  display: inline-block;
+  width: 8rem;
+  margin-left: -8.5rem;
+  font-weight: 400;
+  color: var(--ab-label);
+}
+.md-typeset h2#unknown + ul {                         /* ## Unknown: a dashed box with diamond bullets */
+  list-style: none;
+  margin: 0.6em 0 1.2em;
+  padding: 0.8rem 1.1rem;
+  border: 1px dashed rgba(164, 172, 177, 0.3);
+  border-radius: 0.7rem;
+}
+.md-typeset h2#unknown + ul > li { position: relative; margin: 0.3em 0; padding-left: 1.3em; }
+.md-typeset h2#unknown + ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0.15em;
+  top: 0.65em;
+  width: 0.32em;
+  height: 0.32em;
+  background: var(--ab-text);
+  transform: rotate(45deg);
+}
+
+/* Every tab's side menu: a menu panel with separators. In World: region (dropdown) > towns. */
+@media screen and (min-width: 76.25em) {
+  .md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list {
+    margin-top: 0.4rem;
+    padding: 0.3rem;
+    background: var(--md-primary-fg-color);
+    border: 1px solid var(--ab-line);
+    border-radius: 0.6rem;
+  }
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item {
+  padding: 0;
+  border-bottom: 1px solid var(--ab-line);
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item:last-child { border-bottom: 0; }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link,
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item > .md-nav__container > .md-nav__link {
+  margin: 0;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.4rem;
+  color: var(--ab-text);
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav__container > a.md-nav__link,
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > label.md-nav__link {   /* regions */
+  font-family: var(--cx-heading-font);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.md-nav--lifted .md-nav__item--nested > .md-nav__container > label.md-nav__link { flex: none; padding: 0.45rem 0.5rem; }
+.md-nav--lifted .md-nav .md-nav .md-nav__item--nested > .md-nav__container > a.md-nav__link,
+.md-nav--lifted .md-nav .md-nav .md-nav__item--nested > label.md-nav__link { font-weight: 700; }   /* cities */
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__link[href]:hover,
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list label.md-nav__link:hover { background: var(--ab-hover); color: var(--ab-head); }
+.md-nav--lifted .md-nav__item--nested > .md-toggle:checked ~ .md-nav__container > .md-nav__link,
+.md-nav--lifted .md-nav__item--nested > .md-toggle:checked ~ .md-nav__link { color: var(--ab-head); }
+/* An open region: its towns step in. An open town: its pages sit on a highlighted inset panel. */
+/* Every row's highlight runs edge to edge of the menu frame; deeper levels step in with text padding only. */
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list {
+  margin: 0 0 0.3rem;
+  padding: 0;
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link:not(.md-nav__container),
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav__container > a.md-nav__link {
+  padding-left: 1.3rem;   /* towns */
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__link { margin-right: 0; }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav .md-nav__item--nested > .md-nav > .md-nav__list {
+  margin: 0;
+  padding: 0;
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav .md-nav__item--nested > .md-toggle:checked ~ .md-nav > .md-nav__list {
+  padding-bottom: 0.4rem;   /* when a town is open: a gap after its pages, so the last one doesn't run into the next town */
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav .md-nav__item--nested > .md-toggle:checked ~ .md-nav { margin-bottom: 0; }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link {
+  padding-left: 2.1rem;   /* a town's own pages (Locations, People...) */
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav .md-nav__link { margin-top: 0; padding: 0.3rem 0.6rem; border-radius: 0.4rem; }
+/* A row with a dropdown (a region, or a town) is a link plus an arrow inside one container:
+   pad the link and the arrow, not the container too, so names line up; hover lights the whole row. */
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__container.md-nav__link {
+  margin: 0;
+  padding: 0;
+  border-radius: 0.4rem;
+}
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__container:hover { background: var(--ab-hover); }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__container > .md-nav__link:hover { background: transparent; }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__container:hover > .md-nav__link { color: var(--ab-head); }
+/* The page you're on, when it's a dropdown row: one highlight on the whole row, not one on the name too. */
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__container:has(> a.md-nav__link--active) { background: var(--ab-current); }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list .md-nav__container > a.md-nav__link--active { background: transparent; }
+/* Less space between an opened region and its first town. */
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav { margin-top: 0; }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list { padding-top: 0; }
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav > .md-nav__list a.md-nav__link--active {
+  background: var(--ab-current);
+  color: var(--ab-head);
+  font-weight: 700;
+}
+
+/* Party character cards: the same rounded panel as the NPC cards, no red rules; contents unchanged. */
+.md-typeset .pc-cards .statblock.pc-card {
+  background: var(--cx-panel);
+  border: 1px solid rgba(164, 172, 177, 0.14);
+  border-radius: 0.7rem;
+  box-shadow: none;
+  padding: 1rem 1rem 0.9rem;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.md-typeset .pc-cards .statblock.pc-card:hover {
+  border-color: rgba(164, 172, 177, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+}
+.md-typeset .pc-cards .pc-card hr {   /* dividers: a line with a diamond, like the NPC cards */
+  position: relative;
+  overflow: visible;
+  height: 1px;
+  margin: 0.9em 0;
+  border: 0;
+  background: var(--ab-line);
+}
+.md-typeset .pc-cards .pc-card hr::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -0.17rem;
+  width: 0.3rem;
+  height: 0.3rem;
+  border: 1px solid var(--ab-text);
+  background: var(--cx-panel);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* "Recordings": a section heading in white with a diamond, over a dividing line */
+#rec-root .rec-list-title {
+  font-family: var(--cx-heading-font);
+  font-size: 1.25em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--ab-head);
+  margin: 1.6rem 0 0.6rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--ab-line);
+}
+#rec-root .rec-list-title::before {   /* the same small diamond as the ## headings */
+  content: "";
+  display: inline-block;
+  width: 0.36em;
+  height: 0.36em;
+  margin: 0 0.65em 0.18em 0.1em;
+  border: 1px solid var(--ab-text);
+  transform: rotate(45deg);
+}
+/* ---------- Layout: a wider middle column ----------
+   The engine's extra.css caps the whole page at 1440px; on a wide screen that leaves the
+   content column narrow with lots of empty space on both sides. Allow more width here. */
+.md-grid { max-width: 1760px; }
+
+/* ---------- Colours: the palettes in the settings menu (javascripts/settings.js) ----------
+   Original is extra.css's own. The others repaint the same colour names; on screen only, so printing
+   still switches to dark text on white. */
+@media screen {
+  [data-cx-palette="abyss"] [data-md-color-scheme="slate"] {
+    --md-default-bg-color: #081112; --md-default-fg-color: #D6D9DB; --md-default-fg-color--light: #B0B5B4;
+    --md-default-fg-color--lighter: #899291; --md-default-fg-color--lightest: #1d2f31; --md-typeset-color: #C3C8C7;
+    --md-primary-fg-color: #0E1B1D; --md-primary-fg-color--light: #122325; --md-primary-fg-color--dark: #081112;
+    --md-primary-bg-color: #D6D9DB; --md-primary-bg-color--light: #B0B5B4;
+    --md-accent-fg-color: #8fc1c9; --md-typeset-a-color: #8fc1c9;
+    --md-code-bg-color: #0E1B1D; --md-footer-bg-color: #0E1B1D; --md-footer-bg-color--dark: #081112; --md-admonition-bg-color: #122325;
+    --cx-panel: #122325; --cx-panel-head: #1A2E30; --cx-line: rgba(176, 181, 180, 0.22); --cx-line-soft: rgba(176, 181, 180, 0.12);
+    --cx-line-strong: #667271; --cx-hover: rgba(143, 193, 201, 0.12); --cx-highlight: rgba(143, 193, 201, 0.14);
+    --cx-title: #E6EAEB; --cx-section: #8fc1c9; --cx-on-accent: #081112;
+  }
+  [data-cx-palette="ember"] [data-md-color-scheme="slate"] {
+    --md-default-bg-color: #120e0b; --md-default-fg-color: #e3d9cf; --md-default-fg-color--light: #b8aa9c;
+    --md-default-fg-color--lighter: #7d7064; --md-default-fg-color--lightest: #2e2620; --md-typeset-color: #e3d9cf;
+    --md-primary-fg-color: #241c16; --md-primary-fg-color--light: #2f251d; --md-primary-fg-color--dark: #1a1410;
+    --md-primary-bg-color: #f0e6dc; --md-primary-bg-color--light: #b8aa9c;
+    --md-accent-fg-color: #d98c3a; --md-typeset-a-color: #e0a96d;
+    --md-code-bg-color: #1f1813; --md-footer-bg-color: #241c16; --md-footer-bg-color--dark: #120e0b; --md-admonition-bg-color: #1b1612;
+    --cx-panel: #1b1612; --cx-panel-head: #2f251d; --cx-line: #3e322a; --cx-line-soft: #2a221c; --cx-line-strong: #5a4a3e;
+    --cx-hover: rgba(217, 140, 58, 0.12); --cx-highlight: rgba(217, 140, 58, 0.14);
+    --cx-title: #f3ebe3; --cx-section: #d98c3a; --cx-on-accent: #120e0b;
+  }
+  [data-cx-palette="arcane"] [data-md-color-scheme="slate"] {
+    --md-default-bg-color: #0e0c14; --md-default-fg-color: #dcd8e8; --md-default-fg-color--light: #aaa3c2;
+    --md-default-fg-color--lighter: #6f688a; --md-default-fg-color--lightest: #2a2538; --md-typeset-color: #dcd8e8;
+    --md-primary-fg-color: #1c1828; --md-primary-fg-color--light: #241f33; --md-primary-fg-color--dark: #14111d;
+    --md-primary-bg-color: #ece8f6; --md-primary-bg-color--light: #aaa3c2;
+    --md-accent-fg-color: #b48cf0; --md-typeset-a-color: #8fb4f5;
+    --md-code-bg-color: #191523; --md-footer-bg-color: #1c1828; --md-footer-bg-color--dark: #0e0c14; --md-admonition-bg-color: #16131f;
+    --cx-panel: #16131f; --cx-panel-head: #241f33; --cx-line: #352e4a; --cx-line-soft: #221d30; --cx-line-strong: #4b4266;
+    --cx-hover: rgba(180, 140, 240, 0.12); --cx-highlight: rgba(180, 140, 240, 0.14);
+    --cx-title: #f1eefa; --cx-section: #b48cf0; --cx-on-accent: #0e0c14;
+  }
+}

@@ -27,6 +27,7 @@ hooks:
   - hooks/entities.py
 
 extra_javascript:
+  - javascripts/settings.js        # the settings menu (the cog, top right): colours
   - javascripts/refs.js
   - players/tracker-live.js        # the Initiative page's live tracker
   - javascripts/party-cards.js     # Party page: the roster and the cards

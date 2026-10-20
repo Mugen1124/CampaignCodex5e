@@ -94,7 +94,7 @@ With the players' site online, your **DM site online is live too**, through a pr
 - the **Party page** shows each card's live HP and conditions, the party treasury and the HP switch, and **History** with **Undo**;
 - the **initiative tracker** can **Share with players**, and it keeps the cards' HP and conditions up to date.
 
-**View as…**, at the top right of your DM site, opens the players' site in a new tab **as one of your players**, with an orange banner at the top. It's for when a player asks "how do I add this to my character?": show them, or do it for them. What you see there is exactly their view: their own card has Edit, Import and Privacy, and everything else is as they'd find it. Anything you change there is saved as theirs, and the card's History says it was you (*DM (as Tam)*). **Any player** shows the site to someone signed in without a character. A player's private notes stay closed, even to you.
+**View as…**, in the settings menu (**⚙**, top right) of your DM site, opens the players' site in a new tab **as one of your players**, with an orange banner at the top. It's for when a player asks "how do I add this to my character?": show them, or do it for them. What you see there is exactly their view: their own card has Edit, Import and Privacy, and everything else is as they'd find it. Anything you change there is saved as theirs, and the card's History says it was you (*DM (as Tam)*). **Any player** shows the site to someone signed in without a character. A player's private notes stay closed, even to you.
 
 At home, View as… opens your DM site online, so it appears once you've published. Your players never see any of it: it isn't on their site.
 

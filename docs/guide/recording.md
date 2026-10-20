@@ -9,10 +9,10 @@
 
 ## Record
 
-With `CampaignCodex5e` running, open the **[Record & Transcribe](../recording.md)** tab in Chrome or Edge:
+With `CampaignCodex5e` running, click **Record & Transcribe** (top right) in Chrome or Edge. The recorder opens in a small window of its own, with your recordings under it, and the page you were on stays put:
 
 - Pick the microphone and check the level meter. A USB conference or podcast mic in the middle of the table, set to pick up all around, works best.
-- **⧉ Pop out** moves the recorder into a small window of its own, so you can use the rest of the site; a **● REC** light shows on every page while it records.
+- Use the rest of the site in the main window as you like; a **● REC** light shows on every page while it records, and clicking it (or Record & Transcribe) brings the recorder back. Keep the recorder window open - closing it stops the recording.
 - The audio is saved every few seconds, so a crash or a closed tab loses seconds, not the session.
 - Recordings go in the `recordings/` folder in your campaign (or wherever **Browse…** points). It's never built, published, or committed.
 

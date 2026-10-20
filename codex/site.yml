@@ -22,8 +22,6 @@ theme:
   features:
     - navigation.tabs
     - navigation.tabs.sticky
-    - navigation.sections
-    - navigation.indexes
     - navigation.top
     - search.highlight
     - toc.follow
@@ -59,6 +57,7 @@ validation:
     anchors: warn
 
 extra_javascript:
+  - javascripts/settings.js             # the settings menu (the cog, top right): colours, View as…
   - javascripts/refs.js                 # hover cards for [[mentions]]
   - javascripts/view-as.js              # the DM site: View as… (the players' site as one of them)
   - javascripts/encounter-builder.js    # encounter builder and initiative tracker
@@ -71,6 +70,7 @@ extra_javascript:
 
 extra_css:
   - stylesheets/extra.css
+  - stylesheets/theme.css      # the look (Abyss): colours, fonts, menus, boxes
   - stylesheets/campaign.css    # yours: colours and styles that override the engine's (codex update never touches it)
 
 markdown_extensions:

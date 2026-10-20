@@ -25,7 +25,10 @@ The rules data was retrieved through [Open5e](https://open5e.com/). The monster 
 - [mkdocs-glightbox](https://github.com/blueswen/mkdocs-glightbox) (MIT)
 - [Pillow](https://python-pillow.org/) (HPND)
 - Two box icons (read-aloud, DM) from [Material Design Icons](https://pictogrammers.com/library/mdi/) (Apache-2.0)
+- The fonts in `docs/fonts/`: [Spectral SC](https://github.com/productiontype/Spectral) and [Alegreya Sans](https://github.com/huertatipografica/Alegreya-Sans), from [Fontsource](https://fontsource.org) (SIL Open Font License 1.1, see `docs/fonts/OFL.txt`)
 - [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (MIT), optional
 - [Cloudflare wrangler](https://github.com/cloudflare/workers-sdk) (MIT/Apache-2.0), optional, through npx
 
 *Dungeons & Dragons* is a trademark of Wizards of the Coast LLC. CampaignCodex5e is an independent project and isn't affiliated with or endorsed by Wizards of the Coast.
+
+The site's look (`docs/stylesheets/theme.css`) is based on "Abyss" by [Kosmos](https://github.com/IIKosmosII).

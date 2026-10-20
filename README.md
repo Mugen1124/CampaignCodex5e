@@ -79,11 +79,11 @@ You keep the say: **History** on each card shows every change, with **Undo**; cu
 
 ### Record
 
-With `CampaignCodex5e` running, open the **Record & Transcribe** tab in Chrome or Edge.
+With `CampaignCodex5e` running, click **Record & Transcribe** (top right) in Chrome or Edge. The recorder opens in a small window of its own, with your recordings under it, so you can keep using the site while it records.
 
 - **Pick the microphone** and watch the level meter while people talk. One microphone in the middle of the table, set to pick up all around (a USB conference or podcast mic), works best.
 - **Record.** The audio is saved every few seconds, so a crash or a closed tab loses seconds, not the session.
-- **⧉ Pop out** moves the recorder into a small window of its own, so you can use the rest of the site while it records; a **● REC** light shows on every page.
+- A **● REC** light shows on every page while it records; click it to bring the recorder back. Closing the recorder window stops the recording.
 - Recordings go in the `recordings/` folder in your campaign (or wherever **Browse…** points, or `recordings:` in `campaign.yml`). That folder is never built, published, or committed to git.
 
 You can also transcribe a recording made any other way — a phone, a voice recorder, Discord: `.m4a`, `.mp3`, `.wav`, `.flac`, `.ogg`, `.webm`, `.aac`, or `.wma`. Put it in `recordings/`.
