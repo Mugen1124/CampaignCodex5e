@@ -1,7 +1,7 @@
 """
 The one command behind every script:  python -m codex <command>
 
-    serve             the live site at http://127.0.0.1:8000, plus the save helper (stop with Ctrl+C)
+    serve             the live site at http://127.0.0.1:8000 (or the next free port), plus the save helper (stop with Ctrl+C)
     build             a copy you can open straight from disk, in site/ (or the output: folder)
     players           the players' site, built and opened, to see what they'll see
     check             build both sites into a temporary folder and run the leak check - changes nothing
@@ -22,6 +22,7 @@ run this with the project's own Python.
 """
 
 import os
+import socket
 import subprocess
 import sys
 import tempfile
@@ -74,16 +75,44 @@ def open_when_ready(url: str, give_up: float = 300):
         time.sleep(0.5)
 
 
+def port_free(port: int) -> bool:
+    """Nothing else has this port on 127.0.0.1. Windows lets a second server share a port (and the
+    first one gets every visit - a stuck copy of the site would leave the page blank), so the check
+    asks for the port all to itself."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        if hasattr(socket, "SO_EXCLUSIVEADDRUSE"):
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        s.bind(("127.0.0.1", port))
+        return True
+    except OSError:
+        return False
+    finally:
+        s.close()
+
+
 def cmd_serve(args):
+    browser = "--no-browser" not in args
+    args = [a for a in args if a != "--no-browser"]
+    # The site's address: 127.0.0.1:8000, or the next free port if something else has it (another
+    # campaign's site, or a copy that didn't close). -a / --dev-addr chooses one yourself.
+    addr = next((args[i + 1] for i, a in enumerate(args[:-1]) if a in ("-a", "--dev-addr")), None)
+    if not addr:
+        port = next((p for p in range(8000, 8020) if port_free(p)), 8000)
+        if port != 8000:
+            print(f"Port 8000 is in use (another site, or one that didn't close) - using {port} instead.", flush=True)
+        addr = f"127.0.0.1:{port}"
+        args += ["-a", addr]
+    url = f"http://{addr}/"
     helper = subprocess.Popen([PY, str(ROOT / "tools" / "site_helper.py")], cwd=ROOT)
-    if "--no-browser" not in args:
+    if browser:
         # Open the browser once the site actually answers - the first build takes a few seconds,
         # more for a big campaign, and a fixed wait opened it too early ("site can't be reached").
-        threading.Thread(target=open_when_ready, args=("http://127.0.0.1:8000/",), daemon=True).start()
-    print("The site is starting at http://127.0.0.1:8000 - leave this window open while you use it.")
-    print("Press Ctrl+C here (or close the window) to stop.\n")
+        threading.Thread(target=open_when_ready, args=(url,), daemon=True).start()
+    print(f"The site is starting at {url} - leave this window open while you use it.", flush=True)
+    print("Press Ctrl+C here (or close the window) to stop.\n", flush=True)
     try:
-        mkdocs("serve", *[a for a in args if a != "--no-browser"], check=False)
+        mkdocs("serve", *args, check=False)
     except KeyboardInterrupt:
         pass
     finally:

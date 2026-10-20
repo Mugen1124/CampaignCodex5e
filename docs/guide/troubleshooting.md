@@ -12,7 +12,7 @@
 
 **A box about "MkDocs 2.0" appears when the site starts.** It's a notice from Material for MkDocs about a future version. CampaignCodex5e stays on MkDocs 1.x (see `requirements.txt`), so it doesn't affect you — ignore it.
 
-**The page doesn't open, or says the address is in use.** Another `CampaignCodex5e` is already running — close its window, or use that one. The site is at <http://127.0.0.1:8000>.
+**The site opened at :8001 (or another number) instead of :8000.** Something else had port 8000 — another `CampaignCodex5e` still running (close its window, or use that one), or a copy that didn't close properly. The window says which port it took; everything works the same there, though colours and text size you chose in the settings menu are saved per address. If a copy is stuck (it won't close and Task Manager can't end it, often while it waits on Google Drive), quitting and reopening Google Drive or restarting the computer frees port 8000.
 
 **Saving doesn't work (Edit, the encounter builder, the recorder).** Those need the save helper, which `CampaignCodex5e` starts. Check the `CampaignCodex5e` window is still open, then reload the page.
 

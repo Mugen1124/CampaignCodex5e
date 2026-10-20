@@ -1,7 +1,7 @@
 @echo off
 setlocal EnableExtensions
 title CampaignCodex5e
-REM CampaignCodex5e: starts your campaign site at http://127.0.0.1:8000, plus the save helper, and
+REM CampaignCodex5e: starts your campaign site at http://127.0.0.1:8000 (or the next free port), plus the save helper, and
 REM opens it in your browser once it's ready. Leave this window open while you use the site;
 REM close it to stop.
 cd /d "%~dp0"
