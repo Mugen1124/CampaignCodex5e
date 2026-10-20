@@ -1,9 +1,10 @@
 ---
 order: 1
+date: 2026-10-03 19:00   # when it was played (the time is optional) - shown in the menu and under the title
 ---
 
 <!-- A session page: copy this into docs/sessions/ (for example docs/sessions/kells-crossing-1.md),
-     give it the next order: number (one higher than the last session's), and fill it in.
+     give it the next order: number (one higher than the last session's), the date: you played it, and fill it in.
      Everything [[mentioned]] outside the DM boxes shows up on the players' site.
      This comment is removed from the players' site. -->
 

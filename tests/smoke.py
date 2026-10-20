@@ -137,10 +137,23 @@ def main() -> int:
         world = (out / "dm" / "world" / "index.html").read_text(encoding="utf-8")
         sidebar = re.sub(r"\s+", " ", world[world.find("md-nav--primary"):world.find("md-nav--secondary")])
         check("This Session is first in the Sessions sidebar, then the sessions",
-              0 < sidebar.find("This Session </span>") < sidebar.find("Greywater — Session 1"), sidebar[:1500])
+              0 < sidebar.find("This Session </span>") < sidebar.find("Session 1: The Missing Bell"), sidebar[:1500])
         pl_home = (players / "index.html").read_text(encoding="utf-8")
         check("the players' site opens on the latest session", bool(re.search(r"<h1[^>]*>Greywater — Session 1: The Missing Bell", pl_home)))
         check("This Session isn't on the players' site", ">This Session<" not in pl_home and "Ambush on the quay" not in pl_home)
+        stamp = "Sat 3 Oct 2026 · 7:00 pm"
+        check("a session's date: is under its name in the menu", f'<span class="session-when">{stamp}</span>' in sidebar)
+        check("...and under its page's title, on both sites (the players' home page is the latest session)",
+              all(f'<p class="session-date">{stamp}</p>' in h
+                  for h in ((out / "dm" / "sessions" / "greywater-1.html").read_text(encoding="utf-8"), pl_home)))
+        page = proj / "docs" / "world" / "index.md"
+        original = page.read_text(encoding="utf-8")
+        page.write_text(original + "\n{{ session-log }}\n", encoding="utf-8")
+        build(proj, "mkdocs.yml", out / "sessionlog")
+        log_html = (out / "sessionlog" / "world" / "index.html").read_text(encoding="utf-8")
+        check("{{ session-log }} lists each session with its date, place and recap",
+              'class="session-card"' in log_html and f"{stamp} · Greywater" in log_html and "You came to Greywater for work" in log_html)
+        page.write_text(original, encoding="utf-8")
 
         print("My Notes:")
         check("the players' site has a My Notes page, in its menu", (players / "players" / "notes.html").is_file()

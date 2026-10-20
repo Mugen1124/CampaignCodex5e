@@ -1,5 +1,6 @@
 ---
 order: 1
+date: 2026-10-03 19:00
 ---
 
 # Greywater — Session 1: The Missing Bell

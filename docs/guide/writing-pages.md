@@ -50,6 +50,7 @@ A marker, alone on its own line, is replaced with something built from your data
 | `{{ items }}` | every item |
 | `{{ bestiary }}` | every creature |
 | `{{ map greywater }}` / `{{ maps }}` | one map / all of them |
+| `{{ session-log }}` | every session, newest first: its name, date, place and the start of its "Previously…" |
 | `{{ encounter-builder }}` | the encounter builder (the Encounters page) |
 | `{{ rules cover attacking }}` | SRD rules chapters, by name (see the Rules pages for the rest) |
 | `{{ conditions }}` / `{{ spells }}` / `{{ srd-magic-items }}` | the SRD's conditions, spells, magic items |
@@ -90,6 +91,7 @@ The block between `---` lines at the very top of a page:
 |---|---|
 | `dm_only: true` | never on the players' site |
 | `order: 3` | a session page's place in the Sessions tab (higher = newer) |
+| `date: 2026-10-12 19:30` | when a session was played (the time is optional): shown under its name in the menu and under its title |
 | `nav_title: Session 3` | a shorter title for the sidebar |
 | `toc_depth: 2` | the right-hand contents lists only `##` headings |
 | `regions: [Greywater]` | `add-mentions` matches one-word names ("Hester") only from these places |
