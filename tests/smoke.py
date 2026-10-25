@@ -40,7 +40,7 @@ def copy_project(dest: Path):
 
 def run(cwd: Path, *args, env=None) -> subprocess.CompletedProcess:
     return subprocess.run([PY, *map(str, args)], cwd=cwd, capture_output=True, text=True, encoding="utf-8",
-                          errors="replace", env=dict(os.environ, **(env or {})))
+                          errors="replace", env=dict(os.environ, NO_MKDOCS_2_WARNING="1", **(env or {})))
 
 
 def build(cwd: Path, config: str, out: Path) -> list:

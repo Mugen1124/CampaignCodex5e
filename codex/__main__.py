@@ -36,6 +36,8 @@ sys.path.insert(0, str(ROOT))
 # No compiled-file caches (__pycache__) in the campaign folder - it may be a synced cloud folder.
 sys.dont_write_bytecode = True
 os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
+# Material prints a notice about MkDocs 2 on every build; the engine stays on MkDocs 1 (requirements.txt).
+os.environ.setdefault("NO_MKDOCS_2_WARNING", "1")
 
 from codex import settings  # noqa: E402
 
