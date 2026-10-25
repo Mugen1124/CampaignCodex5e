@@ -112,11 +112,15 @@ def cmd_serve(args):
     print(f"The site is starting at {url} - leave this window open while you use it.", flush=True)
     print("Press Ctrl+C here (or close the window) to stop.\n", flush=True)
     try:
-        mkdocs("serve", *args, check=False)
+        code = mkdocs("serve", *args, check=False)
     except KeyboardInterrupt:
-        pass
+        code = 0
     finally:
         helper.terminate()
+    # A crash (a broken page hook, a bad mkdocs.yml) has to exit nonzero, or the .bat closes its
+    # window before the error can be read. Ctrl+C reaching mkdocs first is a normal stop, not a crash.
+    if code not in (0, 130, -2, 0xC000013A):
+        raise SystemExit(code)
 
 
 def cmd_build(args):

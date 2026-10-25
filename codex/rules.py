@@ -227,5 +227,6 @@ def render_items() -> str:
 
 
 def credit() -> str:
-    return (f"<small>{html.escape(DATA.get('credit', 'Includes material from the System Reference Document 5.1 by '
-                                                     'Wizards of the Coast LLC, licensed under CC BY 4.0.'))}</small>")
+    text = DATA.get("credit", "Includes material from the System Reference Document 5.1 by "
+                              "Wizards of the Coast LLC, licensed under CC BY 4.0.")
+    return f"<small>{html.escape(text)}</small>"
