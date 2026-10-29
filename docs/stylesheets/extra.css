@@ -514,10 +514,12 @@
 .ei-row input[type="number"] { -moz-appearance: textfield; }
 .ei-row input::-webkit-inner-spin-button { -webkit-appearance: none; }
 .ei-init { font-weight: 700; text-align: center; }
-.ei-initcell { display: flex; align-items: center; gap: 0.15rem; }
-.ei-initcell .ei-init { flex: 1 1 auto; min-width: 0; }
-.ei-tie { display: flex; flex-direction: column; gap: 1px; }
-.ei-tie button { width: 1.1rem; height: 0.85rem; padding: 0; font-size: 0.65rem; line-height: 1; cursor: pointer;
+/* The tie's +/- sit inside the box, on its left, so every initiative box is the same width; the same
+   padding on both sides keeps the number centred with or without them. */
+.ei-initcell { position: relative; display: block; }
+.ei-initcell .ei-init { padding-left: 0.95rem; padding-right: 0.95rem; }
+.ei-tie { position: absolute; left: 3px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 1px; }
+.ei-tie button { width: 0.75rem; height: 0.7rem; padding: 0; font-size: 0.55rem; line-height: 1; cursor: pointer;
   border: 1px solid var(--cx-line-soft); border-radius: 2px; background: none; color: inherit; }
 .ei-tie button:hover:not([disabled]) { border-color: var(--md-accent-fg-color); color: var(--md-accent-fg-color); }
 .ei-tie button[disabled] { opacity: 0.3; cursor: default; }
